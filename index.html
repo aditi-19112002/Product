@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Product Boost Store | Haridra Healing Aloe Gel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Banner -->
+  <div class="top-banner">
+    <span>🔥 Limited Offer: Buy 2 Get 15% OFF • Free Shipping over ₹999</span>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Product<span>Boost</span></div>
+    <div class="header-actions">
+      <button class="icon-btn" id="cartBtn" aria-label="Cart">
+        🛒 <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Live Activity Toast -->
+  <div class="live-toast" id="liveToast">
+    <span class="live-dot"></span>
+    <span id="liveText">Someone in Delhi just ordered this product</span>
+  </div>
+
+  <main class="product-page">
+    <!-- Product Gallery -->
+    <section class="gallery">
+      <div class="main-image-wrap" id="zoomWrap">
+        <img id="mainImage" src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80" alt="Haridra Healing Aloe Vera Gel" />
+        <div class="badge-sale">SALE</div>
+        <div class="badge-viewers">
+          <span class="pulse"></span> 12 people viewing
+        </div>
+      </div>
+      <div class="thumbs">
+        <img class="thumb active" src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&q=80" data-full="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&q=80" alt="Front" />
+        <img class="thumb" src="https://images.unsplash.com/photo-1608248543800-ba0e0f1e0e0e?w=200&q=80" data-full="https://images.unsplash.com/photo-1608248543800-ba0e0f1e0e0e?w=800&q=80" alt="Texture" />
+        <img class="thumb" src="https://images.unsplash.com/photo-1571781926291-c77df43ee5c0?w=200&q=80" data-full="https://images.unsplash.com/photo-1571781926291-c77df43ee5c0?w=800&q=80" alt="Ingredients" />
+        <img class="thumb" src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=200&q=80" data-full="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80" alt="Pack" />
+      </div>
+    </section>
+
+    <!-- Product Info -->
+    <section class="info">
+      <div class="brand">Anahata Organic • Natural Skincare</div>
+      <h1>Haridra Healing Aloe Vera Gel</h1>
+      <div class="rating">
+        <span class="stars">★★★★★</span>
+        <span class="rating-text">4.8 (2,147 reviews)</span>
+      </div>
+
+      <div class="price-box">
+        <span class="price">₹649</span>
+        <span class="mrp">₹899</span>
+        <span class="off">28% OFF</span>
+      </div>
+      <p class="tax">Inclusive of all taxes • Free shipping over ₹999</p>
+
+      <div class="offer-box">
+        <div class="offer-title">🎁 Buy 2 → Get 15% OFF</div>
+        <p>Add 2 or more units and discount applies automatically at checkout.</p>
+      </div>
+
+      <div class="qty-row">
+        <label>Quantity</label>
+        <div class="qty-control">
+          <button id="qtyMinus">−</button>
+          <input type="number" id="qty" value="1" min="1" max="10" readonly />
+          <button id="qtyPlus">+</button>
+        </div>
+      </div>
+
+      <div class="cta-group">
+        <button class="btn btn-cart" id="addToCart">🛒 Add to Cart</button>
+        <button class="btn btn-buy" id="buyNow">⚡ Buy Now</button>
+      </div>
+
+      <a href="https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20order%20Haridra%20Healing%20Aloe%20Vera%20Gel" 
+         class="btn btn-whatsapp" target="_blank" rel="noopener">
+        💬 Order on WhatsApp
+      </a>
+
+      <div class="trust-row">
+        <div class="trust-item">✅ COD Available</div>
+        <div class="trust-item">🔒 Secure Payment</div>
+        <div class="trust-item">↩️ Easy Returns</div>
+      </div>
+    </section>
+
+    <!-- Video Demo -->
+    <section class="video-section">
+      <h2>🎥 Product Demo</h2>
+      <div class="video-wrap">
+        <div class="video-placeholder">
+          <div class="play-btn">▶</div>
+          <p>How to use Haridra Gel • 45 sec</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Description -->
+    <section class="desc">
+      <h2>Why this gel works</h2>
+      <p>Haridra gel combines the power of real Aloe Vera pulp + Curcumin (from Turmeric) to calm acne, fade marks and soothe irritated skin. Made with real pulp stabilised with guar gum — not watery gels.</p>
+      
+      <div class="benefits">
+        <div class="benefit">🌿 Real Aloe Vera Pulp</div>
+        <div class="benefit">🟡 Curcumin Extract</div>
+        <div class="benefit">✨ Pore Minimising</div>
+        <div class="benefit">🛡️ Anti-inflammatory</div>
+      </div>
+
+      <h3>Key Ingredients</h3>
+      <ul>
+        <li>Aloe Vera (real pulp)</li>
+        <li>Curcumin Extract</li>
+        <li>Vetiver, Neem, Saffron infused oils</li>
+        <li>Vitamin E + Cold-pressed Coconut oil</li>
+      </ul>
+
+      <h3>How to use</h3>
+      <ol>
+        <li>Cleanse face</li>
+        <li>Apply 2–3 scoops all over face & neck</li>
+        <li>Massage until absorbed. Leave on or wash after 20–30 min</li>
+      </ol>
+    </section>
+
+    <!-- Related Products -->
+    <section class="related">
+      <h2>You may also like</h2>
+      <div class="related-grid" id="relatedGrid"></div>
+    </section>
+  </main>
+
+  <!-- Sticky Mobile CTA -->
+  <div class="sticky-cta" id="stickyCta">
+    <div class="sticky-price">
+      <span class="price">₹649</span>
+      <span class="mrp">₹899</span>
+    </div>
+    <button class="btn btn-buy" id="stickyBuy">Buy Now</button>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button id="closeCart">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <p class="empty">Cart is empty</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        Total: <strong id="cartTotal">₹0</strong>
+      </div>
+      <button class="btn btn-buy full" id="checkoutBtn">Proceed to Checkout</button>
+      <a href="https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20checkout%20my%20cart" 
+         class="btn btn-whatsapp full" target="_blank">WhatsApp Checkout</a>
+    </div>
+  </aside>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="payModal">
+    <div class="modal">
+      <h3>Choose Payment</h3>
+      <div class="pay-options">
+        <button class="pay-opt" data-method="upi">📱 UPI / GPay / PhonePe</button>
+        <button class="pay-opt" data-method="card">💳 Card</button>
+        <button class="pay-opt" data-method="cod">💵 Cash on Delivery</button>
+      </div>
+      <p class="small">This is a demo. No real payment will be taken.</p>
+      <button class="btn btn-close" id="closePay">Close</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

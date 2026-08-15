@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theme Morpher – 5 Designs</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* ========== THEME 1: MODERN ========== */
+    body.theme-1 {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      color: #fff;
+    }
+
+    body.theme-1 .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    body.theme-1 .btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+    }
+
+    body.theme-1 .btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-3px);
+    }
+
+    /* ========== THEME 2: CYBERPUNK ========== */
+    body.theme-2 {
+      background: #0a0a12;
+      color: #00ff9f;
+      font-family: 'Courier New', monospace;
+    }
+
+    body.theme-2::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        linear-gradient(rgba(0, 255, 159, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 159, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body.theme-2 .card {
+      background: rgba(10, 10, 20, 0.85);
+      border: 1px solid #00ff9f;
+      box-shadow: 0 0 20px rgba(0, 255, 159, 0.3), inset 0 0 20px rgba(0, 255, 159, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.theme-2 .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 159, 0.15), transparent);
+      animation: glitchScan 3s infinite;
+    }
+
+    @keyframes glitchScan {
+      0% { left: -100%; }
+      100% { left: 150%; }
+    }
+
+    body.theme-2 h1 {
+      text-shadow: 0 0 10px #00ff9f, 0 0 20px #00ff9f, 0 0 40px #ff00aa;
+      animation: neonFlicker 2s infinite alternate;
+    }
+
+    @keyframes neonFlicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+      52% { opacity: 1; }
+      54% { opacity: 0.9; }
+    }
+
+    body.theme-2 .btn {
+      background: transparent;
+      border: 2px solid #00ff9f;
+      color: #00ff9f;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 0 15px rgba(0, 255, 159, 0.4);
+    }
+
+    body.theme-2 .btn:hover {
+      background: #00ff9f;
+      color: #0a0a12;
+      box-shadow: 0 0 30px #00ff9f;
+    }
+
+    /* ========== THEME 3: OCEAN ========== */
+    body.theme-3 {
+      background: linear-gradient(180deg, #0c4a6e 0%, #0369a1 40%, #0ea5e9 100%);
+      color: #e0f2fe;
+      overflow: hidden;
+    }
+
+    body.theme-3 .wave {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 120px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%230284c7' fill-opacity='0.4' d='M0,60 C150,100 350,0 600,60 C850,120 1050,20 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E") repeat-x;
+      background-size: 1200px 120px;
+      animation: waveMove 12s linear infinite;
+      z-index: 0;
+    }
+
+    body.theme-3 .wave:nth-child(2) {
+      bottom: 10px;
+      opacity: 0.6;
+      animation-duration: 8s;
+      animation-direction: reverse;
+    }
+
+    body.theme-3 .wave:nth-child(3) {
+      bottom: 20px;
+      opacity: 0.3;
+      animation-duration: 15s;
+    }
+
+    @keyframes waveMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    body.theme-3 .card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    body.theme-3 .card:nth-child(1) { animation-delay: 0s; }
+    body.theme-3 .card:nth-child(2) { animation-delay: 0.8s; }
+    body.theme-3 .card:nth-child(3) { animation-delay: 1.6s; }
+    body.theme-3 .card:nth-child(4) { animation-delay: 2.4s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    body.theme-3 .btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+    }
+
+    body.theme-3 .btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-3px);
+    }
+
+    /* ========== THEME 4: SPACE ========== */
+    body.theme-4 {
+      background: #050510;
+      color: #e0e7ff;
+      overflow: hidden;
+    }
+
+    body.theme-4 .stars {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1.5px 1.5px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+      background-size: 200px 100px;
+      animation: twinkle 4s ease-in-out infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    body.theme-4 .planet {
+      position: fixed;
+      border-radius: 50%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body.theme-4 .planet-1 {
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at 30% 30%, #fbbf24, #b45309);
+      top: 15%;
+      right: 10%;
+      box-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
+      animation: orbit 25s linear infinite;
+    }
+
+    body.theme-4 .planet-2 {
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle at 30% 30%, #60a5fa, #1e40af);
+      top: 60%;
+      left: 8%;
+      box-shadow: 0 0 25px rgba(96, 165, 250, 0.5);
+      animation: orbit 18s linear infinite reverse;
+    }
+
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(30px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(30px) rotate(-360deg); }
+    }
+
+    body.theme-4 .card {
+      background: rgba(15, 15, 35, 0.7);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+      backdrop-filter: blur(8px);
+    }
+
+    body.theme-4 .btn {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border: none;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+
+    body.theme-4 .btn:hover {
+      box-shadow: 0 0 35px rgba(99, 102, 241, 0.8);
+      transform: translateY(-3px);
+    }
+
+    /* ========== THEME 5: LUXURY ========== */
+    body.theme-5 {
+      background: #0c0c0c;
+      color: #f5f5f4;
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+
+    body.theme-5 .card {
+      background: #171717;
+      border: 1px solid #292524;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    body.theme-5 h1 {
+      font-weight: 300;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #d4af37;
+    }
+
+    body.theme-5 .subtitle {
+      color: #a8a29e;
+      font-style: italic;
+    }
+
+    body.theme-5 .btn {
+      background: transparent;
+      border: 1px solid #d4af37;
+      color: #d4af37;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      padding: 14px 32px;
+    }
+
+    body.theme-5 .btn:hover {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
+    body.theme-5 .card h2 {
+      color: #d4af37;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    /* ========== SHARED LAYOUT ========== */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      margin-bottom: 12px;
+      transition: var(--transition);
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      opacity: 0.85;
+      margin-bottom: 48px;
+      transition: var(--transition);
+    }
+
+    .theme-indicator {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      transition: var(--transition);
+    }
+
+    body.theme-2 .theme-indicator {
+      border: 1px solid #00ff9f;
+      color: #00ff9f;
+      background: transparent;
+    }
+
+    body.theme-5 .theme-indicator {
+      border: 1px solid #d4af37;
+      color: #d4af37;
+      background: transparent;
+      letter-spacing: 3px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 50px;
+    }
+
+    .card {
+      padding: 28px 22px;
+      border-radius: 20px;
+      text-align: left;
+      transition: var(--transition);
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      transition: var(--transition);
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      opacity: 0.9;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 36px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .click-hint {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .wave, .stars, .planet {
+      display: none;
+    }
+
+    body.theme-3 .wave { display: block; }
+    body.theme-4 .stars,
+    body.theme-4 .planet { display: block; }
+  </style>
+</head>
+<body class="theme-1">
+
+  <!-- Ocean waves -->
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+
+  <!-- Space elements -->
+  <div class="stars"></div>
+  <div class="planet planet-1"></div>
+  <div class="planet planet-2"></div>
+
+  <div class="container">
+    <div class="theme-indicator" id="indicator">🟣 Modern</div>
+    
+    <h1 id="title">Design Morpher</h1>
+    <p class="subtitle" id="subtitle">Click anywhere to transform the entire experience</p>
+
+    <div class="cards">
+      <div class="card">
+        <h2>Fluid Design</h2>
+        <p>Every click rewrites the visual language. Gradients, neon, waves, stars and pure luxury — all in one canvas.</p>
+      </div>
+      <div class="card">
+        <h2>Pure CSS Magic</h2>
+        <p>No frameworks. Just carefully crafted CSS transitions, keyframes and layered effects that respond instantly.</p>
+      </div>
+      <div class="card">
+        <h2>5 Worlds</h2>
+        <p>Modern glass • Cyberpunk neon • Ocean depth • Cosmic space • Quiet luxury. One site, five identities.</p>
+      </div>
+      <div class="card">
+        <h2>Instant Shift</h2>
+        <p>Smooth transitions between completely different design systems. Click and watch the whole page transform.</p>
+      </div>
+    </div>
+
+    <a href="#" class="btn" onclick="event.stopPropagation()">Explore More</a>
+
+    <p class="click-hint">👆 Click anywhere to change theme</p>
+  </div>
+
+  <script>
+    const themes = [
+      { class: 'theme-1', name: '🟣 Modern', title: 'Design Morpher', subtitle: 'Click anywhere to transform the entire experience' },
+      { class: 'theme-2', name: '🤖 Cyberpunk', title: 'SYSTEM ONLINE', subtitle: '// initiate visual protocol — click to override' },
+      { class: 'theme-3', name: '🌊 Ocean', title: 'Deep Blue', subtitle: 'Ride the waves of change with every click' },
+      { class: 'theme-4', name: '🚀 Space', title: 'Cosmic Shift', subtitle: 'Orbit through dimensions — one click at a time' },
+      { class: 'theme-5', name: '🖤 Luxury', title: 'Élégance', subtitle: 'Quiet sophistication. Timeless design.' }
+    ];
+
+    let current = 0;
+
+    function switchTheme() {
+      current = (current + 1) % themes.length;
+      const theme = themes[current];
+
+      document.body.className = theme.class;
+      document.getElementById('indicator').textContent = theme.name;
+      document.getElementById('title').textContent = theme.title;
+      document.getElementById('subtitle').textContent = theme.subtitle;
+    }
+
+    document.body.addEventListener('click', (e) => {
+      if (e.target.closest('.btn')) return;
+      switchTheme();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' || e.code === 'Enter') {
+        e.preventDefault();
+        switchTheme();
+      }
+    });
+  </script>
+</body>
+</html>

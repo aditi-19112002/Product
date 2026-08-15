@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magic Website Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --border: #262626;
+      --text: #f5f5f5;
+      --muted: #a3a3a3;
+      --accent: #e11d48;
+      --accent-soft: rgba(225, 29, 72, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ========== BUILDER UI ========== */
+    #builder {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--bg);
+      z-index: 10;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #builder.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .hook {
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .hook span {
+      background: linear-gradient(135deg, #f43f5e, #e11d48, #be123c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .prompt-box {
+      width: 100%;
+      max-width: 640px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 6px;
+      display: flex;
+      gap: 8px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 20px 50px -20px rgba(0,0,0,0.7);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .prompt-box:focus-within {
+      border-color: #e11d48;
+      box-shadow: 0 0 0 1px rgba(225,29,72,0.3), 0 20px 50px -20px rgba(0,0,0,0.7);
+    }
+
+    #prompt {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 1.05rem;
+      padding: 14px 18px;
+      font-family: inherit;
+    }
+
+    #prompt::placeholder {
+      color: #525252;
+    }
+
+    #generate {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0 22px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    #generate:hover {
+      background: #be123c;
+    }
+
+    #generate:active {
+      transform: scale(0.97);
+    }
+
+    .examples {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      max-width: 640px;
+    }
+
+    .chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chip:hover {
+      border-color: #e11d48;
+      color: #fda4af;
+      background: var(--accent-soft);
+    }
+
+    /* ========== GENERATING STATE ========== */
+    #generating {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    #generating.active {
+      display: flex;
+    }
+
+    .ai-orb {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fda4af, #e11d48, #9f1239);
+      box-shadow: 0 0 60px rgba(225, 29, 72, 0.5);
+      animation: pulse 1.8s ease-in-out infinite;
+      margin-bottom: 2rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.12); opacity: 0.85; }
+    }
+
+    .status {
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      min-height: 1.5em;
+    }
+
+    .progress-track {
+      width: 280px;
+      height: 4px;
+      background: #262626;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 1.25rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #e11d48, #fb7185);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .logs {
+      margin-top: 2rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      color: #737373;
+      text-align: left;
+      width: 320px;
+      max-height: 120px;
+      overflow: hidden;
+    }
+
+    .log-line {
+      opacity: 0;
+      transform: translateY(6px);
+      animation: fadeInUp 0.4s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== GENERATED WEBSITE ========== */
+    #site {
+      display: none;
+      height: 100vh;
+      overflow: hidden;
+      background: #fafafa;
+      color: #171717;
+      font-family: 'Inter', system-ui, sans-serif;
+      flex-direction: column;
+    }
+
+    #site.visible {
+      display: flex;
+      animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 4%;
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.6rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #404040;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: #e11d48;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.9rem;
+      align-items: center;
+    }
+
+    .nav-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .hero {
+      flex: 1;
+      min-height: 0;
+      background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.4)),
+                  url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1920&q=80') center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      padding: 1.5rem;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.6rem;
+      line-height: 1.05;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      opacity: 0.9;
+      max-width: 420px;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background: white;
+      color: #171717;
+      padding: 0.7rem 1.8rem;
+      border-radius: 999px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .bottom {
+      flex-shrink: 0;
+      background: #fff;
+      padding: 1.2rem 4%;
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr;
+      gap: 1.5rem;
+      border-top: 1px solid #e5e5e5;
+      height: 32vh;
+      min-height: 200px;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+      height: 100%;
+    }
+
+    .cat {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      height: 100%;
+    }
+
+    .cat img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+
+    .cat:hover img {
+      transform: scale(1.06);
+    }
+
+    .cat-label {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 40%, rgba(0,0,0,0.7));
+      display: flex;
+      align-items: flex-end;
+      padding: 0.8rem;
+      color: white;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem;
+      height: 100%;
+    }
+
+    .card {
+      background: #f5f5f5;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .card img {
+      width: 100%;
+      height: 65%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 0.55rem 0.65rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card-body h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-body .price {
+      color: #e11d48;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    .rebuild {
+      position: fixed;
+      bottom: 1.2rem;
+      right: 1.2rem;
+      background: #171717;
+      color: white;
+      border: none;
+      padding: 0.65rem 1.15rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rebuild.visible {
+      display: flex;
+    }
+
+    .rebuild:hover {
+      background: #e11d48;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .bottom {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 0;
+        max-height: 38vh;
+      }
+      .categories { height: 110px; }
+      .products { height: 130px; }
+      .hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BUILDER SCREEN -->
+  <div id="builder">
+    <h1 class="hook">I built a website that<br><span>builds websites</span> 🤯</h1>
+    <p class="sub">Type what you want. Watch it appear.</p>
+
+    <div class="prompt-box">
+      <input id="prompt" type="text" placeholder="Create a fashion website..." value="Create a fashion website" autocomplete="off" />
+      <button id="generate">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Generate
+      </button>
+    </div>
+
+    <div class="examples">
+      <button class="chip" data-prompt="Create a fashion website">Create a fashion website</button>
+      <button class="chip" data-prompt="Build a minimal portfolio site">Build a minimal portfolio</button>
+      <button class="chip" data-prompt="Make a luxury watch brand site">Luxury watch brand</button>
+    </div>
+  </div>
+
+  <!-- GENERATING OVERLAY -->
+  <div id="generating">
+    <div class="ai-orb"></div>
+    <div class="status" id="status">Understanding your request...</div>
+    <div class="progress-track">
+      <div class="progress-bar" id="bar"></div>
+    </div>
+    <div class="logs" id="logs"></div>
+  </div>
+
+  <!-- GENERATED FASHION WEBSITE -->
+  <div id="site">
+    <nav class="nav">
+      <div class="logo">LUMIÈRE</div>
+      <ul class="nav-links">
+        <li><a href="#">New In</a></li>
+        <li><a href="#">Women</a></li>
+        <li><a href="#">Men</a></li>
+        <li><a href="#">Accessories</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button>🔍</button>
+        <button>♡</button>
+        <button>🛒</button>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>Summer 2026 Collection</h1>
+      <p>Effortless elegance. Timeless silhouettes.</p>
+      <a href="#" class="btn">Shop the Collection</a>
+    </section>
+
+    <div class="bottom">
+      <div class="categories">
+        <div class="cat">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80" alt="Women">
+          <div class="cat-label">Women</div>
+        </div>
+        <div class="cat">
+          <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=600&q=80" alt="Men">
+          <div class="cat-label">Men</div>
+        </div>
+        <div class="cat">
+          <img src="https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?auto=format&fit=crop&w=600&q=80" alt="Accessories">
+          <div class="cat-label">Accessories</div>
+        </div>
+      </div>
+
+      <div class="products">
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=400&q=80" alt="">
+          <div class="card-body">
+            <h3>Silk Midi Dress</h3>
+            <div class="price">$189</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" alt="">
+          <div class="card-body">
+            <h3>Linen Blazer</h3>
+            <div class="price">$245</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=400&q=80" alt="">
+          <div class="card-body">
+            <h3>Leather Bag</h3>
+            <div class="price">$128</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=400&q=80" alt="">
+          <div class="card-body">
+            <h3>Sculptural Heel</h3>
+            <div class="price">$210</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="rebuild" id="rebuild">↺ Build another</button>
+
+  <script>
+    const builder = document.getElementById('builder');
+    const generating = document.getElementById('generating');
+    const site = document.getElementById('site');
+    const promptInput = document.getElementById('prompt');
+    const generateBtn = document.getElementById('generate');
+    const statusEl = document.getElementById('status');
+    const bar = document.getElementById('bar');
+    const logs = document.getElementById('logs');
+    const rebuildBtn = document.getElementById('rebuild');
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        promptInput.value = chip.dataset.prompt;
+        promptInput.focus();
+      });
+    });
+
+    const steps = [
+      { text: "Understanding your request...", progress: 12 },
+      { text: "Analyzing design patterns...", progress: 28 },
+      { text: "Selecting layout system...", progress: 45 },
+      { text: "Generating color palette...", progress: 58 },
+      { text: "Writing component code...", progress: 72 },
+      { text: "Optimizing for mobile...", progress: 86 },
+      { text: "Final polish & deploy...", progress: 100 }
+    ];
+
+    const logMessages = [
+      "> Detected niche: fashion / e-commerce",
+      "> Applying editorial typography",
+      "> Injecting high-res product imagery",
+      "> Building responsive grid system",
+      "> Compiling CSS modules",
+      "> Website ready."
+    ];
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    async function runGeneration() {
+      // Hide builder
+      builder.classList.add('hidden');
+      await sleep(450);
+
+      // Show generating
+      generating.classList.add('active');
+      logs.innerHTML = '';
+      bar.style.width = '0%';
+
+      for (let i = 0; i < steps.length; i++) {
+        statusEl.textContent = steps[i].text;
+        bar.style.width = steps[i].progress + '%';
+        
+        if (logMessages[i]) {
+          const line = document.createElement('div');
+          line.className = 'log-line';
+          line.textContent = logMessages[i];
+          logs.appendChild(line);
+        }
+        
+        await sleep(600 + Math.random() * 250);
+      }
+
+      await sleep(350);
+
+      // Hide generating + show website
+      generating.classList.remove('active');
+      site.classList.add('visible');
+      rebuildBtn.classList.add('visible');
+    }
+
+    generateBtn.addEventListener('click', runGeneration);
+    promptInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') runGeneration();
+    });
+
+    rebuildBtn.addEventListener('click', () => {
+      site.classList.remove('visible');
+      rebuildBtn.classList.remove('visible');
+      builder.classList.remove('hidden');
+      promptInput.focus();
+    });
+  </script>
+</body>
+</html>

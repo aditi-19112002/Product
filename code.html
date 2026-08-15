@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Time Machine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      transition: var(--transition);
+      overflow-x: hidden;
+    }
+
+    /* ========== COMMON ELEMENTS ========== */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px 80px;
+    }
+
+    .time-control {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      padding: 18px 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .year-display {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 2px;
+    }
+
+    .slider-wrap {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-wrap span {
+      color: #aaa;
+      font-size: 0.85rem;
+      min-width: 40px;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      height: 8px;
+      -webkit-appearance: none;
+      background: #333;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    }
+
+    /* ========== ERA: 2000 ========== */
+    body.era-2000 {
+      background: #0000aa;
+      background-image: 
+        linear-gradient(rgba(0,0,170,0.9), rgba(0,0,170,0.9)),
+        url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: 'Comic Neue', 'Comic Sans MS', cursive;
+    }
+
+    body.era-2000 .header {
+      text-align: center;
+      border: 4px ridge #ffff00;
+      background: #000080;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    body.era-2000 h1 {
+      font-size: 2.4rem;
+      color: #00ff00;
+      text-shadow: 3px 3px 0 #ff00ff;
+      animation: blink 1.2s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0.6; }
+    }
+
+    body.era-2000 .marquee {
+      background: #ffff00;
+      color: #000;
+      padding: 8px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    body.era-2000 .marquee span {
+      display: inline-block;
+      animation: marquee 12s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    body.era-2000 .card {
+      background: #c0c0c0;
+      border: 4px outset #fff;
+      color: #000;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    body.era-2000 .btn {
+      background: #00ff00;
+      border: 3px outset #fff;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 22px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1.1rem;
+    }
+
+    body.era-2000 .btn:active {
+      border-style: inset;
+    }
+
+    body.era-2000 .hit-counter {
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 6px 12px;
+      display: inline-block;
+      border: 2px solid #0f0;
+      margin-top: 10px;
+    }
+
+    body.era-2000 a {
+      color: #00ffff;
+      text-decoration: underline;
+    }
+
+    /* ========== ERA: 2010 ========== */
+    body.era-2010 {
+      background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body.era-2010 .header {
+      text-align: center;
+      background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
+      color: #1a1a1a;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 1px 0 #fff;
+      margin-bottom: 30px;
+      border: 1px solid #ccc;
+    }
+
+    body.era-2010 h1 {
+      font-size: 2.2rem;
+      background: linear-gradient(to bottom, #3b5998, #1a1a1a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+    }
+
+    body.era-2010 .card {
+      background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+      color: #222;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.25), inset 0 1px 0 #fff;
+      border: 1px solid #ddd;
+    }
+
+    body.era-2010 .btn {
+      background: linear-gradient(to bottom, #4a90d9, #2a5a9e);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 28px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #1a3a6e, 0 5px 10px rgba(0,0,0,0.3);
+      text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+      transition: all 0.15s;
+    }
+
+    body.era-2010 .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #1a3a6e;
+    }
+
+    body.era-2010 .badge {
+      display: inline-block;
+      background: linear-gradient(to bottom, #ff9900, #cc6600);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* ========== ERA: 2020 ========== */
+    body.era-2020 {
+      background: #f8fafc;
+      color: #1e293b;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    body.era-2020 .header {
+      text-align: center;
+      padding: 40px 20px;
+      margin-bottom: 30px;
+    }
+
+    body.era-2020 h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -1px;
+    }
+
+    body.era-2020 .subtitle {
+      color: #64748b;
+      font-size: 1.15rem;
+      margin-top: 8px;
+    }
+
+    body.era-2020 .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      transition: var(--transition);
+    }
+
+    body.era-2020 .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+
+    body.era-2020 .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 28px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    body.era-2020 .btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    body.era-2020 .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    /* ========== ERA: 2030 ========== */
+    body.era-2030 {
+      background: #05050a;
+      color: #e0e7ff;
+      font-family: 'Orbitron', 'Inter', sans-serif;
+    }
+
+    body.era-2030::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body.era-2030 .header {
+      text-align: center;
+      padding: 50px 20px 30px;
+      margin-bottom: 20px;
+    }
+
+    body.era-2030 h1 {
+      font-size: 2.6rem;
+      background: linear-gradient(135deg, #22d3ee, #a855f7, #22d3ee);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 4s linear infinite;
+      letter-spacing: 3px;
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+
+    body.era-2030 .subtitle {
+      color: #94a3b8;
+      font-size: 1rem;
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    body.era-2030 .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 40px rgba(34, 211, 238, 0.05);
+      transition: var(--transition);
+    }
+
+    body.era-2030 .card:hover {
+      border-color: rgba(34, 211, 238, 0.3);
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
+      transform: translateY(-5px);
+    }
+
+    body.era-2030 .btn {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      color: #05050a;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 32px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      letter-spacing: 1px;
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.4);
+      transition: var(--transition);
+    }
+
+    body.era-2030 .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+    }
+
+    body.era-2030 .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    /* Common content styles that adapt */
+    .features {
+      margin-top: 10px;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 12px;
+    }
+
+    .feature-list li {
+      padding: 6px 0;
+    }
+
+    .era-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    body.era-2000 .era-label { background: #ff0; color: #000; }
+    body.era-2010 .era-label { background: #3b5998; color: #fff; }
+    body.era-2020 .era-label { background: #e0f2fe; color: #0369a1; }
+    body.era-2030 .era-label { background: rgba(34,211,238,0.15); color: #22d3ee; border: 1px solid rgba(34,211,238,0.3); }
+
+    /* Hide some elements per era */
+    body.era-2000 .modern-only,
+    body.era-2010 .modern-only { display: none; }
+
+    body.era-2020 .retro-only,
+    body.era-2030 .retro-only { display: none; }
+
+    body.era-2000 .marquee { display: block; }
+    body:not(.era-2000) .marquee { display: none; }
+
+    body.era-2000 .hit-counter { display: inline-block; }
+    body:not(.era-2000) .hit-counter { display: none; }
+
+    body.era-2010 .badge { display: inline-block; }
+    body:not(.era-2010) .badge { display: none; }
+  </style>
+</head>
+<body class="era-2020">
+
+  <div class="container">
+    <div class="header">
+      <div class="era-label" id="eraLabel">2020 • Modern Clean</div>
+      <h1 id="mainTitle">Website Time Machine</h1>
+      <p class="subtitle" id="subtitle">Slide through the decades of web design</p>
+    </div>
+
+    <div class="marquee">
+      <span>★ WELCOME TO MY HOMEPAGE ★ UNDER CONSTRUCTION ★ BEST VIEWED IN INTERNET EXPLORER 6 ★ SIGN MY GUESTBOOK ★</span>
+    </div>
+
+    <div class="card">
+      <h2 id="cardTitle">Experience the Evolution of the Web</h2>
+      <p id="cardText" style="margin: 12px 0 18px; line-height: 1.6;">
+        Drag the slider below and watch this entire page transform its fonts, colors, layout and personality as it travels from the early 2000s all the way to a speculative 2030.
+      </p>
+      <button class="btn" onclick="alert('Button style also changes with the era!')">Explore Era</button>
+      <div class="hit-counter">Hit Counter: 000,042,069</div>
+      <span class="badge">Web 2.0 Certified</span>
+    </div>
+
+    <div class="grid features">
+      <div class="card">
+        <h3>Fonts & Typography</h3>
+        <ul class="feature-list">
+          <li>• 2000 → Comic Sans energy</li>
+          <li>• 2010 → Clean Arial</li>
+          <li>• 2020 → Inter / System</li>
+          <li>• 2030 → Orbitron futuristic</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Visual Language</h3>
+        <ul class="feature-list">
+          <li>• 2000 → Tables & bright colors</li>
+          <li>• 2010 → Glossy gradients</li>
+          <li>• 2020 → Flat & minimal</li>
+          <li>• 2030 → Glass + Neon</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center; margin-top:10px;">
+      <p style="opacity:0.8; font-size:0.95rem;">
+        Made for the timeline • Pure HTML / CSS / JS • No libraries
+      </p>
+    </div>
+  </div>
+
+  <!-- TIME CONTROL -->
+  <div class="time-control">
+    <div class="year-display" id="yearDisplay">2020</div>
+    <div class="slider-wrap">
+      <span>2000</span>
+      <input type="range" id="timeSlider" min="2000" max="2030" step="10" value="2020" />
+      <span>2030</span>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById('timeSlider');
+    const yearDisplay = document.getElementById('yearDisplay');
+    const eraLabel = document.getElementById('eraLabel');
+    const mainTitle = document.getElementById('mainTitle');
+    const subtitle = document.getElementById('subtitle');
+    const cardTitle = document.getElementById('cardTitle');
+    const cardText = document.getElementById('cardText');
+
+    const eras = {
+      2000: {
+        class: 'era-2000',
+        label: '2000 • Y2K / Early Web',
+        title: 'Welcome to My Homepage!!!',
+        subtitle: 'Best viewed in IE6 • 800x600 resolution',
+        cardTitle: 'Under Construction 🚧',
+        cardText: 'Welcome to my personal website! I made this in FrontPage. Please sign the guestbook and check out my MIDI collection. More content coming soon (maybe).'
+      },
+      2010: {
+        class: 'era-2010',
+        label: '2010 • Web 2.0 Era',
+        title: 'Website Time Machine',
+        subtitle: 'Connecting people through design',
+        cardTitle: 'The Social Web is Here',
+        cardText: 'Gradients, rounded corners, and glossy buttons ruled the decade. Web 2.0 brought interactivity, user-generated content, and the rise of social platforms.'
+      },
+      2020: {
+        class: 'era-2020',
+        label: '2020 • Modern Clean',
+        title: 'Website Time Machine',
+        subtitle: 'Slide through the decades of web design',
+        cardTitle: 'Experience the Evolution of the Web',
+        cardText: 'Drag the slider below and watch this entire page transform its fonts, colors, layout and personality as it travels from the early 2000s all the way to a speculative 2030.'
+      },
+      2030: {
+        class: 'era-2030',
+        label: '2030 • Neural Interface',
+        title: 'TEMPORAL NEXUS',
+        subtitle: 'Design beyond the screen • AI-native interfaces',
+        cardTitle: 'Post-Screen Aesthetics',
+        cardText: 'Glassmorphism, adaptive neon systems, and ambient intelligence. Interfaces become environmental rather than just visual. The web feels alive.'
+      }
+    };
+
+    function updateEra(year) {
+      const data = eras[year];
+      document.body.className = data.class;
+      yearDisplay.textContent = year;
+      eraLabel.textContent = data.label;
+      mainTitle.textContent = data.title;
+      subtitle.textContent = data.subtitle;
+      cardTitle.textContent = data.cardTitle;
+      cardText.textContent = data.cardText;
+    }
+
+    slider.addEventListener('input', (e) => {
+      updateEra(Number(e.target.value));
+    });
+
+    // Init
+    updateEra(2020);
+  </script>
+</body>
+</html>

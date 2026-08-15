@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wellness Product Portfolio – [Seller Name]</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2d6a4f;
+      --primary-dark: #1b4332;
+      --primary-light: #40916c;
+      --accent: #95d5b2;
+      --bg: #f8faf9;
+      --white: #ffffff;
+      --text: #1a1a1a;
+      --text-light: #555;
+      --shadow: 0 10px 30px rgba(45, 106, 79, 0.12);
+      --radius: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* ========== NAVBAR ========== */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      z-index: 1000;
+      padding: 14px 0;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--primary-dark);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-cta {
+      background: var(--primary);
+      color: white !important;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    .nav-cta:hover {
+      background: var(--primary-dark);
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: var(--primary);
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 24px 80px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #d8f3dc 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(149,213,178,0.3) 0%, transparent 70%);
+      top: -100px;
+      right: -100px;
+      border-radius: 50%;
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content h1 {
+      font-size: 3.2rem;
+      line-height: 1.2;
+      color: var(--primary-dark);
+      margin-bottom: 18px;
+    }
+
+    .hero-content .tagline {
+      font-size: 1.25rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .hero-content p {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      margin-bottom: 32px;
+      max-width: 520px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background: #1da851;
+      transform: translateY(-2px);
+    }
+
+    .hero-image {
+      text-align: center;
+    }
+
+    .seller-photo {
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 8px solid white;
+      box-shadow: var(--shadow);
+      background: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      color: #888;
+    }
+
+    .seller-name {
+      margin-top: 20px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* ========== SECTIONS ========== */
+    section {
+      padding: 90px 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+    }
+
+    .section-title p {
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .divider {
+      width: 60px;
+      height: 4px;
+      background: var(--primary);
+      margin: 16px auto 0;
+      border-radius: 2px;
+    }
+
+    /* ========== ABOUT ========== */
+    .about {
+      background: white;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .about-image {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      height: 420px;
+      background: linear-gradient(135deg, #d8f3dc, #95d5b2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-dark);
+      font-weight: 500;
+    }
+
+    .about-content h3 {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      margin-bottom: 18px;
+    }
+
+    .about-content p {
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .about-points {
+      margin-top: 24px;
+    }
+
+    .about-points li {
+      list-style: none;
+      padding: 10px 0 10px 32px;
+      position: relative;
+      color: var(--text);
+    }
+
+    .about-points li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* ========== WHY RENATUS ========== */
+    .why {
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .why-card {
+      background: white;
+      padding: 36px 28px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .why-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .why-icon {
+      width: 70px;
+      height: 70px;
+      background: #d8f3dc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 1.8rem;
+    }
+
+    .why-card h4 {
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+    }
+
+    .why-card p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    /* ========== PRODUCTS ========== */
+    .products {
+      background: white;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      border: 1px solid #e8f5e9;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(45, 106, 79, 0.18);
+    }
+
+    .product-img {
+      height: 220px;
+      background: linear-gradient(135deg, #d8f3dc, #b7e4c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-dark);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .product-body {
+      padding: 24px;
+    }
+
+    .product-body h3 {
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+
+    .product-body p {
+      color: var(--text-light);
+      font-size: 0.92rem;
+      margin-bottom: 16px;
+      min-height: 60px;
+    }
+
+    .product-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .feature-tag {
+      background: #e8f5e9;
+      color: var(--primary);
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .product-actions .btn {
+      flex: 1;
+      justify-content: center;
+      padding: 11px 16px;
+      font-size: 0.9rem;
+    }
+
+    /* ========== PRODUCT DETAILS MODAL ========== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #888;
+      background: none;
+      border: none;
+    }
+
+    .modal-close:hover {
+      color: var(--primary);
+    }
+
+    .modal h2 {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+    }
+
+    .modal h4 {
+      color: var(--primary);
+      margin: 24px 0 10px;
+      font-size: 1.1rem;
+    }
+
+    .modal p, .modal li {
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .modal ul {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* ========== VIDEO ========== */
+    .video-section {
+      background: linear-gradient(135deg, #1b4332, #2d6a4f);
+      color: white;
+      text-align: center;
+    }
+
+    .video-section h2 {
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .video-section p {
+      opacity: 0.9;
+      margin-bottom: 36px;
+    }
+
+    .video-placeholder {
+      max-width: 720px;
+      margin: 0 auto;
+      aspect-ratio: 16/9;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed rgba(255,255,255,0.3);
+      font-size: 1.1rem;
+    }
+
+    /* ========== REVIEWS ========== */
+    .reviews {
+      background: white;
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .review-card {
+      background: #f8faf9;
+      padding: 28px;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--primary);
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .review-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .review-name {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .review-text {
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .review-note {
+      text-align: center;
+      margin-top: 40px;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    /* ========== HOW TO ORDER ========== */
+    .how-to {
+      background: #f0fdf4;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      counter-reset: step;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 auto 18px;
+    }
+
+    .step h4 {
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      color: var(--text-light);
+      font-size: 0.92rem;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      padding: 50px 24px 30px;
+      text-align: center;
+    }
+
+    footer h3 {
+      margin-bottom: 12px;
+    }
+
+    footer p {
+      opacity: 0.85;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      opacity: 0.9;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .copyright {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-top: 20px;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 992px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-content p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero-buttons {
+        justify-content: center;
+      }
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .why-grid {
+        grid-template-columns: 1fr;
+      }
+      .steps {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .hamburger {
+        display: block;
+      }
+      .hero-content h1 {
+        font-size: 2.3rem;
+      }
+      .seller-photo {
+        width: 260px;
+        height: 260px;
+      }
+      .steps {
+        grid-template-columns: 1fr;
+      }
+      .section-title h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">Renatus <span>Wellness</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About Me</a></li>
+        <li><a href="#why">Why Renatus</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#order">How to Order</a></li>
+        <li><a href="#contact" class="nav-cta">Contact</a></li>
+      </ul>
+      <div class="hamburger">☰</div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="home">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="tagline">Your Wellness Journey Starts Here</div>
+        <h1>Natural Wellness Products<br>Guided by Care</h1>
+        <p>
+          Hi, I’m <strong>[Seller Name]</strong>. I help people discover genuine Renatus Wellness products 
+          with honest guidance, personal support, and a focus on natural, quality-driven wellness.
+        </p>
+        <div class="hero-buttons">
+          <a href="#products" class="btn btn-primary">Explore Products</a>
+          <a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="btn btn-whatsapp">
+            WhatsApp / Contact
+          </a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="seller-photo">
+          [Your Photo Here]
+        </div>
+        <div class="seller-name">[Seller Name]</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT ME -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="section-title">
+        <h2>About Me</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="about-grid">
+        <div class="about-image">
+          [Seller Photo / Lifestyle Image]
+        </div>
+        <div class="about-content">
+          <h3>Your Personal Wellness Guide</h3>
+          <p>
+            I am an independent seller associated with <strong>Renatus Wellness</strong>. 
+            My goal is not just to share products, but to help you understand what may suit your lifestyle 
+            and support your everyday wellness journey with natural, carefully formulated options.
+          </p>
+          <p>
+            I work closely with Renatus Wellness products because of their focus on natural ingredients, 
+            research-backed formulations, and quality standards. Whether you are looking for nutritional support, 
+            personal care, or protein options, I am here to guide you with honest information.
+          </p>
+          <ul class="about-points">
+            <li>Personal product guidance based on your needs</li>
+            <li>Clear information without exaggerated claims</li>
+            <li>Dedicated support before and after you order</li>
+            <li>Genuine products from official Renatus Wellness channels</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY RENATUS WELLNESS -->
+  <section class="why" id="why">
+    <div class="container">
+      <div class="section-title">
+        <h2>Why Renatus Wellness?</h2>
+        <p>Quality-focused natural wellness products developed with care</p>
+        <div class="divider"></div>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🌿</div>
+          <h4>Natural Ingredients</h4>
+          <p>
+            Products are crafted using natural extracts and botanical ingredients, 
+            with a strong focus on purity and quality.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🔬</div>
+          <h4>Research-Oriented</h4>
+          <p>
+            Formulations are developed with attention to traditional knowledge and 
+            modern nutraceutical understanding.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">✅</div>
+          <h4>Quality Focused</h4>
+          <p>
+            Renatus Wellness emphasizes consistent quality standards and 
+            responsible product development practices.
+          </p>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:40px; color:#666; max-width:700px; margin-left:auto; margin-right:auto;">
+        Renatus Wellness is a nutraceutical company known for products such as Renatus Nova, 
+        XanthPro Protein, Alosteen, Novasteen and more. Information shared here is based on 
+        officially available product details. These products are intended to support general wellness 
+        and are not claimed to cure, treat, or prevent any disease.
+      </p>
+    </div>
+  </section>
+
+  <!-- OUR PRODUCTS -->
+  <section class="products" id="products">
+    <div class="container">
+      <div class="section-title">
+        <h2>Our Products</h2>
+        <p>Explore selected Renatus Wellness products with clear information</p>
+        <div class="divider"></div>
+      </div>
+      <div class="products-grid">
+
+        <!-- Product 1: Renatus Nova -->
+        <div class="product-card">
+          <div class="product-img"><img src="https://m.media-amazon.com/images/I/61CsO9P2ZML._SY879_.jpg" alt="" class="product-img"></div>
+          <div class="product-body">
+            <h3>Renatus Nova</h3>
+            <p>A multi-ingredient nutraceutical formulated with natural extracts to support overall nourishment and daily wellness.</p>
+            <div class="product-features">
+              <span class="feature-tag">12 Natural Ingredients</span>
+              <span class="feature-tag">Immunity Support</span>
+              <span class="feature-tag">Daily Nourishment</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-outline" onclick="openModal('nova')">View Details</button>
+              <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I want to know about Renatus Nova" class="btn btn-primary" target="_blank">Enquire Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2: Kadhaayu -->
+        <div class="product-card">
+          <div class="product-img"><img src="https://tse4.mm.bing.net/th/id/OIP.H-6fsXk_mTe5hXXIjxtQegAAAA?r=0&pid=Api&P=0&h=180" alt="" class="product-img"></div>
+          <div class="product-body">
+            <h3>Renatus Kadhaayu</h3>
+            <p>A herbal nutraceutical blend of multiple plant extracts designed to support immune health and daily vitality.</p>
+            <div class="product-features">
+              <span class="feature-tag">Herbal Blend</span>
+              <span class="feature-tag">Immune Support</span>
+              <span class="feature-tag">Natural Extracts</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-outline" onclick="openModal('kadhaayu')">View Details</button>
+              <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I want to know about Renatus Kadhaayu" class="btn btn-primary" target="_blank">Enquire Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 3: XanthPro -->
+        <div class="product-card">
+          <div class="product-img"><img src="https://tse3.mm.bing.net/th/id/OIP.AfiIlf3Ew19clXdRFvbi5QAAAA?r=0&pid=Api&P=0&h=180" alt="" class="product-img"></div>
+          <div class="product-body">
+            <h3>Renatus XanthPro</h3>
+            <p>Protein powder formulated to support nutritional needs with a focus on quality and everyday fitness goals.</p>
+            <div class="product-features">
+              <span class="feature-tag">Protein Support</span>
+              <span class="feature-tag">Multiple Flavours</span>
+              <span class="feature-tag">Daily Nutrition</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-outline" onclick="openModal('xanthpro')">View Details</button>
+              <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I want to know about Renatus XanthPro" class="btn btn-primary" target="_blank">Enquire Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 4: Alosteen -->
+        <div class="product-card">
+          <div class="product-img"><img src="https://tse2.mm.bing.net/th/id/OIP._6jEvFV0dJ6p86ntK_2TFAHaGT?r=0&pid=Api&P=0&h=180" alt="" class="product-img"></div>
+          <div class="product-body">
+            <h3>Alosteen Tooth Gel</h3>
+            <p>A herbal tooth gel for daily oral care, formulated with natural ingredients for a refreshing experience.</p>
+            <div class="product-features">
+              <span class="feature-tag">Herbal Oral Care</span>
+              <span class="feature-tag">Natural Formula</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-outline" onclick="openModal('alosteen')">View Details</button>
+              <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I want to know about Alosteen" class="btn btn-primary" target="_blank">Enquire Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 5: Novasteen -->
+        <div class="product-card">
+          <div class="product-img"><img src="https://5.imimg.com/data5/SELLER/Default/2022/7/CC/ZV/DC/12341485/renatus-novasteen-1000x1000.png" alt="" class="product-img"></div>
+          <div class="product-body">
+            <h3>Novasteen Soap</h3>
+            <p>A natural soap crafted for gentle cleansing and everyday skin care with a focus on mild, quality ingredients.</p>
+            <div class="product-features">
+              <span class="feature-tag">Natural Cleansing</span>
+              <span class="feature-tag">Gentle Formula</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-outline" onclick="openModal('novasteen')">View Details</button>
+              <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I want to know about Novasteen Soap" class="btn btn-primary" target="_blank">Enquire Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 6: Pain Relief Oil -->
+        <div class="product-card">
+          <div class="product-img"><img src="https://tse4.mm.bing.net/th/id/OIP.H-6fsXk_mTe5hXXIjxtQegAAAA?r=0&pid=Api&P=0&h=180" alt="" class="product-img"></div>
+          <div class="product-body">
+            <h3>Renatus Pain Relief Oil</h3>
+            <p>A topical oil formulated for external application to support comfort during everyday physical activity.</p>
+            <div class="product-features">
+              <span class="feature-tag">Topical Use</span>
+              <span class="feature-tag">Comfort Support</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-outline" onclick="openModal('painoil')">View Details</button>
+              <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I want to know about Pain Relief Oil" class="btn btn-primary" target="_blank">Enquire Now</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT DETAILS MODALS -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div id="modal-body">
+        <!-- Content loaded by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK VIDEO -->
+  <section class="video-section" id="video">
+    <div class="container">
+      <h2>Know More in 30 Seconds 🎥</h2>
+      <p>Watch a quick introduction where I explain selected products and how they may fit into a wellness routine.</p>
+      <div class="video-placeholder">
+        [Embed your short video here – YouTube / Instagram Reel]
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMER REVIEWS -->
+  <section class="reviews" id="reviews">
+    <div class="container">
+      <div class="section-title">
+        <h2>Customer Reviews</h2>
+        <p>Genuine feedback from people who have tried the products</p>
+        <div class="divider"></div>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">R</div>
+            <div>
+              <div class="review-name">Rahul S.</div>
+            </div>
+          </div>
+          <p class="review-text">“I appreciate the clear information provided. The guidance helped me choose what suited my routine.”</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">P</div>
+            <div>
+              <div class="review-name">Priya M.</div>
+            </div>
+          </div>
+          <p class="review-text">“Good experience overall. The seller was patient and answered all my questions before ordering.”</p>
+        </div>
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar">A</div>
+            <div>
+              <div class="review-name">Amit K.</div>
+            </div>
+          </div>
+          <p class="review-text">“Simple process and honest communication. Happy with the product quality and support.”</p>
+        </div>
+      </div>
+      <p class="review-note">
+        * Only real customer feedback with permission is shared. No fabricated testimonials are used.
+      </p>
+    </div>
+  </section>
+
+  <!-- HOW TO ORDER -->
+  <section class="how-to" id="order">
+    <div class="container">
+      <div class="section-title">
+        <h2>How to Order</h2>
+        <p>Simple and transparent process</p>
+        <div class="divider"></div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h4>Choose Product</h4>
+          <p>Browse the products and select what interests you.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h4>Contact Seller</h4>
+          <p>Reach out via WhatsApp or the contact form with your query.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h4>Get Details</h4>
+          <p>Receive clear information about the product, pricing and availability.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h4>Place Order</h4>
+          <p>Confirm your order and receive your products through the proper channel.</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:50px;">
+        <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-whatsapp" target="_blank" style="font-size:1.1rem; padding:16px 36px;">
+          Start on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER / CONTACT -->
+  <footer id="contact">
+    <h3>Let’s Connect</h3>
+    <p>Have questions about any Renatus Wellness product? I’m here to help.</p>
+    <div class="footer-links">
+      <a href="https://wa.me/91XXXXXXXXXX" target="_blank">WhatsApp</a>
+      <a href="tel:+91XXXXXXXXXX">Call</a>
+      <a href="mailto:youremail@example.com">Email</a>
+    </div>
+    <p style="font-size:0.9rem; opacity:0.8;">
+      Independent Seller | Renatus Wellness Products<br>
+      All product information is based on officially available details.<br>
+      These products support general wellness and are not intended to diagnose, treat, cure or prevent any disease.
+    </p>
+    <div class="copyright">
+      © 2026 [Seller Name] – Personal Wellness Portfolio. Not an official Renatus Wellness company website.
+    </div>
+  </footer>
+
+  <script>
+    // Product Details Data
+    const productData = {
+      nova: {
+        title: "Renatus Nova",
+        what: "Renatus Nova is a multi-ingredient nutraceutical capsule formulated with a blend of natural plant extracts. It is designed to support overall nourishment and daily wellness as part of a balanced lifestyle.",
+        ingredients: "Key ingredients include extracts such as Mangosteen, Siberian Ginseng, Safed Musli, Elderberry, Bilberry, Ashwagandha, Ginkgo Biloba, Manjistha, Moringa (Sigru), Shatavari, Punarnava and Gokshura (as per available product information).",
+        howToUse: "Typically taken as directed on the product label or as advised by a qualified professional. Always follow the recommended usage instructions provided with the product.",
+        features: [
+          "Formulated with multiple natural extracts",
+          "Focus on daily nutritional support",
+          "Part of the Renatus Wellness range"
+        ],
+        who: "Adults looking for a natural multi-ingredient option to support general wellness and daily nourishment.",
+        faq: [
+          { q: "Is this a medicine?", a: "No. It is a nutraceutical / dietary supplement intended to support general wellness." },
+          { q: "Can I take it with other supplements?", a: "Please consult a healthcare professional before combining with other supplements or if you have any health conditions." }
+        ]
+      },
+      kadhaayu: {
+        title: "Renatus Kadhaayu",
+        what: "Renatus Kadhaayu is a herbal nutraceutical containing a combination of traditional plant extracts. It is positioned to support immune health and overall vitality.",
+        ingredients: "Includes extracts such as Ashwagandha, Turmeric, Cinnamon, Amla, Green Tea, Black Pepper, Ginger, Tulsi, and other botanical ingredients along with Vitamin C and Xanthone extract (as per official product details).",
+        howToUse: "Follow the dosage instructions mentioned on the pack or as guided by a qualified person.",
+        features: [
+          "Herbal multi-extract formula",
+          "Supports immune wellness",
+          "Natural ingredient focus"
+        ],
+        who: "Individuals interested in traditional herbal support for daily immune wellness.",
+        faq: [
+          { q: "Does it claim to cure diseases?", a: "No. The product is intended to support general immune wellness and is not a cure for any disease." }
+        ]
+      },
+      xanthpro: {
+        title: "Renatus XanthPro Protein Powder",
+        what: "A protein supplement available in multiple flavours, formulated to support nutritional protein intake as part of an active lifestyle.",
+        ingredients: "Protein source with supporting nutrients (refer to the specific flavour pack for complete ingredient list).",
+        howToUse: "Mix the recommended scoop with water or milk as directed on the label.",
+        features: [
+          "Available in multiple flavours",
+          "Supports daily protein needs",
+          "Suitable for fitness and nutrition goals"
+        ],
+        who: "People looking to add a convenient protein option to their diet.",
+        faq: []
+      },
+      alosteen: {
+        title: "Alosteen Tooth Gel",
+        what: "A herbal tooth gel designed for daily oral hygiene with a focus on natural ingredients.",
+        ingredients: "Formulated with herbal components for oral care (see product packaging for full list).",
+        howToUse: "Use a small amount on a toothbrush and brush as part of your regular oral care routine.",
+        features: ["Herbal oral care", "Daily use formula"],
+        who: "Anyone looking for a herbal option for everyday tooth care.",
+        faq: []
+      },
+      novasteen: {
+        title: "Novasteen Soap",
+        what: "A natural soap for gentle cleansing of the skin.",
+        ingredients: "Natural cleansing base with selected ingredients (refer to pack).",
+        howToUse: "Use during bathing for gentle cleansing.",
+        features: ["Gentle formula", "Natural focus"],
+        who: "Individuals seeking a mild natural soap option.",
+        faq: []
+      },
+      painoil: {
+        title: "Renatus Pain Relief Oil",
+        what: "A topical oil for external application intended to support comfort.",
+        ingredients: "Blend of oils formulated for topical use (see product label).",
+        howToUse: "Apply externally as directed on the product. For external use only.",
+        features: ["Topical application", "Comfort support"],
+        who: "Adults seeking a topical oil for everyday comfort support.",
+        faq: [
+          { q: "Is it for internal use?", a: "No. This product is for external application only." }
+        ]
+      }
+    };
+
+    function openModal(id) {
+      const data = productData[id];
+      if (!data) return;
+
+      let html = `
+        <h2>${data.title}</h2>
+        <h4>What it is</h4>
+        <p>${data.what}</p>
+        <h4>Key Ingredients / Composition</h4>
+        <p>${data.ingredients}</p>
+        <h4>How to use</h4>
+        <p>${data.howToUse}</p>
+        <h4>Key Features</h4>
+        <ul>${data.features.map(f => `<li>${f}</li>`).join('')}</ul>
+        <h4>Who may be interested</h4>
+        <p>${data.who}</p>
+      `;
+
+      if (data.faq && data.faq.length) {
+        html += `<h4>FAQ</h4>`;
+        data.faq.forEach(item => {
+          html += `<p><strong>${item.q}</strong><br>${item.a}</p>`;
+        });
+      }
+
+      html += `
+        <h4>Ask About This Product</h4>
+        <p>Have questions? Feel free to reach out.</p>
+        <a href="https://wa.me/91XXXXXXXXXX?text=Hi, I have a question about ${encodeURIComponent(data.title)}" 
+           class="btn btn-whatsapp" target="_blank" style="margin-top:12px;">
+          Ask on WhatsApp
+        </a>
+      `;
+
+      document.getElementById('modal-body').innerHTML = html;
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    // Close modal on outside click
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  </script>
+</body>
+</html>
