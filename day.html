@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🇮🇳 Freedom Journey | 15 August 2026</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@500;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      color: #fff;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .today-banner {
+      background: linear-gradient(90deg, #FF9933, #138808);
+      color: white;
+      padding: 10px 28px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 20px rgba(255, 153, 51, 0.4);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 4px 20px rgba(255, 153, 51, 0.4); }
+      to { box-shadow: 0 4px 30px rgba(19, 136, 8, 0.6); }
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 8px;
+      text-align: center;
+      background: linear-gradient(90deg, #FF9933, #fff, #138808);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .timeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      max-width: 900px;
+      position: relative;
+      margin-bottom: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 5%;
+      right: 5%;
+      height: 4px;
+      background: linear-gradient(90deg, #FF9933, #fff, #138808);
+      border-radius: 2px;
+      z-index: 0;
+      transform: translateY(-50%);
+    }
+
+    .year-btn {
+      position: relative;
+      z-index: 1;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #FF9933;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .year-btn:hover {
+      transform: scale(1.15);
+      border-color: #138808;
+      box-shadow: 0 0 25px rgba(19, 136, 8, 0.5);
+    }
+
+    .year-btn.active {
+      background: linear-gradient(135deg, #FF9933, #138808);
+      border-color: #fff;
+      transform: scale(1.2);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+    }
+
+    .event-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      transition: all 0.4s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .event-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .event-card img {
+      width: 100%;
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+
+    .event-card h2 {
+      font-size: 1.45rem;
+      margin-bottom: 10px;
+      color: #FF9933;
+    }
+
+    .event-card p {
+      font-size: 1.02rem;
+      line-height: 1.55;
+      opacity: 0.92;
+    }
+
+    /* Celebration Overlay */
+    .celebration {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .celebration.show { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .flag-container {
+      width: 280px;
+      height: 180px;
+      margin-bottom: 25px;
+      animation: wave 3s ease-in-out infinite;
+      transform-origin: left center;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    .flag {
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .saffron { background: #FF9933; flex: 1; }
+    .white { background: #fff; flex: 1; display: flex; align-items: center; justify-content: center; }
+    .green { background: #138808; flex: 1; }
+
+    .chakra {
+      width: 52px;
+      height: 52px;
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .happy-text {
+      font-size: 2.6rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #FF9933, #fff, #138808);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 8px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .sub-text { font-size: 1.25rem; opacity: 0.95; margin-bottom: 8px; }
+    .year-text { font-size: 1.4rem; font-weight: 600; color: #FFD700; margin-bottom: 30px; }
+
+    .close-btn {
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #FF9933, #138808);
+      border: none;
+      border-radius: 50px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .close-btn:hover { transform: scale(1.08); }
+
+    .firework {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: explode 1.3s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes explode {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(35); opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .year-btn { width: 70px; height: 70px; font-size: 0.95rem; }
+      .flag-container { width: 220px; height: 140px; }
+      .happy-text { font-size: 1.9rem; }
+      .event-card { padding: 18px; }
+      .event-card img { max-height: 180px; }
+      .today-banner { font-size: 0.9rem; padding: 8px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="today-banner">
+    🎉 Celebrating 80th Independence Day — 15 August 2026 🎉
+  </div>
+
+  <h1>🇮🇳 Freedom Journey</h1>
+  <p class="subtitle">Click on any year to explore India's path to independence</p>
+
+  <div class="timeline">
+    <button class="year-btn" data-year="1857">1857</button>
+    <button class="year-btn" data-year="1919">1919</button>
+    <button class="year-btn" data-year="1930">1930</button>
+    <button class="year-btn" data-year="1942">1942</button>
+    <button class="year-btn" data-year="1947">1947</button>
+  </div>
+
+  <div class="event-card" id="eventCard">
+    <h2>Select a Year</h2>
+    <p>Click any year on the timeline to see the historic event</p>
+  </div>
+
+  <!-- Celebration Overlay -->
+  <div class="celebration" id="celebration">
+    <div class="flag-container">
+      <div class="flag">
+        <div class="saffron"></div>
+        <div class="white">
+          <svg class="chakra" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#000080" stroke-width="3"/>
+            <circle cx="50" cy="50" r="8" fill="#000080"/>
+            <g stroke="#000080" stroke-width="2.5">
+              <line x1="50" y1="5" x2="50" y2="20"/>
+              <line x1="50" y1="80" x2="50" y2="95"/>
+              <line x1="5" y1="50" x2="20" y2="50"/>
+              <line x1="80" y1="50" x2="95" y2="50"/>
+              <line x1="17.2" y1="17.2" x2="28.3" y2="28.3"/>
+              <line x1="71.7" y1="71.7" x2="82.8" y2="82.8"/>
+              <line x1="82.8" y1="17.2" x2="71.7" y2="28.3"/>
+              <line x1="28.3" y1="71.7" x2="17.2" y2="82.8"/>
+              <line x1="26.5" y1="8.5" x2="33.5" y2="22"/>
+              <line x1="66.5" y1="78" x2="73.5" y2="91.5"/>
+              <line x1="91.5" y1="26.5" x2="78" y2="33.5"/>
+              <line x1="22" y1="66.5" x2="8.5" y2="73.5"/>
+              <line x1="8.5" y1="26.5" x2="22" y2="33.5"/>
+              <line x1="78" y1="66.5" x2="91.5" y2="73.5"/>
+              <line x1="33.5" y1="8.5" x2="26.5" y2="22"/>
+              <line x1="73.5" y1="78" x2="66.5" y2="91.5"/>
+              <line x1="42" y1="6" x2="44.5" y2="20.5"/>
+              <line x1="55.5" y1="79.5" x2="58" y2="94"/>
+              <line x1="6" y1="42" x2="20.5" y2="44.5"/>
+              <line x1="79.5" y1="55.5" x2="94" y2="58"/>
+              <line x1="94" y1="42" x2="79.5" y2="44.5"/>
+              <line x1="20.5" y1="55.5" x2="6" y2="58"/>
+              <line x1="58" y1="6" x2="55.5" y2="20.5"/>
+              <line x1="44.5" y1="79.5" x2="42" y2="94"/>
+            </g>
+          </svg>
+        </div>
+        <div class="green"></div>
+      </div>
+    </div>
+
+    <div class="happy-text">Happy Independence Day</div>
+    <div class="sub-text">🇮🇳 15 August 1947 🇮🇳</div>
+    <div class="year-text">Celebrating 80 Years of Freedom — 2026</div>
+    <button class="close-btn" onclick="closeCelebration()">Close</button>
+  </div>
+
+  <script>
+    const events = {
+      1857: {
+        title: "First War of Independence",
+        desc: "The great uprising of 1857 — India's first major fight against British rule. Heroes like Rani Lakshmibai, Mangal Pandey and Bahadur Shah Zafar lit the spark of freedom.",
+        img: "https://chatgpt.com/backend-api/estuary/content?id=file_00000000f6bc8211b56e4446728a6284&ts=496322&p=fs&cid=1&sig=724a2f5f5258bd961e55d80cf53e7d1372099495f627df5494bcab331822cb67&v=0"
+      },
+      1919: {
+        title: "Jallianwala Bagh",
+        desc: "On 13 April 1919, British troops opened fire on unarmed civilians in Amritsar. This brutal massacre became a turning point that united India against colonial rule.",
+        img: "https://chatgpt.com/backend-api/estuary/content?id=file_00000000f6bc8211b56e4446728a6284&ts=496322&p=fs&cid=1&sig=724a2f5f5258bd961e55d80cf53e7d1372099495f627df5494bcab331822cb67&v=0"
+      },
+      1930: {
+        title: "Dandi March",
+        desc: "Mahatma Gandhi's 240-mile Salt March to Dandi challenged the British salt monopoly. It became a powerful symbol of non-violent resistance and civil disobedience.",
+        img: "https://chatgpt.com/backend-api/estuary/content?id=file_00000000f6bc8211b56e4446728a6284&ts=496322&p=fs&cid=1&sig=724a2f5f5258bd961e55d80cf53e7d1372099495f627df5494bcab331822cb67&v=0"
+      },
+      1942: {
+        title: "Quit India Movement",
+        desc: "On 8 August 1942, Gandhi gave the call 'Do or Die'. The Quit India Movement demanded an immediate end to British rule and shook the foundations of the empire.",
+        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Quit_India_Movement.JPG/640px-Quit_India_Movement.JPG"
+      },
+      1947: {
+        title: "India Gets Independence 🇮🇳",
+        desc: "After nearly 200 years of struggle, India finally achieved freedom on 15 August 1947. The tricolour was hoisted and a new nation was born.",
+        img: "https://chatgpt.com/backend-api/estuary/content?id=file_00000000f6bc8211b56e4446728a6284&ts=496322&p=fs&cid=1&sig=724a2f5f5258bd961e55d80cf53e7d1372099495f627df5494bcab331822cb67&v=0"
+      }
+    };
+
+    const buttons = document.querySelectorAll('.year-btn');
+    const card = document.getElementById('eventCard');
+    const celebration = document.getElementById('celebration');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const year = btn.dataset.year;
+        const event = events[year];
+
+        card.classList.remove('show');
+        setTimeout(() => {
+          card.innerHTML = `
+            <img src="${event.img}" alt="${event.title}" onerror="this.style.display='none'">
+            <h2>${event.title}</h2>
+            <p>${event.desc}</p>
+          `;
+          card.classList.add('show');
+        }, 200);
+
+        if (year === '1947') {
+          setTimeout(() => {
+            celebration.classList.add('show');
+            launchFireworks();
+          }, 700);
+        }
+      });
+    });
+
+    function closeCelebration() {
+      celebration.classList.remove('show');
+    }
+
+    function launchFireworks() {
+      const colors = ['#FF9933', '#FFFFFF', '#138808', '#FFD700', '#FF6B6B', '#4ECDC4', '#FF1493'];
+      for (let burst = 0; burst < 3; burst++) {
+        setTimeout(() => {
+          for (let i = 0; i < 18; i++) {
+            setTimeout(() => {
+              const fw = document.createElement('div');
+              fw.className = 'firework';
+              fw.style.left = Math.random() * 100 + 'vw';
+              fw.style.top = Math.random() * 55 + 10 + 'vh';
+              fw.style.background = colors[Math.floor(Math.random() * colors.length)];
+              fw.style.boxShadow = `0 0 12px ${fw.style.background}`;
+              celebration.appendChild(fw);
+              setTimeout(() => fw.remove(), 1400);
+            }, i * 80);
+          }
+        }, burst * 800);
+      }
+    }
+
+    // Auto load first event
+    document.querySelector('[data-year="1857"]').click();
+  </script>
+</body>
+</html>

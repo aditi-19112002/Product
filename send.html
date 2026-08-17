@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Button Animation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 340px;
+      height: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ========== BUTTON ========== */
+    .download-btn {
+      position: relative;
+      width: 240px;
+      height: 64px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      border: none;
+      border-radius: 50px;
+      color: black;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(0, 114, 255, 0.4);
+      transition: all 0.3s ease;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .download-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 114, 255, 0.55);
+    }
+
+    .download-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
+
+    .download-btn.success {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+      box-shadow: 0 10px 30px rgba(0, 176, 155, 0.4);
+    }
+
+    /* ========== PACKAGE (comes out of button) ========== */
+    .package {
+      position: absolute;
+      font-size: 42px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 20;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3));
+    }
+
+    /* ========== ROAD + TRUCK AREA ========== */
+    .delivery-area {
+      position: absolute;
+      bottom: 80px;
+      width: 100%;
+      height: 120px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .road {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: #333;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .road::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 200%;
+      height: 2px;
+      background: repeating-linear-gradient(
+        to right,
+        #fff 0,
+        #fff 20px,
+        transparent 20px,
+        transparent 40px
+      );
+      transform: translateY(-50%);
+      animation: roadMove 1s linear infinite;
+    }
+
+    @keyframes roadMove {
+      from { transform: translateY(-50%) translateX(0); }
+      to   { transform: translateY(-50%) translateX(-40px); }
+    }
+
+    .truck {
+      position: absolute;
+      bottom: 28px;
+      left: -60px;
+      font-size: 36px;
+      transition: left 2.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .destination {
+      position: absolute;
+      bottom: 28px;
+      right: 10px;
+      font-size: 32px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    /* ========== STATUS TEXT ========== */
+    .status {
+      position: absolute;
+      top: 60px;
+      text-align: center;
+      color: black;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .status h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 220px;
+      height: 8px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 auto 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      border-radius: 10px;
+      transition: width 0.1s linear;
+    }
+
+    .percent {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    /* ========== SUCCESS ========== */
+    .success-msg {
+      position: absolute;
+      top: 70px;
+      text-align: center;
+      color: black;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .success-msg.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .success-msg h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #96c93d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Status during delivery -->
+    <div class="status" id="status">
+      <h3>🚚 Delivering your file...</h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="percent" id="percent">0%</div>
+    </div>
+
+    <!-- Success message (clean - no star/box) -->
+    <div class="success-msg" id="successMsg">
+      <h2>✓ File Delivered Successfully</h2>
+    </div>
+
+    <!-- Package that comes out -->
+    <div class="package" id="package">📦</div>
+
+    <!-- Delivery area (road + truck) -->
+    <div class="delivery-area" id="deliveryArea">
+      <div class="road"></div>
+      <div class="truck" id="truck">🚚</div>
+      <div class="destination" id="destination">📍</div>
+    </div>
+
+    <!-- Main Button -->
+    <button class="download-btn" id="downloadBtn">
+      <span id="btnText">📥 DOWNLOAD FILE</span>
+    </button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('downloadBtn');
+    const btnText = document.getElementById('btnText');
+    const packageEl = document.getElementById('package');
+    const deliveryArea = document.getElementById('deliveryArea');
+    const truck = document.getElementById('truck');
+    const destination = document.getElementById('destination');
+    const status = document.getElementById('status');
+    const progressFill = document.getElementById('progressFill');
+    const percent = document.getElementById('percent');
+    const successMsg = document.getElementById('successMsg');
+
+    let isAnimating = false;
+
+    btn.addEventListener('click', () => {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      // Reset everything
+      resetAnimation();
+
+      // Disable button
+      btn.disabled = true;
+      btnText.textContent = '📦 Picking up...';
+
+      // 1. Package comes out of button
+      packageEl.style.opacity = '1';
+      packageEl.style.animation = 'packageOut 0.8s ease forwards';
+
+      setTimeout(() => {
+        // 2. Show delivery area + move package into truck
+        deliveryArea.style.opacity = '1';
+        status.style.opacity = '1';
+        packageEl.style.animation = 'packageToTruck 0.6s ease forwards';
+
+        setTimeout(() => {
+          packageEl.style.opacity = '0';
+          destination.style.opacity = '1';
+
+          // 3. Truck starts moving + progress
+          truck.style.left = 'calc(100% - 70px)';
+          startProgress();
+        }, 600);
+      }, 800);
+    });
+
+    function startProgress() {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 1.2;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+
+       
+          setTimeout(() => {
+            status.style.opacity = '0';
+            deliveryArea.style.opacity = '0';
+
+            successMsg.classList.add('show');
+            btn.classList.add('success');
+            btnText.textContent = '📥 DOWNLOAD AGAIN';
+            btn.disabled = false;
+            isAnimating = false;
+          }, 400);
+        }
+        progressFill.style.width = progress + '%';
+        percent.textContent = Math.floor(progress) + '%';
+      }, 30);
+    }
+
+    function resetAnimation() {
+      packageEl.style.animation = 'none';
+      packageEl.style.opacity = '0';
+      packageEl.style.top = 'auto';
+      packageEl.style.transform = 'none';
+
+      truck.style.left = '-60px';
+      truck.style.transition = 'none';
+      setTimeout(() => {
+        truck.style.transition = 'left 2.8s cubic-bezier(0.4, 0, 0.2, 1)';
+      }, 50);
+
+      destination.style.opacity = '0';
+      deliveryArea.style.opacity = '0';
+      status.style.opacity = '0';
+      progressFill.style.width = '0%';
+      percent.textContent = '0%';
+      successMsg.classList.remove('show');
+      btn.classList.remove('success');
+    }
+  </script>
+</body>
+</html>
