@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Balance | Scan & Pay</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #050505;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      color: white;
+      position: relative;
+      padding: 20px;
+    }
+
+    .bg-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0,255,136,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      animation: pulse 7s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.9; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+
+    .card {
+      background: linear-gradient(160deg, #111111, #0a0a0a);
+      border: 1px solid #222;
+      border-radius: 28px;
+      padding: 36px 32px;
+      width: 360px;
+      min-width: 320px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00ff88, transparent);
+    }
+
+    .label {
+      font-size: 13px;
+      color: #777;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .balance {
+      font-size: 44px;
+      font-weight: 700;
+      color: #00ff88;
+      margin-bottom: 6px;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 25px rgba(0,255,136,0.3);
+    }
+
+    .balance.bump {
+      transform: scale(1.07);
+      text-shadow: 0 0 40px #00ff88;
+    }
+
+    .sub {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 26px;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    button {
+      position: relative;
+      border: none;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 14px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      color: #000;
+    }
+
+    .btn-normal { background: linear-gradient(135deg, #00ff88, #00cc6a); }
+    .btn-medium { background: linear-gradient(135deg, #00e5ff, #00b8d4); }
+    .btn-lucky { background: linear-gradient(135deg, #ff9f1c, #ff6b00); }
+    .btn-scan {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      color: white;
+      font-size: 16px;
+      padding: 17px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+    }
+
+    button:active { transform: translateY(0); }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* History */
+    .history {
+      background: #0d0d0d;
+      border: 1px solid #222;
+      border-radius: 20px;
+      width: 280px;
+      min-width: 260px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 20px;
+      flex-shrink: 0;
+    }
+
+    .history h3 {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    .tx {
+      background: #151515;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .tx .amount { color: #00ff88; font-weight: 600; }
+    .tx .time { font-size: 11px; color: #666; margin-top: 2px; }
+
+    /* Floating money & confetti */
+    .float-money {
+      position: fixed;
+      font-size: 22px;
+      font-weight: 700;
+      color: #00ff88;
+      pointer-events: none;
+      z-index: 100;
+      animation: floatUp 1.5s ease-out forwards;
+      text-shadow: 0 0 10px #00ff88;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-140px) scale(1.3); }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 99;
+      animation: confettiFall 1.8s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(180px) rotate(720deg); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #111;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.4s ease;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #00ff88;
+      border-radius: 50%;
+      opacity: 0.25;
+      animation: drift 10s linear infinite;
+    }
+
+    @keyframes drift {
+      0% { transform: translateY(100vh); }
+      100% { transform: translateY(-50px); }
+    }
+
+    /* ========== SCANNER OVERLAY ========== */
+    .scanner-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .scanner-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .scanner-frame {
+      width: 280px;
+      height: 280px;
+      border: 2px solid #00ff88;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0,255,136,0.3);
+    }
+
+    .scanner-frame::before,
+    .scanner-frame::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #00ff88;
+    }
+
+    .scanner-frame::before {
+      top: 12px; left: 12px;
+      border-right: none; border-bottom: none;
+      border-radius: 12px 0 0 0;
+    }
+
+    .scanner-frame::after {
+      bottom: 12px; right: 12px;
+      border-left: none; border-top: none;
+      border-radius: 0 0 12px 0;
+    }
+
+    .fake-qr {
+      position: absolute;
+      inset: 30px;
+      background: 
+        linear-gradient(45deg, #111 25%, transparent 25%),
+        linear-gradient(-45deg, #111 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #111 75%),
+        linear-gradient(-45deg, transparent 75%, #111 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      background-color: #fff;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fake-qr::after {
+      content: 'UPI';
+      font-size: 18px;
+      font-weight: 700;
+      color: #000;
+      background: #fff;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .laser {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00ff88, transparent);
+      box-shadow: 0 0 15px #00ff88;
+      animation: scan 2.5s linear infinite;
+      top: 0;
+    }
+
+    @keyframes scan {
+      0% { top: 10%; }
+      50% { top: 85%; }
+      100% { top: 10%; }
+    }
+
+    .scan-text {
+      margin-top: 30px;
+      font-size: 16px;
+      color: #00ff88;
+      letter-spacing: 1px;
+    }
+
+    .scan-status {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #888;
+    }
+
+    .close-scan {
+      margin-top: 40px;
+      background: transparent;
+      border: 1px solid #444;
+      color: #aaa;
+      padding: 12px 30px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .close-scan:hover {
+      border-color: #00ff88;
+      color: #00ff88;
+    }
+
+    .scan-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      color: #00ff88;
+    }
+
+    .scan-success.show {
+      display: flex;
+    }
+
+    .checkmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 4px solid #00ff88;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      margin-bottom: 16px;
+      animation: pop 0.4s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* Only mobile pe vertical */
+    @media (max-width: 620px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      .card {
+        width: 100%;
+        max-width: 380px;
+      }
+      .history {
+        width: 100%;
+        max-width: 380px;
+        max-height: 260px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+  <div id="particles"></div>
+
+  <div class="container">
+    <div class="card">
+      <div class="label">Available Balance</div>
+      <div class="balance" id="balance">₹ 12,450</div>
+      <div class="sub">Instant • Secure • Fake 😉</div>
+
+      <div class="btn-group">
+        <button class="btn-scan" onclick="openScanner()">📱 Scan & Pay</button>
+        <button class="btn-normal" onclick="deposit(500, this)">+ Deposit ₹500</button>
+        <button class="btn-medium" onclick="deposit(2000, this)">+ Deposit ₹2,000</button>
+        <button class="btn-lucky" onclick="luckyDeposit(this)">🎰 Lucky Deposit</button>
+      </div>
+    </div>
+
+    <div class="history">
+      <h3>RECENT TRANSACTIONS</h3>
+      <div id="txList">
+        <div class="tx">
+          <div>
+            <div class="amount">+ ₹12,450</div>
+            <div class="time">Opening Balance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Money Received!</div>
+
+  <!-- Scanner Overlay -->
+  <div class="scanner-overlay" id="scanner">
+    <div class="scanner-frame" id="scanFrame">
+      <div class="fake-qr"></div>
+      <div class="laser"></div>
+    </div>
+
+    <div class="scan-text" id="scanText">Scanning QR Code...</div>
+    <div class="scan-status" id="scanStatus">Please wait 5 seconds</div>
+
+    <div class="scan-success" id="scanSuccess">
+      <div class="checkmark">✓</div>
+      <div style="font-size: 20px; font-weight: 600;">Payment Successful</div>
+      <div style="font-size: 14px; color: #aaa; margin-top: 6px;" id="successAmount"></div>
+    </div>
+
+    <button class="close-scan" onclick="closeScanner()">Cancel</button>
+  </div>
+
+  <script>
+    let balance = 12450;
+    const balEl = document.getElementById('balance');
+    const txList = document.getElementById('txList');
+    const toast = document.getElementById('toast');
+    let scanTimeout = null;
+
+    // Particles
+    const particles = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.animationDelay = Math.random() * 10 + 's';
+      p.style.animationDuration = (7 + Math.random() * 8) + 's';
+      particles.appendChild(p);
+    }
+
+    function openScanner() {
+      const overlay = document.getElementById('scanner');
+      overlay.classList.add('active');
+
+      document.getElementById('scanFrame').style.display = 'block';
+      document.getElementById('scanText').style.display = 'block';
+      document.getElementById('scanStatus').style.display = 'block';
+      document.getElementById('scanSuccess').classList.remove('show');
+
+      // ===== 5 seconds delay =====
+      scanTimeout = setTimeout(() => {
+        const amount = Math.floor(Math.random() * 3500) + 500;
+        completeScan(amount);
+      }, 5000);
+    }
+
+    function completeScan(amount) {
+      document.getElementById('scanFrame').style.display = 'none';
+      document.getElementById('scanText').style.display = 'none';
+      document.getElementById('scanStatus').style.display = 'none';
+
+      const success = document.getElementById('scanSuccess');
+      success.classList.add('show');
+      document.getElementById('successAmount').textContent = `+ ₹${amount.toLocaleString('en-IN')} Received`;
+
+      setTimeout(() => {
+        updateBalance(amount);
+        addTransaction(amount, false, true);
+        showToast(`📱 Scan Success • +₹${amount.toLocaleString('en-IN')}`);
+        createEffects(amount, true);
+        setTimeout(closeScanner, 1800);
+      }, 600);
+    }
+
+    function closeScanner() {
+      clearTimeout(scanTimeout);
+      document.getElementById('scanner').classList.remove('active');
+    }
+
+    function deposit(amount, btn) {
+      createRipple(btn, event);
+      const finalAmount = amount + Math.floor(Math.random() * 150) - 50;
+      updateBalance(finalAmount);
+      showToast(`+ ₹${finalAmount.toLocaleString('en-IN')} Added`);
+      addTransaction(finalAmount);
+      createEffects(finalAmount);
+    }
+
+    function luckyDeposit(btn) {
+      createRipple(btn, event);
+      const isBonus = Math.random() > 0.55;
+      let amount = Math.floor(Math.random() * 4000) + 1000;
+      if (isBonus) amount = Math.floor(amount * 1.8);
+
+      updateBalance(amount);
+      showToast(isBonus ? `🎉 BONUS! +₹${amount.toLocaleString('en-IN')}` : `+ ₹${amount.toLocaleString('en-IN')}`);
+      addTransaction(amount, isBonus);
+      createEffects(amount, isBonus);
+    }
+
+    function updateBalance(amount) {
+      const old = balance;
+      balance += amount;
+      balEl.classList.add('bump');
+      animateValue(old, balance, 700);
+      setTimeout(() => balEl.classList.remove('bump'), 700);
+      if (navigator.vibrate) navigator.vibrate(40);
+    }
+
+    function animateValue(start, end, duration) {
+      let startTime = null;
+      function step(ts) {
+        if (!startTime) startTime = ts;
+        const progress = Math.min((ts - startTime) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        balEl.textContent = '₹ ' + value.toLocaleString('en-IN');
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function addTransaction(amount, isBonus = false, isScan = false) {
+      const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      const div = document.createElement('div');
+      div.className = 'tx';
+      div.innerHTML = `
+        <div>
+          <div class="amount">+ ₹${amount.toLocaleString('en-IN')}${isBonus ? ' 🎉' : ''}${isScan ? ' 📱' : ''}</div>
+          <div class="time">${time} • ${isScan ? 'Scan & Pay' : 'Deposit'}</div>
+        </div>
+      `;
+      txList.prepend(div);
+      if (txList.children.length > 9) txList.removeChild(txList.lastChild);
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2300);
+    }
+
+    function createEffects(amount, isSpecial = false) {
+      for (let i = 0; i < 4; i++) {
+        const money = document.createElement('div');
+        money.className = 'float-money';
+        money.textContent = `+₹${Math.floor(amount / 3).toLocaleString('en-IN')}`;
+        money.style.left = (38 + Math.random() * 24) + '%';
+        money.style.top = (42 + Math.random() * 12) + '%';
+        money.style.animationDelay = (i * 0.08) + 's';
+        document.body.appendChild(money);
+        setTimeout(() => money.remove(), 1600);
+      }
+
+      const colors = isSpecial ? ['#a855f7', '#00ff88', '#ff9f1c', '#fff'] : ['#00ff88', '#00e5ff', '#fff'];
+      for (let i = 0; i < (isSpecial ? 45 : 25); i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = (42 + Math.random() * 16) + '%';
+        conf.style.top = '48%';
+        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.animationDelay = (Math.random() * 0.25) + 's';
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 2000);
+      }
+    }
+
+    function createRipple(btn, e) {
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+  </script>
+</body>
+</html>
