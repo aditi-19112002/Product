@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mood Universe</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+    :root {
+      --bg: #0f0f1a;
+      --text: #ffffff;
+      --accent: #7c5cff;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --glow: rgba(124, 92, 255, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.8s ease, color 0.5s ease;
+      position: relative;
+    }
+
+    /* ========== BACKGROUND EFFECTS ========== */
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      display: none;
+    }
+
+    .raindrop {
+      position: absolute;
+      width: 2px;
+      height: 18px;
+      background: linear-gradient(to bottom, transparent, #a0c4ff);
+      animation: fall linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(100vh); }
+    }
+
+    /* ========== LAYOUT ========== */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: all 0.5s;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.8;
+      margin-bottom: 50px;
+      font-weight: 300;
+    }
+
+    /* ========== MOOD SELECTOR ========== */
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      margin-bottom: 60px;
+    }
+
+    .mood-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 30px 20px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mood-card:hover {
+      transform: translateY(-12px) scale(1.05);
+      box-shadow: 0 20px 40px var(--glow);
+    }
+
+    .mood-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px var(--glow);
+      transform: scale(1.08);
+    }
+
+    .mood-emoji {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 12px;
+      transition: transform 0.3s;
+    }
+
+    .mood-card:hover .mood-emoji {
+      transform: scale(1.2) rotate(8deg);
+    }
+
+    .mood-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    /* ========== CONTENT AREA ========== */
+    .content-box {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border-radius: 30px;
+      padding: 50px 40px;
+      border: 1px solid rgba(255,255,255,0.1);
+      max-width: 700px;
+      margin: 0 auto;
+      transition: all 0.6s ease;
+    }
+
+    .greeting {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    .reset-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .reset-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 10px 25px var(--glow);
+    }
+
+    /* ========== MOOD THEMES ========== */
+
+    /* HAPPY */
+    body.happy {
+      --bg: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+      --text: #2d1b4e;
+      --accent: #ff6b6b;
+      --card-bg: rgba(255, 255, 255, 0.35);
+      --glow: rgba(255, 107, 107, 0.5);
+    }
+
+    body.happy h1 {
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #ff9ff3);
+      -webkit-background-clip: text;
+    }
+
+    body.happy .mood-card {
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* SAD */
+    body.sad {
+      --bg: linear-gradient(160deg, #0c1445, #1a237e, #283593);
+      --text: #e3f2fd;
+      --accent: #64b5f6;
+      --card-bg: rgba(255, 255, 255, 0.06);
+      --glow: rgba(100, 181, 246, 0.3);
+    }
+
+    body.sad .rain {
+      display: block;
+    }
+
+    /* ANGRY */
+    body.angry {
+      --bg: linear-gradient(135deg, #1a0000, #4a0000, #8b0000);
+      --text: #ffebee;
+      --accent: #ff1744;
+      --card-bg: rgba(255, 23, 68, 0.15);
+      --glow: rgba(255, 23, 68, 0.5);
+    }
+
+    body.angry .container {
+      animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both infinite;
+      animation-play-state: paused;
+    }
+
+    body.angry.shake-active .container {
+      animation-play-state: running;
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    /* TIRED */
+    body.tired {
+      --bg: linear-gradient(160deg, #1a1a2e, #16213e, #0f3460);
+      --text: #e0e0ff;
+      --accent: #a78bfa;
+      --card-bg: rgba(167, 139, 250, 0.1);
+      --glow: rgba(167, 139, 250, 0.3);
+    }
+
+    body.tired .content-box {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* EXCITED */
+    body.excited {
+      --bg: #0a0a12;
+      --text: #ffffff;
+      --accent: #00f5d4;
+      --card-bg: rgba(0, 245, 212, 0.08);
+      --glow: rgba(0, 245, 212, 0.5);
+    }
+
+    body.excited h1 {
+      background: linear-gradient(90deg, #00f5d4, #ff00e5, #f9f871);
+      -webkit-background-clip: text;
+      animation: neonPulse 2s infinite alternate;
+    }
+
+    @keyframes neonPulse {
+      from { filter: drop-shadow(0 0 5px #00f5d4); }
+      to { filter: drop-shadow(0 0 20px #ff00e5); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 2.2rem; }
+      .greeting { font-size: 1.7rem; }
+      .mood-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+  <div class="rain" id="rain"></div>
+
+  <div class="container">
+    <h1>Mood Universe</h1>
+    <p class="subtitle">Select your current mood and watch the world change</p>
+
+    <div class="mood-grid">
+      <div class="mood-card" data-mood="happy">
+        <span class="mood-emoji">😊</span>
+        <div class="mood-name">Happy</div>
+      </div>
+      <div class="mood-card" data-mood="sad">
+        <span class="mood-emoji">😢</span>
+        <div class="mood-name">Sad</div>
+      </div>
+      <div class="mood-card" data-mood="angry">
+        <span class="mood-emoji">😡</span>
+        <div class="mood-name">Angry</div>
+      </div>
+      <div class="mood-card" data-mood="tired">
+        <span class="mood-emoji">😴</span>
+        <div class="mood-name">Tired</div>
+      </div>
+      <div class="mood-card" data-mood="excited">
+        <span class="mood-emoji">🤩</span>
+        <div class="mood-name">Excited</div>
+      </div>
+    </div>
+
+    <div class="content-box" id="content">
+      <div class="greeting" id="greeting">How are you feeling today?</div>
+      <p class="message" id="message">
+        Choose a mood above and the entire universe will transform to match your vibe.
+      </p>
+      <button class="reset-btn" id="resetBtn" style="display:none;">
+        Change Mood
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const moods = {
+      happy: {
+        greeting: "You're radiating sunshine! ☀️",
+        message: "Keep smiling! The world looks brighter when you're happy. Dance a little, laugh a lot, and spread those good vibes!",
+        particles: "hearts"
+      },
+      sad: {
+        greeting: "It's okay to feel this way...",
+        message: "Rainy days don't last forever. Let the tears fall if you need to. Brighter skies are waiting for you.",
+        particles: "none"
+      },
+      angry: {
+        greeting: "Whoa, easy there! 🔥",
+        message: "Take a deep breath. Channel that fire into something powerful. You've got this — just don't break the screen!",
+        particles: "sparks"
+      },
+      tired: {
+        greeting: "Time to slow down...",
+        message: "Rest is not laziness. Close your eyes, breathe gently, and let the calm wash over you. You deserve peace.",
+        particles: "stars"
+      },
+      excited: {
+        greeting: "LET'S GOOO! 🚀",
+        message: "Your energy is electric! The universe is matching your frequency. Go chase those dreams — confetti mode activated!",
+        particles: "confetti"
+      }
+    };
+
+    const cards = document.querySelectorAll('.mood-card');
+    const greetingEl = document.getElementById('greeting');
+    const messageEl = document.getElementById('message');
+    const resetBtn = document.getElementById('resetBtn');
+    const body = document.body;
+    const rainContainer = document.getElementById('rain');
+
+    // Particle system
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationId;
+    let currentParticleType = 'none';
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor(type) {
+        this.type = type;
+        this.reset(true);
+      }
+
+      reset(initial = false) {
+        this.x = Math.random() * canvas.width;
+        this.y = initial ? Math.random() * canvas.height : -20;
+        this.size = Math.random() * 8 + 4;
+        this.speedY = Math.random() * 3 + 1;
+        this.speedX = (Math.random() - 0.5) * 2;
+        this.opacity = Math.random() * 0.6 + 0.4;
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = (Math.random() - 0.5) * 4;
+
+        if (this.type === 'hearts') {
+          this.color = `hsl(${Math.random() * 40 + 340}, 90%, 65%)`;
+        } else if (this.type === 'confetti') {
+          const colors = ['#00f5d4', '#ff00e5', '#f9f871', '#ff6b6b', '#4ecdc4'];
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.speedY = Math.random() * 5 + 2;
+        } else if (this.type === 'stars') {
+          this.color = '#a78bfa';
+          this.speedY = Math.random() * 0.8 + 0.2;
+        } else if (this.type === 'sparks') {
+          this.color = `hsl(${Math.random() * 30}, 100%, 60%)`;
+          this.speedY = Math.random() * 4 + 2;
+        }
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.rotation += this.rotationSpeed;
+
+        if (this.y > canvas.height + 20) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.rotation * Math.PI) / 180);
+        ctx.globalAlpha = this.opacity;
+
+        if (this.type === 'hearts') {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          const s = this.size / 2;
+          ctx.moveTo(0, s * 0.3);
+          ctx.bezierCurveTo(0, -s, -s * 1.5, -s, -s * 1.5, s * 0.3);
+          ctx.bezierCurveTo(-s * 1.5, s * 1.5, 0, s * 2.2, 0, s * 2.8);
+          ctx.bezierCurveTo(0, s * 2.2, s * 1.5, s * 1.5, s * 1.5, s * 0.3);
+          ctx.bezierCurveTo(s * 1.5, -s, 0, -s, 0, s * 0.3);
+          ctx.fill();
+        } else if (this.type === 'confetti') {
+          ctx.fillStyle = this.color;
+          ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+        } else if (this.type === 'stars') {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          for (let i = 0; i < 5; i++) {
+            ctx.lineTo(Math.cos((i * 4 * Math.PI) / 5) * this.size,
+                       Math.sin((i * 4 * Math.PI) / 5) * this.size);
+          }
+          ctx.closePath();
+          ctx.fill();
+        } else if (this.type === 'sparks') {
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, this.size * 2);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    function createParticles(type, count = 60) {
+      particles = [];
+      if (type === 'none') return;
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle(type));
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      animationId = requestAnimationFrame(animateParticles);
+    }
+
+    // Rain effect
+    function createRain() {
+      rainContainer.innerHTML = '';
+      for (let i = 0; i < 80; i++) {
+        const drop = document.createElement('div');
+        drop.className = 'raindrop';
+        drop.style.left = Math.random() * 100 + '%';
+        drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+        drop.style.animationDelay = Math.random() * 2 + 's';
+        drop.style.opacity = Math.random() * 0.5 + 0.3;
+        rainContainer.appendChild(drop);
+      }
+    }
+
+    // Mood selection
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const mood = card.dataset.mood;
+
+        // Remove previous mood classes
+        body.className = '';
+        body.classList.add(mood);
+
+        // Active card
+        cards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+
+        // Update text
+        greetingEl.textContent = moods[mood].greeting;
+        messageEl.textContent = moods[mood].message;
+        resetBtn.style.display = 'inline-block';
+
+        // Special effects
+        if (mood === 'sad') {
+          createRain();
+        } else {
+          rainContainer.innerHTML = '';
+        }
+
+        if (mood === 'angry') {
+          body.classList.add('shake-active');
+          setTimeout(() => body.classList.remove('shake-active'), 2000);
+        }
+
+        // Particles
+        cancelAnimationFrame(animationId);
+        currentParticleType = moods[mood].particles;
+        createParticles(currentParticleType, mood === 'excited' ? 100 : 50);
+        if (currentParticleType !== 'none') {
+          animateParticles();
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      });
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', () => {
+      body.className = '';
+      cards.forEach(c => c.classList.remove('active'));
+      greetingEl.textContent = 'How are you feeling today?';
+      messageEl.textContent = 'Choose a mood above and the entire universe will transform to match your vibe.';
+      resetBtn.style.display = 'none';
+      rainContainer.innerHTML = '';
+      cancelAnimationFrame(animationId);
+      particles = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  </script>
+</body>
+</html>

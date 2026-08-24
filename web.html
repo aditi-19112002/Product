@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lovely Fashion | Premium Wholesale Clothing Since 1995</title>
+  <meta name="description" content="Lovely Fashion – Established Indian ready-made clothing store since 1995. Wholesale nightwear, women's, men's, kids & adult clothing." />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            plum: {
+              50: '#faf5f8',
+              100: '#f5eaf1',
+              200: '#ebd5e3',
+              300: '#d9b3cc',
+              400: '#c085ad',
+              500: '#a35f8e',
+              600: '#8a4473',
+              700: '#72355d',
+              800: '#5f2e4e',
+              900: '#512943',
+              950: '#311426',
+            },
+            cream: {
+              50: '#fdfbf7',
+              100: '#f9f4eb',
+              200: '#f2e8d5',
+              300: '#e8d5b5',
+              400: '#dbbb8a',
+            },
+            rose: {
+              50: '#fdf6f7',
+              100: '#fcecef',
+              200: '#f9d9e0',
+              300: '#f3b8c5',
+              400: '#ea8fa3',
+              500: '#db657f',
+            },
+            charcoal: {
+              700: '#3d3a3b',
+              800: '#2c2a2b',
+              900: '#1a1819',
+              950: '#0f0e0f',
+            }
+          },
+          fontFamily: {
+            display: ['Cormorant Garamond', 'serif'],
+            sans: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #fdfbf7;
+      color: #1a1819;
+    }
+    .font-display { font-family: 'Cormorant Garamond', serif; }
+    
+    .nav-scrolled {
+      box-shadow: 0 4px 30px rgba(49, 20, 38, 0.08);
+      background-color: rgba(253, 251, 247, 0.97);
+      backdrop-filter: blur(12px);
+    }
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .product-card {
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -12px rgba(49, 20, 38, 0.15);
+    }
+    
+    .filter-btn.active {
+      background-color: #5f2e4e;
+      color: #fdfbf7;
+    }
+    
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .mobile-menu.open { max-height: 480px; }
+    
+    .wishlist-btn.active svg {
+      fill: #db657f;
+      stroke: #db657f;
+    }
+    
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f9f4eb; }
+    ::-webkit-scrollbar-thumb { background: #c085ad; border-radius: 4px; }
+    
+    img[loading="lazy"] { background-color: #f5eaf1; }
+    
+    .hero-overlay {
+      background: linear-gradient(135deg, rgba(49, 20, 38, 0.72) 0%, rgba(95, 46, 78, 0.55) 50%, rgba(49, 20, 38, 0.65) 100%);
+    }
+    
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #8a4473, #c085ad, #8a4473);
+      transform: translateX(-50%);
+    }
+    @media (max-width: 768px) {
+      .timeline-line::before { left: 24px; }
+    }
+    
+    .gallery-item img {
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .gallery-item:hover img { transform: scale(1.06); }
+  </style>
+</head>
+<body class="bg-cream-50 text-charcoal-900 antialiased">
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="bg-plum-900 text-cream-50 text-center text-sm tracking-wide py-2.5 px-4">
+    <span class="font-medium">Trusted Since 1995</span>
+    <span class="mx-2 opacity-50">•</span>
+    <span>Wholesale Clothing for Every Generation</span>
+  </div>
+
+  <!-- NAVBAR -->
+  <header id="navbar" class="sticky top-0 z-50 transition-all duration-300 bg-cream-50/95">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="#home" class="flex items-center gap-2 group">
+          <span class="font-display text-2xl md:text-3xl font-semibold tracking-tight text-plum-900 group-hover:text-plum-700 transition-colors">
+            Lovely Fashion
+          </span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-8 text-[15px] font-medium text-charcoal-800">
+          <a href="#home" class="hover:text-plum-700 transition-colors">Home</a>
+          <a href="#shop" class="hover:text-plum-700 transition-colors">Shop</a>
+          <a href="#nightwear" class="hover:text-plum-700 transition-colors relative">
+            Nightwear
+            <span class="absolute -top-2 -right-3 text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-sm font-semibold">★</span>
+          </a>
+          <a href="#categories" class="hover:text-plum-700 transition-colors">Women</a>
+          <a href="#categories" class="hover:text-plum-700 transition-colors">Men</a>
+          <a href="#categories" class="hover:text-plum-700 transition-colors">Kids</a>
+          <a href="#about" class="hover:text-plum-700 transition-colors">About</a>
+          <a href="#contact" class="hover:text-plum-700 transition-colors">Contact</a>
+        </nav>
+
+        <div class="flex items-center gap-3 md:gap-5">
+          <button id="search-toggle" class="p-2 text-charcoal-800 hover:text-plum-700 transition-colors" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </button>
+          
+          <a href="https://wa.me/919876543210?text=Hello%20Lovely%20Fashion%2C%20I%20would%20like%20to%20enquire%20about%20wholesale%20clothing." 
+             target="_blank" rel="noopener"
+             class="hidden sm:inline-flex items-center gap-2 bg-plum-800 hover:bg-plum-900 text-cream-50 text-sm font-medium px-4 py-2 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.85 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp
+          </a>
+
+          <button id="mobile-menu-btn" class="lg:hidden p-2 text-charcoal-800" aria-label="Open menu">
+            <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="search-bar" class="hidden pb-4">
+        <div class="relative max-w-xl mx-auto">
+          <input type="text" id="global-search" placeholder="Search nightwear, categories, fabrics..." 
+                 class="w-full bg-cream-100 border border-plum-200 text-charcoal-900 placeholder:text-charcoal-700/50 px-5 py-3 pr-12 focus:outline-none focus:border-plum-500 transition-colors text-sm" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-plum-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="mobile-menu lg:hidden bg-cream-50 border-t border-plum-100">
+      <nav class="flex flex-col px-4 py-4 space-y-1 text-[15px] font-medium">
+        <a href="#home" class="py-3 px-3 hover:bg-plum-50 text-charcoal-800">Home</a>
+        <a href="#shop" class="py-3 px-3 hover:bg-plum-50 text-charcoal-800">Shop</a>
+        <a href="#nightwear" class="py-3 px-3 hover:bg-plum-50 text-plum-800 font-semibold">Nightwear ★</a>
+        <a href="#categories" class="py-3 px-3 hover:bg-plum-50 text-charcoal-800">Women</a>
+        <a href="#categories" class="py-3 px-3 hover:bg-plum-50 text-charcoal-800">Men</a>
+        <a href="#categories" class="py-3 px-3 hover:bg-plum-50 text-charcoal-800">Kids</a>
+        <a href="#about" class="py-3 px-3 hover:bg-plum-50 text-charcoal-800">About</a>
+        <a href="#contact" class="py-3 px-3 hover:bg-plum-50 text-charcoal-800">Contact</a>
+        <a href="https://wa.me/919876543210?text=Hello%20Lovely%20Fashion%2C%20I%20would%20like%20to%20enquire%20about%20wholesale%20clothing." 
+           target="_blank" rel="noopener"
+           class="mt-2 flex items-center justify-center gap-2 bg-plum-800 text-cream-50 py-3 px-4 font-medium">
+          WhatsApp Enquiry
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=2000&auto=format&fit=crop" 
+           alt="Elegant Indian nightwear collection" 
+           class="w-full h-full object-cover object-center" loading="eager" />
+      <div class="absolute inset-0 hero-overlay"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+      <div class="max-w-2xl">
+        <p class="text-cream-200 text-sm md:text-base tracking-[0.2em] uppercase mb-4 font-medium opacity-90">
+          Est. 1995 · Tirupur, India
+        </p>
+        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-cream-50 leading-[1.1] mb-6">
+          Fashion for Every<br />Generation,<br />
+          <span class="italic font-normal text-rose-200">Since 1995.</span>
+        </h1>
+        <p class="text-cream-100/90 text-base md:text-lg max-w-lg mb-10 leading-relaxed">
+          Premium ready-made clothing for women, men, kids & adults. Specialists in comfortable, elegant nightwear — available at wholesale prices.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#nightwear" class="inline-flex items-center gap-2 bg-cream-50 text-plum-900 hover:bg-cream-100 px-7 py-3.5 text-sm font-semibold tracking-wide transition-colors">
+            Explore Nightwear
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+            </svg>
+          </a>
+          <a href="#shop" class="inline-flex items-center gap-2 border border-cream-50/60 text-cream-50 hover:bg-cream-50/10 px-7 py-3.5 text-sm font-medium tracking-wide transition-colors">
+            View Collection
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STATS -->
+  <section class="bg-plum-900 text-cream-50 py-12 md:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 text-center">
+        <div class="reveal">
+          <p class="font-display text-3xl md:text-4xl font-semibold mb-1">1995</p>
+          <p class="text-cream-200/80 text-sm tracking-wide">Established</p>
+        </div>
+        <div class="reveal" style="transition-delay: 0.1s">
+          <p class="font-display text-3xl md:text-4xl font-semibold mb-1">30+</p>
+          <p class="text-cream-200/80 text-sm tracking-wide">Years of Trust</p>
+        </div>
+        <div class="reveal" style="transition-delay: 0.2s">
+          <p class="font-display text-3xl md:text-4xl font-semibold mb-1">All Ages</p>
+          <p class="text-cream-200/80 text-sm tracking-wide">Kids to Adults</p>
+        </div>
+        <div class="reveal" style="transition-delay: 0.3s">
+          <p class="font-display text-3xl md:text-4xl font-semibold mb-1">Wholesale</p>
+          <p class="text-cream-200/80 text-sm tracking-wide">Direct Pricing</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED NIGHTWEAR -->
+  <section id="nightwear" class="py-20 md:py-28 bg-cream-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-3">Our Speciality</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold text-plum-900 mb-4">Nightwear Collection</h2>
+        <p class="text-charcoal-700/80 text-base md:text-lg leading-relaxed">
+          Soft cotton nighties, elegant printed designs, feeding nighties, night suits & comfortable home wear — crafted for everyday comfort.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <article class="product-card group bg-white border border-plum-100/60 reveal">
+          <div class="relative overflow-hidden aspect-[3/4]">
+            <img src="nighty.jpg" alt="Cotton Nighties" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute top-4 left-4 bg-plum-800 text-cream-50 text-xs font-medium px-3 py-1 tracking-wide">BESTSELLER</div>
+          </div>
+          <div class="p-5 md:p-6">
+            <h3 class="font-display text-xl font-semibold text-plum-900 mb-1">Cotton Nighties</h3>
+            <p class="text-charcoal-700/70 text-sm mb-4">Soft, breathable pure cotton for all-day comfort</p>
+            <a href="https://wa.me/919876543210?text=Hi%2C%20I%20want%20to%20enquire%20about%20Cotton%20Nighties%20wholesale." target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-medium text-plum-700 hover:text-plum-900 transition-colors">
+              Enquire on WhatsApp →
+            </a>
+          </div>
+        </article>
+
+        <article class="product-card group bg-white border border-plum-100/60 reveal" style="transition-delay: 0.1s">
+          <div class="relative overflow-hidden aspect-[3/4]">
+            <img src="nighty 2.jpg" alt="Printed Nighties" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          </div>
+          <div class="p-5 md:p-6">
+            <h3 class="font-display text-xl font-semibold text-plum-900 mb-1">Printed Nighties</h3>
+            <p class="text-charcoal-700/70 text-sm mb-4">Beautiful prints in soft fabrics for everyday elegance</p>
+            <a href="https://wa.me/919876543210?text=Hi%2C%20I%20want%20to%20enquire%20about%20Printed%20Nighties%20wholesale." target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-medium text-plum-700 hover:text-plum-900 transition-colors">
+              Enquire on WhatsApp →
+            </a>
+          </div>
+        </article>
+
+        <article class="product-card group bg-white border border-plum-100/60 reveal" style="transition-delay: 0.2s">
+          <div class="relative overflow-hidden aspect-[3/4]">
+            <img src="nighty3.jpeg" alt="Feeding Nighties" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute top-4 left-4 bg-rose-500 text-white text-xs font-medium px-3 py-1 tracking-wide">NEW</div>
+          </div>
+          <div class="p-5 md:p-6">
+            <h3 class="font-display text-xl font-semibold text-plum-900 mb-1">Feeding Nighties</h3>
+            <p class="text-charcoal-700/70 text-sm mb-4">Practical & comfortable designs for nursing mothers</p>
+            <a href="https://wa.me/919876543210?text=Hi%2C%20I%20want%20to%20enquire%20about%20Feeding%20Nighties%20wholesale." target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-medium text-plum-700 hover:text-plum-900 transition-colors">
+              Enquire on WhatsApp →
+            </a>
+          </div>
+        </article>
+
+        <article class="product-card group bg-white border border-plum-100/60 reveal">
+          <div class="relative overflow-hidden aspect-[3/4]">
+            <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=800&auto=format&fit=crop" alt="Night Suits" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          </div>
+          <div class="p-5 md:p-6">
+            <h3 class="font-display text-xl font-semibold text-plum-900 mb-1">Night Suits</h3>
+            <p class="text-charcoal-700/70 text-sm mb-4">Coordinated top & bottom sets for complete comfort</p>
+            <a href="https://wa.me/919876543210?text=Hi%2C%20I%20want%20to%20enquire%20about%20Night%20Suits%20wholesale." target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-medium text-plum-700 hover:text-plum-900 transition-colors">
+              Enquire on WhatsApp →
+            </a>
+          </div>
+        </article>
+
+        <article class="product-card group bg-white border border-plum-100/60 reveal" style="transition-delay: 0.1s">
+          <div class="relative overflow-hidden aspect-[3/4]">
+            <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=800&auto=format&fit=crop" alt="Home Wear" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          </div>
+          <div class="p-5 md:p-6">
+            <h3 class="font-display text-xl font-semibold text-plum-900 mb-1">Home Wear</h3>
+            <p class="text-charcoal-700/70 text-sm mb-4">Relaxed loungewear perfect for home & daily wear</p>
+            <a href="https://wa.me/919876543210?text=Hi%2C%20I%20want%20to%20enquire%20about%20Home%20Wear%20wholesale." target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-medium text-plum-700 hover:text-plum-900 transition-colors">
+              Enquire on WhatsApp →
+            </a>
+          </div>
+        </article>
+
+        <article class="product-card group bg-plum-900 text-cream-50 flex flex-col justify-center items-center p-8 reveal" style="transition-delay: 0.2s">
+          <p class="font-display text-2xl md:text-3xl font-semibold mb-3 text-center">View Full<br />Nightwear Range</p>
+          <p class="text-cream-200/80 text-sm text-center mb-6 max-w-xs">Hundreds of designs available for wholesale buyers</p>
+          <a href="#shop" class="inline-flex items-center gap-2 border border-cream-50/50 hover:bg-cream-50/10 px-6 py-3 text-sm font-medium transition-colors">
+            Browse All Products
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP BY CATEGORY (Elderly → Adult) -->
+  <section id="categories" class="py-20 md:py-28 bg-plum-50/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-3">Browse</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold text-plum-900 mb-4">Shop by Category</h2>
+        <p class="text-charcoal-700/80 text-base md:text-lg">Clothing for every member of the family — from kids to adults.</p>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <a href="#shop" class="group relative overflow-hidden aspect-[3/4] reveal" data-filter="women">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=700&auto=format&fit=crop" alt="Women's Clothing" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <div class="absolute inset-0 bg-gradient-to-t from-plum-950/80 via-plum-950/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+            <h3 class="font-display text-2xl md:text-3xl font-semibold text-cream-50 mb-1">Women</h3>
+            <p class="text-cream-200/80 text-sm">Nightwear • Kurtis • Tops</p>
+          </div>
+        </a>
+
+        <a href="#shop" class="group relative overflow-hidden aspect-[3/4] reveal" style="transition-delay: 0.1s" data-filter="men">
+          <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=700&auto=format&fit=crop" alt="Men's Clothing" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <div class="absolute inset-0 bg-gradient-to-t from-plum-950/80 via-plum-950/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+            <h3 class="font-display text-2xl md:text-3xl font-semibold text-cream-50 mb-1">Men</h3>
+            <p class="text-cream-200/80 text-sm">Shirts • Loungewear • Tees</p>
+          </div>
+        </a>
+
+        <a href="#shop" class="group relative overflow-hidden aspect-[3/4] reveal" style="transition-delay: 0.2s" data-filter="kids">
+          <img src="https://images.unsplash.com/photo-1503919545889-aef636e10ad4?q=80&w=700&auto=format&fit=crop" alt="Kids Clothing" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <div class="absolute inset-0 bg-gradient-to-t from-plum-950/80 via-plum-950/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+            <h3 class="font-display text-2xl md:text-3xl font-semibold text-cream-50 mb-1">Kids</h3>
+            <p class="text-cream-200/80 text-sm">Frocks • Sets • Nightwear</p>
+          </div>
+        </a>
+
+        <!-- Adult (replaced Elderly) -->
+        <a href="#shop" class="group relative overflow-hidden aspect-[3/4] reveal" style="transition-delay: 0.3s" data-filter="adult">
+          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=700&auto=format&fit=crop" alt="Adult Clothing" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <div class="absolute inset-0 bg-gradient-to-t from-plum-950/80 via-plum-950/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+            <h3 class="font-display text-2xl md:text-3xl font-semibold text-cream-50 mb-1">Adult</h3>
+            <p class="text-cream-200/80 text-sm">Comfort • Soft Fabrics</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHOLESALE BANNER -->
+  <section class="relative py-20 md:py-24 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2000&auto=format&fit=crop" alt="Wholesale clothing" class="w-full h-full object-cover" loading="lazy" />
+      <div class="absolute inset-0 bg-plum-950/75"></div>
+    </div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center reveal">
+      <p class="text-rose-300 text-sm tracking-[0.2em] uppercase font-medium mb-4">Wholesale Partners</p>
+      <h2 class="font-display text-3xl md:text-5xl font-semibold text-cream-50 mb-5 leading-tight">
+        Looking for Reliable<br />Wholesale Clothing?
+      </h2>
+      <p class="text-cream-100/85 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+        Competitive pricing, consistent quality, and a wide range across all age groups. Connect with us on WhatsApp for bulk enquiries and catalogues.
+      </p>
+      <a href="https://wa.me/919876543210?text=Hello%20Lovely%20Fashion%2C%20I%20am%20interested%20in%20wholesale%20pricing%20and%20catalogue." 
+         target="_blank" rel="noopener"
+         class="inline-flex items-center gap-3 bg-cream-50 text-plum-900 hover:bg-cream-100 px-8 py-4 text-sm font-semibold tracking-wide transition-colors">
+        WhatsApp Wholesale Enquiry
+      </a>
+    </div>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <section id="shop" class="py-20 md:py-28 bg-cream-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 reveal">
+        <div>
+          <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-2">Catalogue</p>
+          <h2 class="font-display text-3xl md:text-4xl font-semibold text-plum-900">Our Collection</h2>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative">
+            <input type="text" id="product-search" placeholder="Search products..." 
+                   class="w-full sm:w-56 bg-white border border-plum-200 px-4 py-2.5 text-sm focus:outline-none focus:border-plum-500 transition-colors" />
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button class="filter-btn active px-4 py-2.5 text-sm font-medium border border-plum-200 hover:border-plum-400 transition-colors" data-category="all">All</button>
+            <button class="filter-btn px-4 py-2.5 text-sm font-medium border border-plum-200 hover:border-plum-400 transition-colors" data-category="nightwear">Nightwear</button>
+            <button class="filter-btn px-4 py-2.5 text-sm font-medium border border-plum-200 hover:border-plum-400 transition-colors" data-category="women">Women</button>
+            <button class="filter-btn px-4 py-2.5 text-sm font-medium border border-plum-200 hover:border-plum-400 transition-colors" data-category="men">Men</button>
+            <button class="filter-btn px-4 py-2.5 text-sm font-medium border border-plum-200 hover:border-plum-400 transition-colors" data-category="kids">Kids</button>
+            <button class="filter-btn px-4 py-2.5 text-sm font-medium border border-plum-200 hover:border-plum-400 transition-colors" data-category="adult">Adult</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+      <p id="no-results" class="hidden text-center text-charcoal-700/70 py-16 text-lg">No products match your search. Try a different keyword or category.</p>
+    </div>
+  </section>
+
+  <!-- ========== NEW: OUR SHOP & OWNER ========== -->
+  <section id="our-shop" class="py-20 md:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-3">Visit Us</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold text-plum-900 mb-4">Our Shop & Family</h2>
+        <p class="text-charcoal-700/80 text-base md:text-lg">A trusted family business serving retailers and customers since 1995.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <!-- Shop Image -->
+        <div class="reveal">
+          <div class="relative overflow-hidden aspect-[4/3] border border-plum-100">
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000&auto=format&fit=crop" 
+                 alt="Lovely Fashion Shop Interior" 
+                 loading="lazy"
+                 class="w-full h-full object-cover" />
+          </div>
+          <p class="mt-3 text-sm text-charcoal-700/70 text-center">Our showroom & wholesale counter</p>
+        </div>
+
+        <!-- Owner + Location -->
+        <div class="reveal" style="transition-delay: 0.15s">
+          <div class="flex flex-col sm:flex-row gap-6 items-start mb-8">
+            <div class="w-28 h-28 sm:w-32 sm:h-32 shrink-0 overflow-hidden border-2 border-plum-200">
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop" 
+                   alt="Shop Owner - Lovely Fashion" 
+                   loading="lazy"
+                   class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p class="text-plum-600 text-xs tracking-widest uppercase font-medium mb-1">Shop Owner</p>
+              <h3 class="font-display text-2xl font-semibold text-plum-900 mb-2">Mr. Ramesh Kumar</h3>
+              <p class="text-charcoal-700/80 text-sm leading-relaxed">
+                Founder of Lovely Fashion. With over three decades of experience in ready-made garments, he continues to personally oversee quality and wholesale relationships.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-plum-50/60 border border-plum-100 p-6 space-y-4">
+            <h4 class="font-display text-xl font-semibold text-plum-900">Shop Location</h4>
+            <div class="flex items-start gap-3 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-plum-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+              </svg>
+              <div>
+                <p class="font-medium text-charcoal-900">Lovely Fashion</p>
+                <p class="text-charcoal-700/80">No. 45, Textile Market Road,<br />Tirupur, Tamil Nadu – 641604</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-plum-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p class="font-medium text-charcoal-900">Working Hours</p>
+                <p class="text-charcoal-700/80">Mon – Sat: 9:30 AM – 8:00 PM<br />Sunday: Closed</p>
+              </div>
+            </div>
+            <a href="https://wa.me/919876543210?text=Hello%2C%20I%20would%20like%20to%20visit%20the%20shop." 
+               target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 mt-2 text-sm font-medium text-plum-700 hover:text-plum-900 transition-colors">
+              Get directions on WhatsApp →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="py-20 md:py-28 bg-cream-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-3">Why Lovely Fashion</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold text-plum-900">Built on Trust & Quality</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+        <div class="text-center reveal">
+          <div class="w-14 h-14 mx-auto mb-5 flex items-center justify-center border border-plum-200 text-plum-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-semibold text-plum-900 mb-2">30+ Years</h3>
+          <p class="text-charcoal-700/75 text-sm leading-relaxed">Serving retailers and families with consistent quality since 1995.</p>
+        </div>
+        <div class="text-center reveal" style="transition-delay: 0.1s">
+          <div class="w-14 h-14 mx-auto mb-5 flex items-center justify-center border border-plum-200 text-plum-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-semibold text-plum-900 mb-2">Quality Fabrics</h3>
+          <p class="text-charcoal-700/75 text-sm leading-relaxed">Soft cottons and durable materials carefully selected for comfort.</p>
+        </div>
+        <div class="text-center reveal" style="transition-delay: 0.2s">
+          <div class="w-14 h-14 mx-auto mb-5 flex items-center justify-center border border-plum-200 text-plum-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-semibold text-plum-900 mb-2">Wholesale Rates</h3>
+          <p class="text-charcoal-700/75 text-sm leading-relaxed">Direct pricing for retailers, boutiques and bulk buyers across India.</p>
+        </div>
+        <div class="text-center reveal" style="transition-delay: 0.3s">
+          <div class="w-14 h-14 mx-auto mb-5 flex items-center justify-center border border-plum-200 text-plum-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-xl font-semibold text-plum-900 mb-2">All Generations</h3>
+          <p class="text-charcoal-700/75 text-sm leading-relaxed">From kids to adults — thoughtfully designed for every age group.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section id="about" class="py-20 md:py-28 bg-plum-50/50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-3">Our Journey</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold text-plum-900">Three Decades of Fashion & Trust</h2>
+      </div>
+
+      <div class="relative timeline-line space-y-12 md:space-y-16">
+        <div class="relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-0 reveal">
+          <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 pl-14 md:pl-0">
+            <h3 class="font-display text-2xl font-semibold text-plum-900 mb-1">1995</h3>
+            <p class="text-charcoal-700/80 text-sm leading-relaxed">Founded in Tirupur with a small range of ready-made garments. A commitment to quality and honest pricing began.</p>
+          </div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 bg-plum-700 border-4 border-cream-50 rounded-full -translate-x-1/2 z-10 top-1"></div>
+          <div class="md:w-1/2 md:pl-12 order-3 hidden md:block"></div>
+        </div>
+
+        <div class="relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-0 reveal">
+          <div class="md:w-1/2 md:pr-12 order-2 md:order-1 hidden md:block"></div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 bg-plum-700 border-4 border-cream-50 rounded-full -translate-x-1/2 z-10 top-1"></div>
+          <div class="md:w-1/2 md:pl-12 order-3 pl-14 md:pl-12">
+            <h3 class="font-display text-2xl font-semibold text-plum-900 mb-1">Growth</h3>
+            <p class="text-charcoal-700/80 text-sm leading-relaxed">Expanded into specialised nightwear and began serving retailers across South India with reliable wholesale supply.</p>
+          </div>
+        </div>
+
+        <div class="relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-0 reveal">
+          <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1 pl-14 md:pl-0">
+            <h3 class="font-display text-2xl font-semibold text-plum-900 mb-1">Generations</h3>
+            <p class="text-charcoal-700/80 text-sm leading-relaxed">Added dedicated ranges for men, kids and adults — becoming a true family clothing destination for wholesalers.</p>
+          </div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 bg-plum-700 border-4 border-cream-50 rounded-full -translate-x-1/2 z-10 top-1"></div>
+          <div class="md:w-1/2 md:pl-12 order-3 hidden md:block"></div>
+        </div>
+
+        <div class="relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-0 reveal">
+          <div class="md:w-1/2 md:pr-12 order-2 md:order-1 hidden md:block"></div>
+          <div class="absolute left-4 md:left-1/2 w-5 h-5 bg-rose-500 border-4 border-cream-50 rounded-full -translate-x-1/2 z-10 top-1"></div>
+          <div class="md:w-1/2 md:pl-12 order-3 pl-14 md:pl-12">
+            <h3 class="font-display text-2xl font-semibold text-plum-900 mb-1">Today</h3>
+            <p class="text-charcoal-700/80 text-sm leading-relaxed">A trusted name in wholesale ready-made clothing, known for comfortable nightwear and multi-generational collections.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMER REVIEWS -->
+  <section class="py-20 md:py-28 bg-cream-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-3">Testimonials</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold text-plum-900">What Our Buyers Say</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+        <blockquote class="bg-white border border-plum-100/70 p-7 md:p-8 reveal">
+          <div class="flex gap-1 mb-4 text-rose-400">★★★★★</div>
+          <p class="text-charcoal-800 text-sm leading-relaxed mb-5">“We have been sourcing nighties from Lovely Fashion for over 8 years. Quality is consistent and pricing is fair. Our customers keep coming back.”</p>
+          <footer>
+            <p class="font-medium text-plum-900 text-sm">Priya S.</p>
+            <p class="text-charcoal-700/60 text-xs">Retailer, Coimbatore</p>
+          </footer>
+        </blockquote>
+
+        <blockquote class="bg-white border border-plum-100/70 p-7 md:p-8 reveal" style="transition-delay: 0.1s">
+          <div class="flex gap-1 mb-4 text-rose-400">★★★★★</div>
+          <p class="text-charcoal-800 text-sm leading-relaxed mb-5">“Their feeding nighties and cotton range sell very well in our store. Communication on WhatsApp is quick and they understand bulk requirements.”</p>
+          <footer>
+            <p class="font-medium text-plum-900 text-sm">Anitha R.</p>
+            <p class="text-charcoal-700/60 text-xs">Boutique Owner, Madurai</p>
+          </footer>
+        </blockquote>
+
+        <blockquote class="bg-white border border-plum-100/70 p-7 md:p-8 reveal" style="transition-delay: 0.2s">
+          <div class="flex gap-1 mb-4 text-rose-400">★★★★★</div>
+          <p class="text-charcoal-800 text-sm leading-relaxed mb-5">“Reliable supplier for kids and adult ranges. Soft fabrics and good finishing. Happy to recommend them to other shop owners.”</p>
+          <footer>
+            <p class="font-medium text-plum-900 text-sm">Suresh K.</p>
+            <p class="text-charcoal-700/60 text-xs">Wholesale Buyer, Erode</p>
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="py-20 md:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <p class="text-plum-600 text-sm tracking-[0.2em] uppercase font-medium mb-3">@lovelyfashion</p>
+        <h2 class="font-display text-3xl md:text-4xl font-semibold text-plum-900">From Our Workshop</h2>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div class="gallery-item relative overflow-hidden aspect-square reveal">
+          <img src="https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=600&auto=format&fit=crop" alt="Gallery 1" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="gallery-item relative overflow-hidden aspect-square reveal" style="transition-delay: 0.05s">
+          <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=600&auto=format&fit=crop" alt="Gallery 2" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="gallery-item relative overflow-hidden aspect-square reveal" style="transition-delay: 0.1s">
+          <img src="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=600&auto=format&fit=crop" alt="Gallery 3" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="gallery-item relative overflow-hidden aspect-square reveal" style="transition-delay: 0.15s">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop" alt="Gallery 4" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="gallery-item relative overflow-hidden aspect-square reveal">
+          <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=600&auto=format&fit=crop" alt="Gallery 5" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="gallery-item relative overflow-hidden aspect-square reveal" style="transition-delay: 0.05s">
+          <img src="https://images.unsplash.com/photo-1503919545889-aef636e10ad4?q=80&w=600&auto=format&fit=crop" alt="Gallery 6" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="gallery-item relative overflow-hidden aspect-square reveal" style="transition-delay: 0.1s">
+          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=600&auto=format&fit=crop" alt="Gallery 7" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        <div class="gallery-item relative overflow-hidden aspect-square reveal" style="transition-delay: 0.15s">
+          <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=600&auto=format&fit=crop" alt="Gallery 8" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-20 md:py-28 bg-plum-900 text-cream-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div class="reveal">
+          <p class="text-rose-300 text-sm tracking-[0.2em] uppercase font-medium mb-3">Get in Touch</p>
+          <h2 class="font-display text-3xl md:text-5xl font-semibold mb-5 leading-tight">Wholesale Enquiry<br />& Contact</h2>
+          <p class="text-cream-200/85 text-base leading-relaxed mb-8 max-w-md">
+            Share your requirements and our team will respond with pricing, availability and catalogue details. Prefer WhatsApp for faster replies.
+          </p>
+          
+          <div class="space-y-5 text-sm">
+            <div class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-300 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+              </svg>
+              <div>
+                <p class="font-medium text-cream-50">Location</p>
+                <p class="text-cream-200/75">No. 45, Textile Market Road, Tirupur, Tamil Nadu</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-300 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+              </svg>
+              <div>
+                <p class="font-medium text-cream-50">WhatsApp / Phone</p>
+                <p class="text-cream-200/75">+91 98765 43210</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-300 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              <div>
+                <p class="font-medium text-cream-50">Email</p>
+                <p class="text-cream-200/75">wholesale@lovelyfashion.in</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal" style="transition-delay: 0.1s">
+          <form id="enquiry-form" class="space-y-5 bg-plum-800/50 p-6 md:p-8 border border-plum-700/50">
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="block text-sm text-cream-200 mb-1.5">Your Name *</label>
+                <input type="text" id="name" name="name" required class="w-full bg-plum-950/40 border border-plum-600/50 text-cream-50 px-4 py-3 text-sm focus:outline-none focus:border-rose-400 transition-colors placeholder:text-cream-200/40" placeholder="Full name" />
+              </div>
+              <div>
+                <label for="phone" class="block text-sm text-cream-200 mb-1.5">Phone / WhatsApp *</label>
+                <input type="tel" id="phone" name="phone" required class="w-full bg-plum-950/40 border border-plum-600/50 text-cream-50 px-4 py-3 text-sm focus:outline-none focus:border-rose-400 transition-colors placeholder:text-cream-200/40" placeholder="+91 XXXXX XXXXX" />
+              </div>
+            </div>
+            <div>
+              <label for="business" class="block text-sm text-cream-200 mb-1.5">Business / Shop Name</label>
+              <input type="text" id="business" name="business" class="w-full bg-plum-950/40 border border-plum-600/50 text-cream-50 px-4 py-3 text-sm focus:outline-none focus:border-rose-400 transition-colors placeholder:text-cream-200/40" placeholder="Optional" />
+            </div>
+            <div>
+              <label for="interest" class="block text-sm text-cream-200 mb-1.5">Interested In</label>
+              <select id="interest" name="interest" class="w-full bg-plum-950/40 border border-plum-600/50 text-cream-50 px-4 py-3 text-sm focus:outline-none focus:border-rose-400 transition-colors">
+                <option value="nightwear">Nightwear / Nighties</option>
+                <option value="women">Women's Clothing</option>
+                <option value="men">Men's Clothing</option>
+                <option value="kids">Kids Clothing</option>
+                <option value="adult">Adult Clothing</option>
+                <option value="mixed">Mixed / Full Range</option>
+              </select>
+            </div>
+            <div>
+              <label for="message" class="block text-sm text-cream-200 mb-1.5">Message / Requirements</label>
+              <textarea id="message" name="message" rows="4" class="w-full bg-plum-950/40 border border-plum-600/50 text-cream-50 px-4 py-3 text-sm focus:outline-none focus:border-rose-400 transition-colors placeholder:text-cream-200/40 resize-none" placeholder="Quantity, preferred styles, delivery location..."></textarea>
+            </div>
+            <button type="submit" class="w-full bg-cream-50 text-plum-900 hover:bg-cream-100 font-semibold py-3.5 text-sm tracking-wide transition-colors">
+              Send Enquiry
+            </button>
+            <p class="text-center text-cream-200/60 text-xs">
+              Or message us directly on <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="underline hover:text-cream-50">WhatsApp</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-charcoal-950 text-cream-100/80 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-8 mb-12">
+        <div class="lg:col-span-1">
+          <a href="#home" class="font-display text-2xl font-semibold text-cream-50 mb-4 inline-block">Lovely Fashion</a>
+          <p class="text-sm leading-relaxed text-cream-200/60 mb-5 max-w-xs">
+            Premium ready-made clothing for every generation. Trusted wholesale partner since 1995.
+          </p>
+          <div class="flex gap-4">
+            <a href="#" class="text-cream-200/50 hover:text-cream-50 transition-colors" aria-label="Instagram">Instagram</a>
+            <a href="#" class="text-cream-200/50 hover:text-cream-50 transition-colors" aria-label="Facebook">Facebook</a>
+            <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="text-cream-200/50 hover:text-cream-50 transition-colors" aria-label="WhatsApp">WhatsApp</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-cream-50 font-medium text-sm tracking-wide mb-4">Quick Links</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#home" class="hover:text-cream-50 transition-colors">Home</a></li>
+            <li><a href="#nightwear" class="hover:text-cream-50 transition-colors">Nightwear</a></li>
+            <li><a href="#shop" class="hover:text-cream-50 transition-colors">Shop</a></li>
+            <li><a href="#our-shop" class="hover:text-cream-50 transition-colors">Our Shop</a></li>
+            <li><a href="#about" class="hover:text-cream-50 transition-colors">About Us</a></li>
+            <li><a href="#contact" class="hover:text-cream-50 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-cream-50 font-medium text-sm tracking-wide mb-4">Categories</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#shop" class="hover:text-cream-50 transition-colors">Women's Nightwear</a></li>
+            <li><a href="#shop" class="hover:text-cream-50 transition-colors">Feeding Nighties</a></li>
+            <li><a href="#shop" class="hover:text-cream-50 transition-colors">Men's Loungewear</a></li>
+            <li><a href="#shop" class="hover:text-cream-50 transition-colors">Kids Clothing</a></li>
+            <li><a href="#shop" class="hover:text-cream-50 transition-colors">Adult Comfort Wear</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-cream-50 font-medium text-sm tracking-wide mb-4">Wholesale</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li>No. 45, Textile Market Road</li>
+            <li>Tirupur, Tamil Nadu – 641604</li>
+            <li>+91 98765 43210</li>
+            <li>wholesale@lovelyfashion.in</li>
+            <li class="pt-2">
+              <a href="https://wa.me/919876543210?text=Hello%20Lovely%20Fashion%2C%20wholesale%20enquiry." target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-rose-300 hover:text-rose-200 transition-colors">
+                Chat on WhatsApp →
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-charcoal-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-cream-200/50">
+        <p>© 1995–2026 Lovely Fashion. All rights reserved.</p>
+        <p>Established Indian ready-made clothing • Wholesale since 1995</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const products = [
+      { id: 1, name: "Soft Cotton Nightie", category: "nightwear", price: "Wholesale", image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=500&auto=format&fit=crop", tags: ["cotton", "nightie"] },
+      { id: 2, name: "Floral Printed Nightie", category: "nightwear", price: "Wholesale", image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=500&auto=format&fit=crop", tags: ["printed", "nightie"] },
+      { id: 3, name: "Feeding Nightie – Easy Access", category: "nightwear", price: "Wholesale", image: "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?q=80&w=500&auto=format&fit=crop", tags: ["feeding", "maternity"] },
+      { id: 4, name: "Cotton Night Suit Set", category: "nightwear", price: "Wholesale", image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=500&auto=format&fit=crop", tags: ["night suit", "set"] },
+      { id: 5, name: "Women’s Lounge Kurti", category: "women", price: "Wholesale", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=500&auto=format&fit=crop", tags: ["kurti", "women"] },
+      { id: 6, name: "Men’s Cotton Lounge Shirt", category: "men", price: "Wholesale", image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=500&auto=format&fit=crop", tags: ["men", "shirt"] },
+      { id: 7, name: "Kids Printed Frock Set", category: "kids", price: "Wholesale", image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?q=80&w=500&auto=format&fit=crop", tags: ["kids", "frock"] },
+      { id: 8, name: "Adult Soft Home Wear", category: "adult", price: "Wholesale", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=500&auto=format&fit=crop", tags: ["adult", "comfort"] },
+      { id: 9, name: "Plain Cotton Nightie", category: "nightwear", price: "Wholesale", image: "https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=500&auto=format&fit=crop", tags: ["cotton", "plain"] },
+      { id: 10, name: "Women’s Printed Top", category: "women", price: "Wholesale", image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=500&auto=format&fit=crop", tags: ["women", "top"] },
+      { id: 11, name: "Men’s Sleep Shorts", category: "men", price: "Wholesale", image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=500&auto=format&fit=crop", tags: ["men", "shorts"] },
+      { id: 12, name: "Kids Nightwear Set", category: "kids", price: "Wholesale", image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?q=80&w=500&auto=format&fit=crop", tags: ["kids", "nightwear"] },
+    ];
+
+    const productGrid = document.getElementById('product-grid');
+    const noResults = document.getElementById('no-results');
+    let currentCategory = 'all';
+    let searchQuery = '';
+
+    function renderProducts() {
+      const filtered = products.filter(p => {
+        const matchCat = currentCategory === 'all' || p.category === currentCategory;
+        const matchSearch = !searchQuery || 
+          p.name.toLowerCase().includes(searchQuery) || 
+          p.tags.some(t => t.includes(searchQuery)) ||
+          p.category.includes(searchQuery);
+        return matchCat && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        productGrid.innerHTML = '';
+        noResults.classList.remove('hidden');
+        return;
+      }
+      noResults.classList.add('hidden');
+
+      productGrid.innerHTML = filtered.map(p => `
+        <article class="product-card group bg-white border border-plum-100/60" data-category="${p.category}">
+          <div class="relative overflow-hidden aspect-[3/4]">
+            <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <button class="wishlist-btn absolute top-3 right-3 w-9 h-9 bg-white/90 flex items-center justify-center text-charcoal-700 hover:text-rose-500 transition-colors" aria-label="Add to wishlist" data-id="${p.id}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-plum-600 uppercase tracking-wider mb-1">${p.category}</p>
+            <h3 class="font-medium text-charcoal-900 text-sm md:text-base mb-1 leading-snug">${p.name}</h3>
+            <p class="text-charcoal-700/70 text-xs mb-3">${p.price}</p>
+            <a href="https://wa.me/919876543210?text=Hi%2C%20I%20want%20to%20enquire%20about%20${encodeURIComponent(p.name)}%20(wholesale)." target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-medium text-plum-700 hover:text-plum-900 transition-colors">
+              WhatsApp Enquiry →
+            </a>
+          </div>
+        </article>
+      `).join('');
+
+      document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          btn.classList.toggle('active');
+        });
+      });
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.dataset.category;
+        renderProducts();
+      });
+    });
+
+    document.querySelectorAll('[data-filter]').forEach(el => {
+      el.addEventListener('click', () => {
+        const cat = el.dataset.filter;
+        currentCategory = cat;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        const targetBtn = document.querySelector(`.filter-btn[data-category="${cat}"]`);
+        if (targetBtn) targetBtn.classList.add('active');
+        renderProducts();
+      });
+    });
+
+    document.getElementById('product-search').addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      renderProducts();
+    });
+
+    document.getElementById('global-search')?.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      currentCategory = 'all';
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.filter-btn[data-category="all"]')?.classList.add('active');
+      renderProducts();
+      document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    const navbar = document.getElementById('navbar');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const closeIcon = document.getElementById('close-icon');
+    const searchToggle = document.getElementById('search-toggle');
+    const searchBar = document.getElementById('search-bar');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) navbar.classList.add('nav-scrolled');
+      else navbar.classList.remove('nav-scrolled');
+    });
+
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      menuIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      });
+    });
+
+    searchToggle.addEventListener('click', () => {
+      searchBar.classList.toggle('hidden');
+      if (!searchBar.classList.contains('hidden')) {
+        document.getElementById('global-search')?.focus();
+      }
+    });
+
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    document.getElementById('enquiry-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const business = document.getElementById('business').value;
+      const interest = document.getElementById('interest').value;
+      const message = document.getElementById('message').value;
+      const text = `Hello Lovely Fashion,%0A%0A*Wholesale Enquiry*%0AName: ${name}%0APhone: ${phone}%0ABusiness: ${business || 'N/A'}%0AInterest: ${interest}%0AMessage: ${message || '—'}`;
+      window.open(`https://wa.me/919876543210?text=${text}`, '_blank');
+    });
+
+    renderProducts();
+  </script>
+</body>
+</html>
