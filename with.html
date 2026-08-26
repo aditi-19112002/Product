@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Website Is Alive</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; cursor: pointer; user-select: none; }
+
+    #world {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: background 1.4s ease, filter 1.2s ease;
+    }
+
+    /* SKY */
+    .day-sun     { background: linear-gradient(#7ec8e3, #c9e9ff 45%, #ffe9a8); }
+    .day-rain    { background: linear-gradient(#5a6f86, #8aa0b8 50%, #6b7c8a); }
+    .day-snow    { background: linear-gradient(#b8c9d9, #e8f0f7 50%, #d5e4ef); }
+    .night-sun   { background: linear-gradient(#0b1026, #1a2450 50%, #2a1a40); }
+    .night-rain  { background: linear-gradient(#070b14, #121826 55%, #0e141c); }
+    .night-snow  { background: linear-gradient(#0e1628, #1c2a44 50%, #243048); }
+
+    canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+    /* SUN / MOON */
+    #orb {
+      position: absolute;
+      border-radius: 50%;
+      transition: all 1.4s ease;
+      box-shadow: 0 0 60px currentColor;
+    }
+
+    /* GROUND */
+    #ground {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 22%;
+      transition: background 1.4s ease, box-shadow 1.4s ease;
+    }
+
+    /* HILLS */
+    .hill {
+      position: absolute;
+      bottom: 18%;
+      border-radius: 50% 50% 0 0;
+      transition: background 1.4s ease, filter 1.4s ease;
+    }
+    #h1 { width: 70%; height: 28%; left: -15%; }
+    #h2 { width: 65%; height: 22%; right: -12%; }
+
+    /* HOUSE */
+    #house { position: absolute; bottom: 18%; left: 50%; transform: translateX(-50%); width: 140px; z-index: 2; }
+    #roof {
+      width: 0; height: 0;
+      border-left: 80px solid transparent;
+      border-right: 80px solid transparent;
+      border-bottom: 70px solid #5a2e1a;
+      margin-left: -10px;
+      transition: border-bottom-color 1s ease;
+    }
+    #walls {
+      width: 140px; height: 90px;
+      background: #c9a07a;
+      position: relative;
+      transition: background 1s ease;
+    }
+    #door {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 32px; height: 48px; background: #4a2c18; border-radius: 4px 4px 0 0;
+    }
+    .window {
+      position: absolute; top: 18px; width: 28px; height: 28px;
+      background: #8ecae6; border: 3px solid #3d2914;
+      transition: background 0.8s ease, box-shadow 0.8s ease;
+    }
+    #wL { left: 14px; }
+    #wR { right: 14px; }
+    .window.lit { background: #ffe066; box-shadow: 0 0 18px #ffd43b; }
+
+    /* UI */
+    #hint {
+      position: absolute; top: 8%; left: 50%; transform: translateX(-50%);
+      color: #fff; font-family: Georgia, serif; font-size: clamp(18px, 4vw, 32px);
+      text-align: center; text-shadow: 0 2px 16px rgba(0,0,0,.55);
+      z-index: 10; pointer-events: none; letter-spacing: .02em;
+    }
+    #label {
+      position: absolute; bottom: 6%; left: 50%; transform: translateX(-50%);
+      color: #fff; font-family: system-ui, sans-serif; font-size: 14px;
+      letter-spacing: .18em; text-transform: uppercase;
+      text-shadow: 0 1px 8px rgba(0,0,0,.6); z-index: 10; opacity: .85;
+    }
+    #alive {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      background: rgba(0,0,0,.55); z-index: 50; opacity: 0; pointer-events: none;
+      transition: opacity .8s ease;
+    }
+    #alive.show { opacity: 1; pointer-events: auto; }
+    #alive p {
+      font-family: Georgia, serif; font-size: clamp(22px, 5vw, 42px);
+      color: #fff; text-align: center; padding: 24px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    /* lightning flash */
+    #flash {
+      position: absolute; inset: 0; background: #fff;
+      opacity: 0; pointer-events: none; z-index: 8;
+    }
+  </style>
+</head>
+<body>
+  <div id="world" class="day-sun">
+    <div id="flash"></div>
+    <div id="orb"></div>
+    <div class="hill" id="h1"></div>
+    <div class="hill" id="h2"></div>
+    <div id="ground"></div>
+    <div id="house">
+      <div id="roof"></div>
+      <div id="walls">
+        <div class="window" id="wL"></div>
+        <div class="window" id="wR"></div>
+        <div id="door"></div>
+      </div>
+    </div>
+    <canvas id="fx"></canvas>
+    <div id="hint">Click anywhere… the world will change</div>
+    <div id="label">DAY  ·  SUNNY</div>
+    <div id="alive"><p>Wait… the website is alive? 😱</p></div>
+  </div>
+
+  <script>
+    const world = document.getElementById("world");
+    const orb = document.getElementById("orb");
+    const ground = document.getElementById("ground");
+    const h1 = document.getElementById("h1");
+    const h2 = document.getElementById("h2");
+    const roof = document.getElementById("roof");
+    const walls = document.getElementById("walls");
+    const windows = document.querySelectorAll(".window");
+    const hint = document.getElementById("hint");
+    const label = document.getElementById("label");
+    const alive = document.getElementById("alive");
+    const flash = document.getElementById("flash");
+    const canvas = document.getElementById("fx");
+    const ctx = canvas.getContext("2d");
+
+    const times = ["day", "night"];
+    const weathers = ["sun", "rain", "snow"];
+    let t = 0, w = 0, clicks = 0;
+    let particles = [];
+    let audioCtx;
+
+    function size() {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+    }
+    size();
+    addEventListener("resize", size);
+
+    function ensureAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    }
+
+    function tone(freq, dur, type = "sine", vol = 0.08, slide) {
+      if (!audioCtx) return;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      if (slide) o.frequency.exponentialRampToValueAtTime(slide, audioCtx.currentTime + dur);
+      g.gain.setValueAtTime(vol, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    }
+
+    function noiseBurst(dur, vol = 0.12, highpass = 800) {
+      if (!audioCtx) return;
+      const n = audioCtx.createBufferSource();
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      n.buffer = buf;
+      const f = audioCtx.createBiquadFilter();
+      f.type = "highpass"; f.frequency.value = highpass;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(vol, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      n.connect(f); f.connect(g); g.connect(audioCtx.destination);
+      n.start();
+    }
+
+    let rainLoop, windLoop;
+
+    function stopLoops() {
+      if (rainLoop) { rainLoop.stop(); rainLoop = null; }
+      if (windLoop) { windLoop.stop(); windLoop = null; }
+    }
+
+    function startRainSound() {
+      if (!audioCtx) return;
+      const n = audioCtx.createBufferSource();
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      n.buffer = buf; n.loop = true;
+      const f = audioCtx.createBiquadFilter();
+      f.type = "bandpass"; f.frequency.value = 1800; f.Q.value = 0.6;
+      const g = audioCtx.createGain(); g.gain.value = 0.06;
+      n.connect(f); f.connect(g); g.connect(audioCtx.destination);
+      n.start(); rainLoop = n;
+    }
+
+    function startWindSound() {
+      if (!audioCtx) return;
+      const n = audioCtx.createBufferSource();
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 3, audioCtx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      n.buffer = buf; n.loop = true;
+      const f = audioCtx.createBiquadFilter();
+      f.type = "lowpass"; f.frequency.value = 400;
+      const g = audioCtx.createGain(); g.gain.value = 0.045;
+      n.connect(f); f.connect(g); g.connect(audioCtx.destination);
+      n.start(); windLoop = n;
+    }
+
+    function playForState() {
+      stopLoops();
+      const time = times[t], weather = weathers[w];
+      if (weather === "sun") {
+        tone(time === "day" ? 523 : 392, 0.35, "sine", 0.07);
+        setTimeout(() => tone(time === "day" ? 659 : 494, 0.45, "triangle", 0.05), 120);
+        if (time === "night") { tone(220, 1.2, "sine", 0.03); tone(330, 1.4, "sine", 0.02); }
+      } else if (weather === "rain") {
+        startRainSound();
+        noiseBurst(0.08, 0.08, 2000);
+        if (Math.random() > 0.4) lightning();
+      } else {
+        startWindSound();
+        tone(880, 0.15, "sine", 0.03, 1400);
+        setTimeout(() => tone(990, 0.12, "sine", 0.025, 1600), 90);
+      }
+    }
+
+    function lightning() {
+      flash.style.opacity = "0.85";
+      setTimeout(() => flash.style.opacity = "0", 70);
+      setTimeout(() => { flash.style.opacity = "0.4"; }, 140);
+      setTimeout(() => flash.style.opacity = "0", 220);
+      noiseBurst(0.45, 0.18, 120);
+      tone(55, 0.5, "sawtooth", 0.04, 30);
+    }
+
+    function paintScene() {
+      const time = times[t], weather = weathers[w];
+      world.className = `${time}-${weather}`;
+
+      const night = time === "night";
+      const names = { sun: "SUNNY", rain: "RAIN", snow: "SNOW" };
+      label.textContent = `${time.toUpperCase()}  ·  ${names[weather]}`;
+
+      if (night) {
+        orb.style.cssText = "width:70px;height:70px;top:10%;right:14%;background:#f4f1de;color:#f4f1de;box-shadow:0 0 40px #f4f1de, -12px 6px 0 -4px #0b1026;";
+        ground.style.background = weather === "snow" ? "#dce6f0" : "#1a2230";
+        h1.style.background = weather === "snow" ? "#9aafc4" : "#152034";
+        h2.style.background = weather === "snow" ? "#8aa0b8" : "#101828";
+        walls.style.background = "#6b4a32";
+        roof.style.borderBottomColor = "#2a1510";
+        windows.forEach(el => el.classList.add("lit"));
+      } else {
+        orb.style.cssText = weather === "sun"
+          ? "width:90px;height:90px;top:8%;right:12%;background:#ffd166;color:#ffd166;"
+          : "width:70px;height:70px;top:10%;right:14%;background:#d8dde8;color:#cfd6e0;box-shadow:0 0 24px #cfd6e0;";
+        ground.style.background = weather === "snow" ? "#eef4fa" : weather === "rain" ? "#4a6a3a" : "#5a9a3a";
+        h1.style.background = weather === "snow" ? "#c5d4e0" : "#3d7a32";
+        h2.style.background = weather === "snow" ? "#b4c6d6" : "#2f6a28";
+        walls.style.background = "#c9a07a";
+        roof.style.borderBottomColor = "#5a2e1a";
+        windows.forEach(el => el.classList.remove("lit"));
+      }
+
+      spawnParticles(weather);
+    }
+
+    function spawnParticles(weather) {
+      particles = [];
+      const n = weather === "sun" ? 18 : weather === "rain" ? 160 : 120;
+      for (let i = 0; i < n; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          s: weather === "rain" ? 8 + Math.random() * 14 : 2 + Math.random() * 4,
+          v: weather === "rain" ? 12 + Math.random() * 10 : weather === "snow" ? 0.6 + Math.random() * 1.4 : 0.3,
+          a: Math.random() * Math.PI * 2,
+          drift: Math.random() * 1.2
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const weather = weathers[w];
+      const night = times[t] === "night";
+
+      if (weather === "sun") {
+        ctx.fillStyle = night ? "rgba(255,255,220,0.7)" : "rgba(255,220,80,0.55)";
+        particles.forEach(p => {
+          p.a += 0.02;
+          p.y -= p.v;
+          p.x += Math.sin(p.a) * 0.4;
+          if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+          ctx.globalAlpha = 0.35 + Math.sin(p.a) * 0.25;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.s * 0.35, 0, Math.PI * 2); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      } else if (weather === "rain") {
+        ctx.strokeStyle = night ? "rgba(180,200,230,0.45)" : "rgba(220,235,255,0.55)";
+        ctx.lineWidth = 1.2;
+        particles.forEach(p => {
+          p.y += p.s * 0.9;
+          p.x += 1.2;
+          if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p.x - 2, p.y + p.s);
+          ctx.stroke();
+        });
+      } else {
+        ctx.fillStyle = night ? "rgba(230,240,255,0.9)" : "rgba(255,255,255,0.95)";
+        particles.forEach(p => {
+          p.y += p.v;
+          p.x += Math.sin(p.y * 0.02 + p.drift) * 0.8;
+          p.a += 0.03;
+          if (p.y > canvas.height) { p.y = -8; p.x = Math.random() * canvas.width; }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.a);
+          ctx.beginPath();
+          for (let i = 0; i < 6; i++) {
+            ctx.lineTo(Math.cos(i * Math.PI / 3) * p.s, Math.sin(i * Math.PI / 3) * p.s * 0.4);
+          }
+          ctx.closePath(); ctx.fill();
+          ctx.restore();
+        });
+      }
+      requestAnimationFrame(draw);
+    }
+
+    world.addEventListener("click", () => {
+      ensureAudio();
+      clicks++;
+      w++;
+      if (w >= weathers.length) { w = 0; t = 1 - t; }
+      paintScene();
+      playForState();
+      hint.style.opacity = clicks > 1 ? "0" : "1";
+
+      if (clicks === 6) {
+        setTimeout(() => {
+          stopLoops();
+          alive.classList.add("show");
+          tone(261, 0.2, "sine", 0.08);
+          setTimeout(() => tone(330, 0.2, "sine", 0.08), 160);
+          setTimeout(() => tone(392, 0.5, "triangle", 0.1), 320);
+        }, 700);
+      }
+    });
+
+    alive.addEventListener("click", (e) => {
+      e.stopPropagation();
+      alive.classList.remove("show");
+      clicks = 0;
+    });
+
+    paintScene();
+    draw();
+  </script>
+</body>
+</html>

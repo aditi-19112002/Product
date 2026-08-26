@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morphing Open Account</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    #previewBox {
+      display: none;
+      margin-top: 12px;
+      text-align: center;
+    }
+    #previewImg {
+      max-width: 120px;
+      max-height: 120px;
+      border-radius: 12px;
+      border: 2px solid #3b82f6;
+      object-fit: cover;
+    }
+  </style>
+</head>
+
+<body class="bg-white h-screen grid place-items-center">
+
+  <div class="flex flex-col items-center">
+
+    <!-- Morphing Box -->
+    <div id="box"
+         class="w-80 h-14 bg-blue-500 rounded-full shadow-xl flex items-center px-5 transition-all duration-300">
+
+      <i id="icon" class="fa-solid fa-building-columns text-white text-lg"></i>
+
+      <input id="input"
+             class="hidden flex-1 ml-3 bg-transparent outline-none text-white placeholder-white"
+             placeholder="Name">
+
+      <button id="btn" class="flex-1 text-white font-semibold">
+        Open New Account
+      </button>
+
+      <i id="next"
+         class="fa-solid fa-arrow-right hidden text-white text-lg cursor-pointer hover:translate-x-1 transition"></i>
+
+      <!-- Hidden file input -->
+      <input type="file" id="fileInput" class="hidden" accept="image/*,.pdf">
+    </div>
+
+    <!-- Image Preview -->
+    <div id="previewBox">
+      <img id="previewImg" src="" alt="Preview">
+      <p id="previewName" class="text-xs text-gray-600 mt-1"></p>
+    </div>
+
+    <!-- Error Message -->
+    <p id="errorMsg" class="text-red-500 text-sm mt-3 hidden"></p>
+
+  </div>
+
+  <script>
+    const btn = document.getElementById("btn");
+    const input = document.getElementById("input");
+    const icon = document.getElementById("icon");
+    const next = document.getElementById("next");
+    const box = document.getElementById("box");
+    const fileInput = document.getElementById("fileInput");
+    const previewBox = document.getElementById("previewBox");
+    const previewImg = document.getElementById("previewImg");
+    const previewName = document.getElementById("previewName");
+    const errorMsg = document.getElementById("errorMsg");
+
+    let step = 0;
+
+    const steps = [
+      { placeholder: "Enter Full Name", type: "text", icon: "fa-solid fa-user", isFile: false },
+      { placeholder: "Enter Mobile Number", type: "tel", icon: "fa-solid fa-phone", isFile: false, maxLength: 10 },
+      { placeholder: "Enter Date of Birth", type: "date", icon: "fa-solid fa-calendar", isFile: false },
+      { placeholder: "Enter Aadhaar Number", type: "text", icon: "fa-solid fa-id-card", isFile: false, maxLength: 12 },
+      { placeholder: "Enter PAN Number", type: "text", icon: "fa-solid fa-address-card", isFile: false, maxLength: 10 },
+      // { placeholder: "Upload Document", type: "file", icon: "fa-solid fa-file", isFile: true },
+      { placeholder: "Upload Photo", type: "file", icon: "fa-solid fa-camera", isFile: true },
+      // { placeholder: "Upload Signature", type: "file", icon: "fa-solid fa-signature", isFile: true },
+    ];
+
+    btn.onclick = () => {
+      btn.classList.add("hidden");
+      input.classList.remove("hidden");
+      next.classList.remove("hidden");
+      setStep(0);
+      input.focus();
+    };
+
+    next.onclick = go;
+    input.onkeydown = (e) => {
+      if (e.key === "Enter") go();
+    };
+
+    // Mobile number restriction
+    input.addEventListener("input", () => {
+      errorMsg.classList.add("hidden");
+
+      if (step === 1) { // Mobile step
+        // Only numbers allowed
+        input.value = input.value.replace(/\D/g, "");
+
+        if (input.value.length > 10) {
+          input.value = input.value.slice(0, 10);
+          errorMsg.textContent = "Mobile number cannot be more than 10 digits";
+          errorMsg.classList.remove("hidden");
+        }
+      }
+
+      if (step === 3) { // Aadhaar
+        input.value = input.value.replace(/\D/g, "").slice(0, 12);
+      }
+
+      if (step === 4) { // PAN
+        input.value = input.value.toUpperCase().slice(0, 10);
+      }
+    });
+
+    fileInput.onchange = () => {
+      if (fileInput.files[0]) {
+        const file = fileInput.files[0];
+        input.value = file.name.substring(0, 18);
+        input.classList.remove("hidden");
+
+        // Show image preview if it's an image
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewName.textContent = file.name;
+            previewBox.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          // For PDF or other files
+          previewBox.style.display = "none";
+        }
+      }
+    };
+
+    function setStep(index) {
+      const s = steps[index];
+      input.value = "";
+      input.placeholder = s.placeholder;
+      input.type = s.isFile ? "text" : s.type;
+      icon.className = `${s.icon} text-white text-lg`;
+      previewBox.style.display = "none";
+      errorMsg.classList.add("hidden");
+
+      if (s.isFile) {
+        input.readOnly = true;
+        input.onclick = () => fileInput.click();
+        input.style.cursor = "pointer";
+      } else {
+        input.readOnly = false;
+        input.onclick = null;
+        input.style.cursor = "text";
+        if (s.maxLength) input.maxLength = s.maxLength;
+        input.focus();
+      }
+    }
+
+    function go() {
+      errorMsg.classList.add("hidden");
+
+      if (steps[step].isFile) {
+        if (!fileInput.files[0] && !input.value) {
+          errorMsg.textContent = "Please select a file";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+      } else {
+        if (!input.value.trim()) {
+          errorMsg.textContent = "This field is required";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+
+       
+        if (step === 1 && input.value.length !== 10) {
+          errorMsg.textContent = "Mobile number must be exactly 10 digits";
+          errorMsg.classList.remove("hidden");
+          return;
+        }
+      }
+
+  
+      fileInput.value = "";
+      previewBox.style.display = "none";
+
+      step++;
+
+      if (step < steps.length) {
+        setStep(step);
+      } else {
+      
+        next.classList.add("hidden");
+        input.classList.add("hidden");
+        previewBox.style.display = "none";
+
+        icon.className = "fa-solid fa-spinner fa-spin text-white text-lg";
+
+        setTimeout(() => {
+          box.className = "w-80 h-14 bg-green-500 rounded-full shadow-xl flex items-center justify-center gap-2 text-white font-bold transition-all duration-300";
+
+          box.innerHTML = `
+            <i class="fa-solid fa-circle-check text-xl"></i>
+            <span>Request Submitted</span>
+          `;
+        }, 1500);
+      }
+    }
+  </script>
+
+</body>
+</html>
