@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Mobile 3D Experience</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f0f13;
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+    }
+    #landing {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0f0f13, #1a1a2e, #16213e);
+      z-index: 10;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    #landing.hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
+    #landing h1 {
+      font-size: clamp(2.5rem, 6vw, 4.2rem);
+      font-weight: 800;
+      background: linear-gradient(90deg, #fff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+    #landing p {
+      font-size: 1.15rem; color: #94a3b8;
+      margin-bottom: 2.2rem; text-align: center;
+    }
+    #launchBtn {
+      padding: 1rem 2.8rem; font-size: 1.1rem; font-weight: 600;
+      color: #fff; background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      border: none; border-radius: 50px; cursor: pointer;
+      box-shadow: 0 10px 40px rgba(124,58,237,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #launchBtn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 15px 50px rgba(124,58,237,0.6);
+    }
+    #canvas-container {
+      position: absolute; inset: 0;
+      opacity: 0; transition: opacity 1s ease 0.3s;
+    }
+    #canvas-container.active { opacity: 1; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #ui {
+      position: absolute; bottom: 36px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.8s ease 0.8s; z-index: 20;
+    }
+    #ui.visible { opacity: 1; pointer-events: auto; }
+    .color-row { display: flex; gap: 12px; }
+    .color-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 3px solid transparent; cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .color-btn:hover { transform: scale(1.15); }
+    .color-btn.active { border-color: #fff; transform: scale(1.1); }
+    .hint { font-size: 0.85rem; color: #94a3b8; }
+    #backBtn {
+      position: absolute; top: 22px; left: 22px;
+      padding: 9px 18px; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15); color: #fff;
+      border-radius: 30px; cursor: pointer; font-size: 0.9rem;
+      backdrop-filter: blur(10px); opacity: 0; pointer-events: none;
+      transition: opacity 0.5s; z-index: 20;
+    }
+    #backBtn.visible { opacity: 1; pointer-events: auto; }
+    #backBtn:hover { background: rgba(255,255,255,0.15); }
+  </style>
+</head>
+<body>
+
+  <div id="landing">
+    <h1>Nova Phone X</h1>
+    <p>Real mobile look • Rotate • Zoom • Color change</p>
+    <button id="launchBtn">Launch 3D Experience</button>
+  </div>
+
+  <div id="canvas-container"></div>
+  <button id="backBtn">← Back</button>
+
+  <div id="ui">
+    <div class="color-row">
+      <div class="color-btn active" style="background:#1e293b" data-color="#1e293b"></div>
+      <div class="color-btn" style="background:#ef4444" data-color="#ef4444"></div>
+      <div class="color-btn" style="background:#3b82f6" data-color="#3b82f6"></div>
+      <div class="color-btn" style="background:#22c55e" data-color="#22c55e"></div>
+      <div class="color-btn" style="background:#f59e0b" data-color="#f59e0b"></div>
+      <div class="color-btn" style="background:#a855f7" data-color="#a855f7"></div>
+    </div>
+    <div class="hint">Drag to rotate • Scroll to zoom</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <script>
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f0f13);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0.4, 5.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+    const key = new THREE.DirectionalLight(0xffffff, 1.15);
+    key.position.set(4, 7, 5);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xa78bfa, 0.35);
+    fill.position.set(-5, 2, -2);
+    scene.add(fill);
+
+    // Soft ground shadow
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(15, 15),
+      new THREE.ShadowMaterial({ opacity: 0.22 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -1.55;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // ========== PRODUCT ==========
+    const product = new THREE.Group();
+    scene.add(product);
+
+    // Phone body
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      metalness: 0.55,
+      roughness: 0.28
+    });
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1.42, 2.85, 0.13), bodyMat);
+    body.castShadow = true;
+    product.add(body);
+
+    // Rounded feel (simple bevel look with slightly inset screen)
+    // SCREEN with REAL image texture
+    const textureLoader = new THREE.TextureLoader();
+    // Free realistic phone wallpaper / UI style image (cross-origin friendly)
+    const screenTexture = textureLoader.load(
+      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&q=80',
+      () => { renderer.render(scene, camera); }
+    );
+    screenTexture.minFilter = THREE.LinearFilter;
+
+    const screenMat = new THREE.MeshStandardMaterial({
+      map: screenTexture,
+      metalness: 0.1,
+      roughness: 0.25,
+      emissive: 0x111111,
+      emissiveIntensity: 0.08
+    });
+
+    const screen = new THREE.Mesh(
+      new THREE.BoxGeometry(1.28, 2.55, 0.02),
+      screenMat
+    );
+    screen.position.z = 0.075;
+    product.add(screen);
+
+    // Thin black bezel around screen
+    const bezel = new THREE.Mesh(
+      new THREE.BoxGeometry(1.32, 2.62, 0.015),
+      new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.4, roughness: 0.4 })
+    );
+    bezel.position.z = 0.065;
+    product.add(bezel);
+
+    // Camera module
+    const camModule = new THREE.Mesh(
+      new THREE.BoxGeometry(0.55, 0.55, 0.06),
+      new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.7, roughness: 0.25 })
+    );
+    camModule.position.set(-0.35, 1.05, -0.095);
+    product.add(camModule);
+
+    const lens = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.11, 0.11, 0.04, 24),
+      new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.9, roughness: 0.15 })
+    );
+    lens.rotation.x = Math.PI / 2;
+    lens.position.set(-0.35, 1.05, -0.13);
+    product.add(lens);
+
+    // Side buttons
+    const btnMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.75 });
+    const btnGeo = new THREE.BoxGeometry(0.035, 0.28, 0.07);
+    [-0.73, 0.73].forEach((x, i) => {
+      const b = new THREE.Mesh(btnGeo, btnMat);
+      b.position.set(x, i === 0 ? 0.35 : 0.55, 0);
+      product.add(b);
+    });
+
+    // Start hidden for pop animation
+    product.scale.set(0.01, 0.01, 0.01);
+    product.position.y = -2;
+
+    // Controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.minDistance = 2.8;
+    controls.maxDistance = 11;
+    controls.enablePan = false;
+
+    let isLaunched = false;
+    let pop = 0;
+
+    // Color buttons
+    document.querySelectorAll('.color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        body.material.color.set(btn.dataset.color);
+      });
+    });
+
+    document.getElementById('launchBtn').addEventListener('click', () => {
+      document.getElementById('landing').classList.add('hidden');
+      container.classList.add('active');
+      document.getElementById('ui').classList.add('visible');
+      document.getElementById('backBtn').classList.add('visible');
+      isLaunched = true;
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      document.getElementById('landing').classList.remove('hidden');
+      container.classList.remove('active');
+      document.getElementById('ui').classList.remove('visible');
+      document.getElementById('backBtn').classList.remove('visible');
+      isLaunched = false;
+      pop = 0;
+      product.scale.set(0.01, 0.01, 0.01);
+      product.position.y = -2;
+      product.rotation.set(0, 0, 0);
+      camera.position.set(0, 0.4, 5.5);
+      controls.target.set(0, 0, 0);
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function easeOutBack(x) {
+      const c1 = 1.70158, c3 = c1 + 1;
+      return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (isLaunched && pop < 1) {
+        pop += 0.028;
+        const t = easeOutBack(Math.min(pop, 1));
+        product.scale.setScalar(t);
+        product.position.y = -2 + t * 2;
+      }
+      if (isLaunched && !controls.isDragging) {
+        product.rotation.y += 0.0025;
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

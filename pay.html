@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morphing File Converter</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    #previewContainer {
+      display: none;
+      margin-top: 16px;
+      text-align: center;
+    }
+    #previewImg {
+      max-width: 140px;
+      max-height: 140px;
+      border-radius: 12px;
+      border: 3px solid #0891b2;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 h-screen grid place-items-center">
+
+  <div class="flex flex-col items-center">
+
+    <!-- Morphing Box -->
+    <div id="box"
+         class="w-80 h-14 bg-cyan-600 rounded-full shadow-xl flex items-center px-5 transition-all duration-300">
+
+      <i id="icon" class="fa-solid fa-file-export text-white text-lg"></i>
+
+      <input id="input"
+             class="hidden flex-1 ml-3 bg-transparent outline-none text-white placeholder-white cursor-pointer"
+             placeholder=""
+             readonly>
+
+      <button id="btn" class="flex-1 text-white font-semibold">
+        Convert File
+      </button>
+
+      <i id="next"
+         class="fa-solid fa-arrow-right hidden text-white text-lg cursor-pointer hover:translate-x-1 transition"></i>
+
+      <input type="file" id="fileInput" class="hidden" accept="image/*,.pdf,.doc,.docx,.mp3,.mp4">
+    </div>
+
+    <!-- Image Preview -->
+    <div id="previewContainer">
+      <img id="previewImg" src="" alt="Preview">
+      <p id="previewName" class="text-xs text-gray-600 mt-2"></p>
+    </div>
+
+    <!-- Message -->
+    <p id="msg" class="text-sm mt-3 h-5 text-center"></p>
+
+    <!-- Format Options -->
+    <div id="formatBox" class="hidden mt-4 flex gap-2 flex-wrap justify-center">
+      <button onclick="selectFormat('PDF')" class="format-btn px-4 py-1.5 bg-white border rounded-full text-sm hover:bg-cyan-50">PDF</button>
+      <button onclick="selectFormat('JPG')" class="format-btn px-4 py-1.5 bg-white border rounded-full text-sm hover:bg-cyan-50">JPG</button>
+      <button onclick="selectFormat('PNG')" class="format-btn px-4 py-1.5 bg-white border rounded-full text-sm hover:bg-cyan-50">PNG</button>
+      <button onclick="selectFormat('DOCX')" class="format-btn px-4 py-1.5 bg-white border rounded-full text-sm hover:bg-cyan-50">DOCX</button>
+      <button onclick="selectFormat('MP3')" class="format-btn px-4 py-1.5 bg-white border rounded-full text-sm hover:bg-cyan-50">MP3</button>
+    </div>
+
+  </div>
+
+  <script>
+    const btn = document.getElementById("btn");
+    const input = document.getElementById("input");
+    const icon = document.getElementById("icon");
+    const next = document.getElementById("next");
+    const box = document.getElementById("box");
+    const msg = document.getElementById("msg");
+    const fileInput = document.getElementById("fileInput");
+    const formatBox = document.getElementById("formatBox");
+    const previewContainer = document.getElementById("previewContainer");
+    const previewImg = document.getElementById("previewImg");
+    const previewName = document.getElementById("previewName");
+
+    let step = 0;
+    let selectedFile = null;
+    let selectedFormat = "";
+
+    // Start
+    btn.onclick = () => {
+      btn.classList.add("hidden");
+      input.classList.remove("hidden");
+      next.classList.remove("hidden");
+
+      input.placeholder = "Click to Upload File";
+      icon.className = "fa-solid fa-upload text-white text-lg";
+      input.onclick = () => fileInput.click();
+      msg.textContent = "Select a file to convert";
+      msg.className = "text-sm mt-3 h-5 text-center text-gray-500";
+    };
+
+    // File selected + Preview
+    fileInput.onchange = () => {
+      if (fileInput.files[0]) {
+        selectedFile = fileInput.files[0];
+        input.value = selectedFile.name.substring(0, 18);
+        msg.textContent = "File selected ✓";
+        msg.className = "text-sm mt-3 h-5 text-center text-green-600";
+
+        // Show preview if image
+        if (selectedFile.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewName.textContent = selectedFile.name;
+            previewContainer.style.display = "block";
+          };
+          reader.readAsDataURL(selectedFile);
+        } else {
+          // Non-image file
+          previewContainer.style.display = "none";
+        }
+      }
+    };
+
+    next.onclick = go;
+
+    function go() {
+      if (step === 0) {
+        if (!selectedFile) {
+          showError("Please select a file first");
+          return;
+        }
+
+        step = 1;
+        input.value = "";
+        input.placeholder = "Select Convert Format";
+        input.onclick = null;
+        icon.className = "fa-solid fa-exchange-alt text-white text-lg";
+        formatBox.classList.remove("hidden");
+        msg.textContent = "Choose output format";
+        msg.className = "text-sm mt-3 h-5 text-center text-gray-500";
+        return;
+      }
+
+      if (step === 1) {
+        if (!selectedFormat) {
+          showError("Please select a format");
+          return;
+        }
+
+        // Hide preview + format during conversion
+        previewContainer.style.display = "none";
+        formatBox.classList.add("hidden");
+        next.classList.add("hidden");
+        input.classList.add("hidden");
+        icon.className = "fa-solid fa-spinner fa-spin text-white text-lg";
+        msg.textContent = `Converting to ${selectedFormat}...`;
+        msg.className = "text-sm mt-3 h-5 text-center text-cyan-600";
+
+        setTimeout(() => {
+          box.className = "w-80 h-14 bg-green-500 rounded-full shadow-xl flex items-center justify-center gap-2 text-white font-bold transition-all duration-300 cursor-pointer";
+
+          box.innerHTML = `
+            <i class="fa-solid fa-download text-xl"></i>
+            <span>Download Ready</span>
+          `;
+
+          msg.textContent = `${selectedFile.name.split('.')[0]}.${selectedFormat.toLowerCase()} is ready`;
+          msg.className = "text-sm mt-3 h-5 text-center text-green-600 font-medium";
+
+          
+          box.onclick = () => {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(selectedFile);
+            link.download = selectedFile.name.split('.')[0] + "." + selectedFormat.toLowerCase();
+            link.click();
+          };
+        }, 2500);
+      }
+    }
+
+    function selectFormat(format) {
+      selectedFormat = format;
+      input.value = format;
+
+      document.querySelectorAll(".format-btn").forEach(btn => {
+        btn.classList.remove("bg-cyan-600", "text-white");
+        btn.classList.add("bg-white");
+      });
+      event.target.classList.add("bg-cyan-600", "text-white");
+      event.target.classList.remove("bg-white");
+
+      msg.textContent = `Selected: ${format}`;
+      msg.className = "text-sm mt-3 h-5 text-center text-cyan-600";
+    }
+
+    function showError(text) {
+      msg.textContent = text;
+      msg.className = "text-sm mt-3 h-5 text-center text-red-500";
+    }
+  </script>
+
+</body>
+</html>
