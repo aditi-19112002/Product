@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FreshMart</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --green: #0a9f6a;
+    --green-dark: #088a5b;
+    --bg: #f5f7f6;
+    --text: #111;
+    --muted: #6b7280;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+  }
+
+  /* Header */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(12px);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+  }
+
+  .logo {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--green);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-sm {
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1.5px solid #e5e7eb;
+    background: white;
+    cursor: pointer;
+  }
+
+  .btn-sm.green {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
+  }
+
+  .cart-icon {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 1.5px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-badge.show {
+    display: flex;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 28px 16px 16px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .hero h1 span {
+    color: var(--green);
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* Products */
+  .section {
+    padding: 8px 16px 100px;
+  }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .section-head h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .section-head span {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (min-width: 600px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    transition: transform 0.2s;
+  }
+
+  .card:active {
+    transform: scale(0.98);
+  }
+
+  .card img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #f0fdf4;
+  }
+
+  .card h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 10px 0 2px;
+    line-height: 1.3;
+  }
+
+  .unit {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .price {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .price s {
+    font-weight: 500;
+    color: #9ca3af;
+    font-size: 0.75rem;
+    margin-left: 4px;
+  }
+
+  .add {
+    background: var(--green);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .qty {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: #ecfdf5;
+    border-radius: 8px;
+    padding: 2px;
+  }
+
+  .qty.active {
+    display: flex;
+  }
+
+  .qty button {
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: white;
+    border-radius: 6px;
+    font-weight: 700;
+    color: var(--green);
+    cursor: pointer;
+  }
+
+  .qty span {
+    font-weight: 700;
+    font-size: 0.9rem;
+    min-width: 16px;
+    text-align: center;
+  }
+
+  /* Bottom Buy Bar */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px 20px;
+    background: linear-gradient(to top, #f5f7f6 70%, transparent);
+    z-index: 40;
+  }
+
+  .buy-btn {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: block;
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(10, 159, 106, 0.3);
+  }
+
+  /* Modal / Morph Overlay */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px 40px;
+    max-height: 90dvh;
+    overflow-y: auto;
+    animation: slideUp 0.35s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .close {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: #f3f4f6;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+  }
+
+  .form-group input:focus {
+    border-color: var(--green);
+  }
+
+  .full-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+
+  .success-box {
+    text-align: center;
+    padding: 30px 10px;
+    display: none;
+  }
+
+  .success-box.active {
+    display: block;
+  }
+
+  .success-box .icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+  }
+
+  /* Checkout specific */
+  .option {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .option.selected {
+    border-color: var(--green);
+    background: #f0fdf4;
+  }
+
+  .option input {
+    margin-top: 3px;
+    accent-color: var(--green);
+  }
+
+  .summary {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 14px;
+    margin: 18px 0;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+  }
+
+  .summary-row.total {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #d1d5db;
+  }
+
+  .processing {
+    text-align: center;
+    padding: 40px 20px;
+    display: none;
+  }
+
+  .processing.active {
+    display: block;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e5e7eb;
+    border-top-color: var(--green);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🥬 FreshMart</div>
+  <div class="header-right">
+    <button class="btn-sm" onclick="openModal('login')">Login</button>
+    <button class="btn-sm green" onclick="openModal('signup')">Sign Up</button>
+    <div class="cart-icon">
+      🛒
+      <div class="cart-badge" id="cartBadge">0</div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>What if <span>ONE button</span> handled your entire grocery order?</h1>
+  <p>Login • Add items • Checkout — everything on one screen</p>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Popular Near You</h2>
+    <span>Delivery in 12 mins</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</section>
+
+<div class="bottom-bar">
+  <button class="buy-btn" id="buyBtn" onclick="openCheckout()">
+    Buy Now • <span id="totalText">₹0</span>
+  </button>
+</div>
+
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Welcome back</h3>
+      <button class="close" onclick="closeModal('login')">✕</button>
+    </div>
+    <div id="loginForm">
+      <div class="form-group">
+        <label>Phone / Email</label>
+        <input type="text" placeholder="98765 43210">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="full-btn" onclick="loginSuccess()">Login</button>
+    </div>
+    <div class="success-box" id="loginSuccess">
+      <div class="icon">✅</div>
+      <h3>Login Successful</h3>
+      <p style="color:#6b7280;margin-top:6px;">Welcome back to FreshMart</p>
+    </div>
+  </div>
+</div>
+
+<!-- Signup Modal -->
+<div class="modal" id="signupModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Create Account</h3>
+      <button class="close" onclick="closeModal('signup')">✕</button>
+    </div>
+    <div id="signupForm">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Rahul Sharma">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" placeholder="98765 43210">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Create password">
+      </div>
+      <button class="full-btn" onclick="signupSuccess()">Create Account</button>
+    </div>
+    <div class="success-box" id="signupSuccess">
+      <div class="icon">🎉</div>
+      <h3>Account Created!</h3>
+      <p style="color:#6b7280;margin-top:6px;">You’re ready to shop</p>
+    </div>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="modal" id="checkoutModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Checkout</h3>
+      <button class="close" onclick="closeModal('checkout')">✕</button>
+    </div>
+
+    <div id="checkoutForm">
+      <p style="font-size:0.8rem;font-weight:600;color:#6b7280;margin-bottom:10px;">DELIVERY ADDRESS</p>
+      <div class="option selected" onclick="selectOption(this)">
+        <input type="radio" name="addr" checked>
+        <div>
+          <strong>Home</strong><br>
+          <span style="font-size:0.85rem;color:#6b7280;">12B, Green Park, New Delhi</span>
+        </div>
+      </div>
+      <div class="option" onclick="selectOption(this)">
+        <input type="radio" name="addr">
+        <div>
+          <strong>Work</strong><br>
+          <span style="font-size:0.85rem;color:#6b7280;">91, Cyber Hub, Gurugram</span>
+        </div>
+      </div>
+
+      <p style="font-size:0.8rem;font-weight:600;color:#6b7280;margin:18px 0 10px;">PAYMENT</p>
+      <div class="option selected" onclick="selectOption(this)">
+        <input type="radio" name="pay" checked>
+        <div><strong>UPI</strong> (GPay, PhonePe, Paytm)</div>
+      </div>
+      <div class="option" onclick="selectOption(this)">
+        <input type="radio" name="pay">
+        <div><strong>Credit / Debit Card</strong></div>
+      </div>
+      <div class="option" onclick="selectOption(this)">
+        <input type="radio" name="pay">
+        <div><strong>Cash on Delivery</strong></div>
+      </div>
+
+      <div class="summary">
+        <div class="summary-row"><span>Items</span><span id="sumItems">₹0</span></div>
+        <div class="summary-row"><span>Delivery</span><span style="color:var(--green)">FREE</span></div>
+        <div class="summary-row total"><span>Total</span><span id="sumTotal">₹0</span></div>
+      </div>
+
+      <button class="full-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <div class="processing" id="processing">
+      <div class="spinner"></div>
+      <h3>Processing Payment…</h3>
+      <p style="color:#6b7280;margin-top:6px;">Please wait</p>
+    </div>
+
+    <div class="success-box" id="orderSuccess">
+      <div class="icon">🎉</div>
+      <h3>Order Confirmed!</h3>
+      <p style="color:#6b7280;margin-top:6px;">Arriving in 12-15 minutes</p>
+      <button class="full-btn" style="margin-top:20px;" onclick="finishOrder()">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const products = [
+    { id: 1, name: "Farm Fresh Milk", unit: "1L", price: 62, old: 68, img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=300&fit=crop" },
+    { id: 2, name: "Brown Bread", unit: "400g", price: 45, old: 52, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop" },
+    // { id: 3, name: "Organic Eggs", unit: "6 pcs", price: 78, old: 90, img: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&h=300&fit=crop" },
+    { id: 4, name: "Bananas", unit: "1 dozen", price: 49, old: 60, img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=300&fit=crop" },
+    { id: 5, name: "Tomatoes", unit: "500g", price: 28, old: 36, img: "https://tse4.mm.bing.net/th/id/OIP.mZUA6nSupNnfXPfnbPOC1AHaHa?r=0&pid=Api&P=0&h=180" },
+    { id: 6, name: "Onions", unit: "1kg", price: 36, old: 45, img: "https://tse3.mm.bing.net/th/id/OIP.gghloS31O7iGemZDeHvhHAHaFG?r=0&pid=Api&P=0&h=180" },
+    { id: 7, name: "Basmati Rice", unit: "1kg", price: 145, old: 165, img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&h=300&fit=crop" },
+    { id: 8, name: "Aashirvaad Atta", unit: "5kg", price: 275, old: 310, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop" }
+  ];
+
+ 
+  let cart = {};
+
+  function render() {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = products.map(p => `
+      <div class="card">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <h3>${p.name}</h3>
+        <div class="unit">${p.unit}</div>
+        <div class="bottom">
+          <div class="price">₹${p.price} <s>₹${p.old}</s></div>
+          <button class="add" id="add${p.id}" onclick="add(${p.id})">+</button>
+          <div class="qty" id="qty${p.id}">
+            <button onclick="change(${p.id},-1)">−</button>
+            <span id="val${p.id}">1</span>
+            <button onclick="change(${p.id},1)">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function add(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    document.getElementById('add' + id).style.display = 'none';
+    document.getElementById('qty' + id).classList.add('active');
+    document.getElementById('val' + id).textContent = cart[id];
+    update();
+  }
+
+  function change(id, d) {
+    cart[id] = (cart[id] || 0) + d;
+    if (cart[id] <= 0) {
+      delete cart[id];
+      document.getElementById('add' + id).style.display = 'block';
+      document.getElementById('qty' + id).classList.remove('active');
+    } else {
+      document.getElementById('val' + id).textContent = cart[id];
+    }
+    update();
+  }
+
+  function update() {
+    let total = 0, count = 0;
+    for (let id in cart) {
+      const p = products.find(x => x.id == id);
+      total += p.price * cart[id];
+      count += cart[id];
+    }
+    document.getElementById('totalText').textContent = '₹' + total;
+    document.getElementById('sumItems').textContent = '₹' + total;
+    document.getElementById('sumTotal').textContent = '₹' + total;
+
+    const badge = document.getElementById('cartBadge');
+    badge.textContent = count;
+    badge.classList.toggle('show', count > 0);
+  }
+
+  function openModal(type) {
+    document.getElementById(type + 'Modal').classList.add('active');
+  }
+
+  function closeModal(type) {
+    document.getElementById(type + 'Modal').classList.remove('active');
+    // reset forms
+    if (type === 'login') {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('loginSuccess').classList.remove('active');
+    }
+    if (type === 'signup') {
+      document.getElementById('signupForm').style.display = 'block';
+      document.getElementById('signupSuccess').classList.remove('active');
+    }
+    if (type === 'checkout') {
+      document.getElementById('checkoutForm').style.display = 'block';
+      document.getElementById('processing').classList.remove('active');
+      document.getElementById('orderSuccess').classList.remove('active');
+    }
+  }
+
+  function loginSuccess() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('loginSuccess').classList.add('active');
+    setTimeout(() => closeModal('login'), 1500);
+  }
+
+  function signupSuccess() {
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('signupSuccess').classList.add('active');
+    setTimeout(() => closeModal('signup'), 1500);
+  }
+
+  function openCheckout() {
+    if (Object.keys(cart).length === 0) {
+      alert('Pehle kuch items add karo');
+      return;
+    }
+    openModal('checkout');
+  }
+
+  function selectOption(el) {
+    const name = el.querySelector('input').name;
+    document.querySelectorAll(`input[name="${name}"]`).forEach(i => {
+      i.closest('.option').classList.remove('selected');
+    });
+    el.classList.add('selected');
+    el.querySelector('input').checked = true;
+  }
+
+  function placeOrder() {
+    document.getElementById('checkoutForm').style.display = 'none';
+    document.getElementById('processing').classList.add('active');
+    setTimeout(() => {
+      document.getElementById('processing').classList.remove('active');
+      document.getElementById('orderSuccess').classList.add('active');
+    }, 2000);
+  }
+
+  function finishOrder() {
+    cart = {};
+    render();
+    update();
+    closeModal('checkout');
+  }
+
+  // close on background click
+  document.querySelectorAll('.modal').forEach(m => {
+    m.addEventListener('click', e => {
+      if (e.target === m) {
+        const id = m.id.replace('Modal', '');
+        closeModal(id);
+      }
+    });
+  });
+
+  render();
+  update();
+</script>
+</body>
+</html>

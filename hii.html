@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your Own Smartphone</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  header {
+    background: #ffffff;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+  }
+  header h1 { font-size: 1.3rem; font-weight: 600; color: #111; }
+  header h1 span { color: #007aff; }
+
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* CONTROLS */
+  .controls {
+    width: 320px;
+    background: gray;
+    border-right: 1px solid #eee;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .section {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 13px;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .section h3 {
+    font-size: 0.75rem;
+    color: #007aff;
+    margin-bottom: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 7px;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  
+  .item-btn {
+    background: #f5f5f5;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 9px 4px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1.25rem;
+    transition: all 0.2s;
+    color: #333;
+  }
+  .item-btn:hover, .item-btn.active {
+    border-color: #007aff;
+    background: #e8f0fe;
+    transform: scale(1.04);
+  }
+  .item-btn small {
+    display: block;
+    font-size: 0.58rem;
+    color: #666;
+    margin-top: 2px;
+  }
+  
+  input[type="color"] {
+    width: 100%;
+    height: 36px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    background: none;
+  }
+  
+  .price-box {
+    background: #f0f7ff;
+    border: 1px solid #007aff33;
+    border-radius: 12px;
+    padding: 13px;
+    text-align: center;
+  }
+  .price-box .label { font-size: 0.72rem; color: #555; }
+  .price-box .amount {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #007aff;
+    margin-top: 2px;
+  }
+  
+  .btn-final {
+    background: linear-gradient(135deg, #007aff, #0056b3);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.93rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-final:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px #007aff44;
+  }
+
+  /* PHONE PREVIEW */
+  .preview-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+  }
+  
+  .phone {
+    width: 400px;
+    height: 840px;
+    border-radius: 38px;
+    position: relative;
+    background: #1a1a1a;
+    box-shadow: 0 0 0 3px #333, 0 25px 60px rgba(0,0,0,0.18);
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+  .phone.slim { border-radius: 42px; }
+  .phone.edge { border-radius: 26px; }
+
+  .btn-power {
+    position: absolute; right: -3px; top: 120px;
+    width: 4px; height: 45px; background: #555; border-radius: 2px 0 0 2px;
+  }
+  .btn-vol {
+    position: absolute; left: -3px; top: 110px;
+    width: 4px; height: 75px; background: #555; border-radius: 0 2px 2px 0;
+  }
+
+  .screen {
+    position: absolute;
+    top: 11px; left: 11px; right: 11px; bottom: 11px;
+    border-radius: 30px;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone.slim .screen { border-radius: 34px; }
+  .phone.edge .screen { border-radius: 18px; }
+
+  .status-bar {
+    height: 26px;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 0.68rem;
+    color: white;
+    font-weight: 500;
+    z-index: 20;
+  }
+  .status-right { display: flex; gap: 5px; align-items: center; }
+  .signal {
+    display: flex; gap: 1.5px; align-items: flex-end; height: 10px;
+  }
+  .signal span {
+    width: 3px; background: white; border-radius: 1px;
+  }
+  .signal span:nth-child(1){height:3px}
+  .signal span:nth-child(2){height:5px}
+  .signal span:nth-child(3){height:7px}
+  .signal span:nth-child(4){height:10px}
+
+  .home {
+    flex: 1;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px 6px;
+    padding: 16px 12px 8px;
+    flex: 1;
+    align-content: start;
+  }
+  
+  .app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .app-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  }
+  .app-name {
+    font-size: 0.55rem;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    text-align: center;
+    max-width: 56px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .dock {
+    margin: 0 12px 12px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(16px);
+    border-radius: 18px;
+    padding: 9px 6px;
+    display: flex;
+    justify-content: space-around;
+  }
+  .dock .app-icon {
+    width: 46px; height: 46px; border-radius: 13px; font-size: 1.45rem;
+  }
+  
+  .home-indicator {
+    position: absolute;
+    bottom: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 110px; height: 4px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 4px;
+  }
+
+  /* Camera */
+  .camera-module {
+    position: absolute; top: 16px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    display: flex; gap: 5px; align-items: center;
+    background: #0d0d0d;
+    border-radius: 18px;
+    padding: 5px 9px;
+  }
+  .camera-lens {
+    width: 13px; height: 13px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #444, #0a0a0a);
+    border: 1.5px solid #222;
+    position: relative;
+  }
+  .camera-lens::after {
+    content: '';
+    position: absolute; top: 2px; left: 2px;
+    width: 3.5px; height: 3.5px;
+    background: rgba(80,160,255,0.45);
+    border-radius: 50%;
+  }
+  .camera-flash {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #f0e0a0; box-shadow: 0 0 5px #f0e0a0;
+  }
+  .punch-hole {
+    position: absolute; top: 20px; left: 50%;
+    transform: translateX(-50%);
+    width: 11px; height: 11px; border-radius: 50%;
+    background: #000; border: 2px solid #1a1a1a; z-index: 25;
+  }
+  .notch {
+    position: absolute; top: 11px; left: 50%;
+    transform: translateX(-50%);
+    width: 105px; height: 24px;
+    background: #000; border-radius: 0 0 14px 14px; z-index: 25;
+  }
+
+  /* Accessories */
+  .case {
+    position: absolute; inset: -7px;
+    border-radius: 44px; border: 7px solid;
+    pointer-events: none; z-index: 5; opacity: 0; transition: opacity 0.3s;
+  }
+  .case.show { opacity: 1; }
+  
+  .popsocket {
+    position: absolute; bottom: 90px; left: 50%;
+    transform: translateX(-50%);
+    width: 46px; height: 46px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0; transition: opacity 0.3s; z-index: 30;
+  }
+  .popsocket.show { opacity: 1; }
+  .popsocket::after {
+    content: ''; position: absolute; inset: 7px;
+    border-radius: 50%; background: rgba(255,255,255,0.25);
+  }
+  
+  .strap {
+    position: absolute; top: -28px; left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 36px; background: #777; border-radius: 2px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .strap.show { opacity: 1; }
+  .strap::before {
+    content: ''; position: absolute; top: -7px; left: -9px;
+    width: 22px; height: 11px;
+    border: 3px solid #777; border-radius: 11px 11px 0 0; border-bottom: none;
+  }
+
+  /* Modal */
+  .modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 100;
+    align-items: center; justify-content: center; flex-direction: column;
+  }
+  .modal.show { display: flex; }
+  
+  .modal-content {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .modal-content h2 { margin-bottom: 8px; color: #007aff; }
+  
+  .final-phone { display: inline-block; transform: scale(0.8); }
+  
+  .specs {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 14px;
+    font-size: 0.8rem;
+    text-align: left;
+    color: #444;
+  }
+  
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .modal-actions button {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-close { background: #eee; color: #333; }
+
+  @media (max-width: 900px) {
+    .main { flex-direction: column; }
+    .controls { width: 100%; max-height: 320px; }
+    .phone { transform: scale(0.82); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📱 <span>Build</span> Your Own Smartphone</h1>
+  <div style="font-size:0.8rem;color:#888">Select Apps from left panel</div>
+</header>
+
+<div class="main">
+  <!-- LEFT CONTROLS -->
+  <div class="controls">
+
+    <div class="section">
+      <h3>📱 Body Style</h3>
+      <div class="grid-3">
+        <div class="item-btn active" data-body="standard">📱<small>Standard</small></div>
+        <div class="item-btn" data-body="slim">✨<small>Slim</small></div>
+        <div class="item-btn" data-body="edge">🔲<small>Edge</small></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>📷 Camera</h3>
+      <div class="grid-2">
+        <div class="item-btn active" data-camera="dual">📷📷<small>Dual</small></div>
+        <div class="item-btn" data-camera="triple">📷📷📷<small>Triple</small></div>
+        <div class="item-btn" data-camera="punch">⚫<small>Punch</small></div>
+        <div class="item-btn" data-camera="notch">➖<small>Notch</small></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>🎨 Color</h3>
+      <input type="color" id="phoneColor" value="#1a1a1a">
+      <div class="grid-3" style="margin-top:8px">
+        <div class="item-btn color-preset" data-color="#1a1a1a" style="background:#1a1a1a"></div>
+        <div class="item-btn color-preset" data-color="#f5f5f5" style="background:#f5f5f5"></div>
+        <div class="item-btn color-preset" data-color="#0a84ff" style="background:#0a84ff"></div>
+        <div class="item-btn color-preset" data-color="#ff2d55" style="background:#ff2d55"></div>
+        <div class="item-btn color-preset" data-color="#30d158" style="background:#30d158"></div>
+        <div class="item-btn color-preset" data-color="#bf5af2" style="background:#bf5af2"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>🖼️ Wallpaper</h3>
+      <div class="grid-3">
+        <div class="item-btn active" data-wall="g1">🌌</div>
+        <div class="item-btn" data-wall="g2">🌅</div>
+        <div class="item-btn" data-wall="g3">🌊</div>
+        <div class="item-btn" data-wall="g4">🔥</div>
+        <div class="item-btn" data-wall="g5">🍃</div>
+        <div class="item-btn" data-wall="dark">🌑</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>📲 Choose Apps</h3>
+      <div class="grid-4" id="appSelector"></div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <button class="item-btn" style="flex:1;font-size:0.7rem;padding:6px" id="selectAllApps">Select All</button>
+        <button class="item-btn" style="flex:1;font-size:0.7rem;padding:6px" id="clearApps">Clear</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>🎒 Accessories</h3>
+      <div class="grid-3">
+        <div class="item-btn" data-acc="case">🛡️<small>Case</small></div>
+        <div class="item-btn" data-acc="pop">⭕<small>Pop</small></div>
+        <div class="item-btn" data-acc="strap">🔗<small>Strap</small></div>
+      </div>
+    </div>
+
+    <div class="price-box">
+      <div class="label">Total Price</div>
+      <div class="amount" id="totalPrice">₹24,999</div>
+    </div>
+
+    <button class="btn-final" id="finalBtn">🚀 Build Final Phone</button>
+  </div>
+
+  <!-- PHONE PREVIEW -->
+  <div class="preview-area">
+    <div class="phone standard" id="phone">
+      <div class="btn-power"></div>
+      <div class="btn-vol"></div>
+      <div id="cameraArea"></div>
+
+      <div class="screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <div class="signal"><span></span><span></span><span></span><span></span></div>
+            <span>5G</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <div class="home" id="homeScreen">
+          <div class="app-grid" id="appGrid"></div>
+          <div class="dock" id="dock"></div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+
+      <div class="case" id="case"></div>
+      <div class="popsocket" id="popsocket"></div>
+      <div class="strap" id="strap"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL MODAL -->
+<div class="modal" id="finalModal">
+  <div class="modal-content">
+    <h2>🎉 Your Phone is Ready!</h2>
+    <div class="final-phone" id="finalPhonePreview"></div>
+    <div class="specs" id="specsBox"></div>
+    <div class="modal-actions">
+      <button class="btn-close" id="closeModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const allApps = [
+    { id: 'phone',    icon: '📱', name: 'Phone',    color: '#30d158' },
+    { id: 'messages', icon: '💬', name: 'Messages', color: '#30d158' },
+    { id: 'chrome',   icon: '🌐', name: 'Chrome',   color: '#4285f4' },
+    { id: 'camera',   icon: '📷', name: 'Camera',   color: '#8e8e93' },
+    { id: 'music',    icon: '🎵', name: 'Music',    color: '#ff2d55' },
+    { id: 'mail',     icon: '📧', name: 'Mail',     color: '#007aff' },
+    { id: 'maps',     icon: '🗺️', name: 'Maps',     color: '#34c759' },
+    { id: 'clock',    icon: '⏰', name: 'Clock',    color: '#ff9500' },
+    { id: 'weather',  icon: '🌤️', name: 'Weather',  color: '#5ac8fa' },
+    { id: 'notes',    icon: '📝', name: 'Notes',    color: '#ffcc00' },
+    { id: 'settings', icon: '⚙️', name: 'Settings', color: '#8e8e93' },
+    { id: 'photos',   icon: '📸', name: 'Photos',   color: '#ff2d55' },
+    { id: 'games',    icon: '🎮', name: 'Games',    color: '#af52de' },
+    { id: 'wallet',   icon: '💳', name: 'Wallet',   color: '#ff9500' },
+    { id: 'calendar', icon: '📅', name: 'Calendar', color: '#ff3b30' },
+    { id: 'store',    icon: '🛒', name: 'Store',    color: '#007aff' },
+    { id: 'youtube',  icon: '▶️', name: 'YouTube',  color: '#ff0000' },
+    { id: 'whatsapp', icon: '💚', name: 'WhatsApp', color: '#25d366' },
+    { id: 'insta',    icon: '📸', name: 'Instagram',color: '#e1306c' },
+    { id: 'spotify',  icon: '🎧', name: 'Spotify',  color: '#1db954' }
+  ];
+
+  let selectedApps = allApps.slice(0, 12).map(a => a.id);
+
+  const dockApps = [
+    { icon: '📱', name: 'Phone', color: '#30d158' },
+    { icon: '💬', name: 'Messages', color: '#30d158' },
+    { icon: '🌐', name: 'Browser', color: '#4285f4' },
+    { icon: '📷', name: 'Camera', color: '#8e8e93' }
+  ];
+
+  const wallpapers = {
+    g1: 'linear-gradient(160deg, #0f0c29, #302b63, #24243e)',
+    g2: 'linear-gradient(160deg, #ff9a9e, #fad0c4)',
+    g3: 'linear-gradient(160deg, #a1c4fd, #c2e9fb)',
+    g4: 'linear-gradient(160deg, #ff416c, #ff4b2b)',
+    g5: 'linear-gradient(160deg, #11998e, #38ef7d)',
+    dark: 'linear-gradient(160deg, #0c0c0c, #1a1a2e, #16213e)'
+  };
+
+  let state = {
+    body: 'standard',
+    camera: 'dual',
+    color: '#1a1a1a',
+    wallpaper: 'g1',
+    case: false,
+    pop: false,
+    strap: false
+  };
+
+  const basePrice = 24999;
+
+  function renderAppSelector() {
+    const container = document.getElementById('appSelector');
+    container.innerHTML = '';
+    allApps.forEach(app => {
+      const btn = document.createElement('div');
+      btn.className = 'item-btn' + (selectedApps.includes(app.id) ? ' active' : '');
+      btn.innerHTML = `${app.icon}<small>${app.name}</small>`;
+      btn.onclick = () => {
+        if (selectedApps.includes(app.id)) {
+          selectedApps = selectedApps.filter(id => id !== app.id);
+        } else {
+          selectedApps.push(app.id);
+        }
+        btn.classList.toggle('active');
+        renderHomeApps();
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  function renderHomeApps() {
+    const grid = document.getElementById('appGrid');
+    const dock = document.getElementById('dock');
+    grid.innerHTML = '';
+    dock.innerHTML = '';
+
+    allApps.filter(a => selectedApps.includes(a.id)).forEach(app => {
+      const div = document.createElement('div');
+      div.className = 'app';
+      div.innerHTML = `
+        <div class="app-icon" style="background:${app.color}dd">${app.icon}</div>
+        <div class="app-name">${app.name}</div>`;
+      grid.appendChild(div);
+    });
+
+    dockApps.forEach(app => {
+      const div = document.createElement('div');
+      div.className = 'app';
+      div.innerHTML = `<div class="app-icon" style="background:${app.color}">${app.icon}</div>`;
+      dock.appendChild(div);
+    });
+  }
+
+  function updatePhone() {
+    const phone = document.getElementById('phone');
+    const home = document.getElementById('homeScreen');
+    const cameraArea = document.getElementById('cameraArea');
+
+    phone.className = 'phone ' + state.body;
+    phone.style.background = state.color;
+
+    const btnColor = shade(state.color, 35);
+    document.querySelector('.btn-power').style.background = btnColor;
+    document.querySelector('.btn-vol').style.background = btnColor;
+
+    cameraArea.innerHTML = '';
+    if (state.camera === 'dual') {
+      cameraArea.innerHTML = `<div class="camera-module">
+        <div class="camera-lens"></div><div class="camera-lens"></div>
+        <div class="camera-flash"></div></div>`;
+    } else if (state.camera === 'triple') {
+      cameraArea.innerHTML = `<div class="camera-module" style="padding:6px 11px">
+        <div class="camera-lens"></div><div class="camera-lens"></div>
+        <div class="camera-lens"></div><div class="camera-flash"></div></div>`;
+    } else if (state.camera === 'punch') {
+      cameraArea.innerHTML = `<div class="punch-hole"></div>`;
+    } else {
+      cameraArea.innerHTML = `<div class="notch"></div>`;
+    }
+
+    home.style.background = wallpapers[state.wallpaper];
+
+    document.getElementById('case').classList.toggle('show', state.case);
+    document.getElementById('case').style.borderColor = shade(state.color, 45);
+    document.getElementById('popsocket').classList.toggle('show', state.pop);
+    document.getElementById('strap').classList.toggle('show', state.strap);
+
+    updatePrice();
+  }
+
+  function updatePrice() {
+    let extra = 0;
+    if (state.body === 'slim') extra += 3000;
+    if (state.body === 'edge') extra += 5000;
+    if (state.camera === 'triple') extra += 8000;
+    if (state.camera === 'punch') extra += 2000;
+    if (state.case) extra += 1499;
+    if (state.pop) extra += 799;
+    if (state.strap) extra += 599;
+    document.getElementById('totalPrice').textContent = 
+      '₹' + (basePrice + extra).toLocaleString('en-IN');
+  }
+
+  function shade(hex, p) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = Math.min(255, Math.max(0, (n >> 16) + p));
+    const g = Math.min(255, Math.max(0, ((n >> 8) & 0xff) + p));
+    const b = Math.min(255, Math.max(0, (n & 0xff) + p));
+    return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+  }
+
+  // Events
+  document.querySelectorAll('[data-body]').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('[data-body]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.body = btn.dataset.body;
+      updatePhone();
+    };
+  });
+
+  document.querySelectorAll('[data-camera]').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('[data-camera]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.camera = btn.dataset.camera;
+      updatePhone();
+    };
+  });
+
+  document.getElementById('phoneColor').oninput = e => {
+    state.color = e.target.value;
+    updatePhone();
+  };
+
+  document.querySelectorAll('.color-preset').forEach(btn => {
+    btn.onclick = () => {
+      state.color = btn.dataset.color;
+      document.getElementById('phoneColor').value = state.color;
+      updatePhone();
+    };
+  });
+
+  document.querySelectorAll('[data-wall]').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('[data-wall]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.wallpaper = btn.dataset.wall;
+      updatePhone();
+    };
+  });
+
+  document.querySelectorAll('[data-acc]').forEach(btn => {
+    btn.onclick = () => {
+      const key = btn.dataset.acc;
+      state[key] = !state[key];
+      btn.classList.toggle('active', state[key]);
+      updatePhone();
+    };
+  });
+
+  document.getElementById('selectAllApps').onclick = () => {
+    selectedApps = allApps.map(a => a.id);
+    renderAppSelector();
+    renderHomeApps();
+  };
+  
+  document.getElementById('clearApps').onclick = () => {
+    selectedApps = [];
+    renderAppSelector();
+    renderHomeApps();
+  };
+
+  document.getElementById('finalBtn').onclick = () => {
+    const preview = document.getElementById('finalPhonePreview');
+    preview.innerHTML = '';
+    preview.appendChild(document.getElementById('phone').cloneNode(true));
+    
+    document.getElementById('specsBox').innerHTML = `
+      <div><strong>Body:</strong> ${state.body}</div>
+      <div><strong>Camera:</strong> ${state.camera}</div>
+      <div><strong>Apps on Home:</strong> ${selectedApps.length}</div>
+      <div><strong>Case:</strong> ${state.case ? 'Yes' : 'No'}</div>
+      <div style="margin-top:8px;color:#007aff;font-size:1.05rem">
+        <strong>Total: ${document.getElementById('totalPrice').textContent}</strong>
+      </div>`;
+      
+    document.getElementById('finalModal').classList.add('show');
+  };
+
+  document.getElementById('closeModal').onclick = () => {
+    document.getElementById('finalModal').classList.remove('show');
+  };
+
+  renderAppSelector();
+  renderHomeApps();
+  updatePhone();
+</script>
+</body>
+</html>
