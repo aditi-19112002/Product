@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyJourney ✈️</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&display=swap');
+
+    :root {
+      --bg: #ffffff;
+      --card: #f8fafc;
+      --accent: #2563eb;
+      --accent2: #0ea5e9;
+      --success: #16a34a;
+      --warning: #d97706;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #2563eb, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0.5;
+      transition: all 0.3s;
+    }
+
+    .progress-step.active {
+      opacity: 1;
+      color: var(--accent2);
+    }
+
+    .progress-step.done {
+      opacity: 1;
+      color: var(--success);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .row { grid-template-columns: 1fr; }
+    }
+
+    button {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 0.95rem 1.8rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #cbd5e1;
+      color: var(--text);
+      margin-top: 0.8rem;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      box-shadow: none;
+    }
+
+    /* Boarding Pass */
+    .boarding-pass {
+      perspective: 1200px;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .pass-inner {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .pass-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .pass-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+    .pass-front {
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: white;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pass-back {
+      background: #1e293b;
+      color: white;
+      transform: rotateY(180deg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .airline {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      opacity: 0.9;
+    }
+
+    .flight-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1rem 0;
+    }
+
+    .city {
+      text-align: center;
+    }
+
+    .city .code {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .city .name {
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    .plane-icon {
+      font-size: 1.6rem;
+      opacity: 0.8;
+    }
+
+    .pass-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    .pass-details span {
+      display: block;
+      opacity: 0.6;
+      font-size: 0.7rem;
+    }
+
+    .barcode {
+      height: 50px;
+      width: 90%;
+      background: repeating-linear-gradient(
+        90deg,
+        #000 0px,
+        #000 2px,
+        transparent 2px,
+        transparent 4px,
+        #000 4px,
+        #000 7px,
+        transparent 7px,
+        transparent 10px
+      );
+      border-radius: 4px;
+    }
+
+    /* Security */
+    .scanner {
+      width: 100%;
+      height: 180px;
+      background: #f1f5f9;
+      border: 3px solid #cbd5e1;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      margin: 1.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #0ea5e9, transparent);
+      box-shadow: 0 0 20px #0ea5e9;
+      animation: none;
+    }
+
+    .scanner.scanning .scan-line {
+      animation: scan 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      50% { top: calc(100% - 4px); }
+      100% { top: 0; }
+    }
+
+    .person {
+      font-size: 4rem;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 1.1rem;
+      margin: 1rem 0;
+      min-height: 1.5rem;
+    }
+
+    .status.success { color: var(--success); }
+
+    /* Gate */
+    .gate-display {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .gate-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.5rem;
+      color: var(--accent2);
+      letter-spacing: 4px;
+    }
+
+    .boarding-status {
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+      color: var(--muted);
+    }
+
+    .walkway {
+      height: 80px;
+      background: linear-gradient(90deg, #e2e8f0, #f1f5f9, #e2e8f0);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .passenger {
+      position: absolute;
+      bottom: 10px;
+      left: -40px;
+      font-size: 2.2rem;
+      transition: left 3s ease-in-out;
+    }
+
+    .passenger.walking {
+      left: calc(100% + 20px);
+    }
+
+    /* Takeoff - BLACK PLANE */
+    .sky {
+      height: 320px;
+      background: linear-gradient(to top, #bae6fd, #e0f2fe 40%, #f0f9ff);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .runway {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 40px;
+      background: #94a3b8;
+      border-top: 3px dashed #64748b;
+    }
+
+    .plane {
+      position: absolute;
+      bottom: 30px;
+      left: 8%;
+      width: 70px;
+      height: 70px;
+      transition: all 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transform-origin: center;
+      z-index: 10;
+    }
+
+    .plane svg {
+      width: 100%;
+      height: 100%;
+      fill: #000000; /* BLACK COLOR */
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+
+    .plane.taking-off {
+      bottom: 210px;
+      left: 82%;
+      transform: rotate(-15deg) scale(0.65);
+      opacity: 0.25;
+    }
+
+    .clouds {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255,255,255,0.75);
+      border-radius: 50px;
+      animation: drift 20s linear infinite;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .cloud:nth-child(1) { width: 80px; height: 30px; top: 40px; left: -100px; animation-duration: 25s; }
+    .cloud:nth-child(2) { width: 120px; height: 40px; top: 90px; left: -150px; animation-duration: 32s; animation-delay: -8s; }
+    .cloud:nth-child(3) { width: 60px; height: 25px; top: 150px; left: -80px; animation-duration: 22s; animation-delay: -15s; }
+
+    @keyframes drift {
+      to { transform: translateX(1100px); }
+    }
+
+    .message {
+      text-align: center;
+      font-size: 1.3rem;
+      margin-top: 1rem;
+      min-height: 2rem;
+      color: var(--text);
+    }
+
+    .hidden { display: none !important; }
+
+    footer {
+      margin-top: auto;
+      padding-top: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✈ SKYJOURNEY</h1>
+      <p>Your interactive journey from search to takeoff</p>
+      <div class="progress">
+        <div class="progress-step active" id="step1"><div class="dot"></div> Search</div>
+        <div class="progress-step" id="step2"><div class="dot"></div> Boarding Pass</div>
+        <div class="progress-step" id="step3"><div class="dot"></div> Security</div>
+        <div class="progress-step" id="step4"><div class="dot"></div> Gate</div>
+        <div class="progress-step" id="step5"><div class="dot"></div> Takeoff</div>
+      </div>
+    </header>
+
+    <!-- SCREEN 1 -->
+    <div class="screen active" id="screen1">
+      <div class="card">
+        <h2>🔍 Search Flight</h2>
+        <form id="searchForm">
+          <div class="row">
+            <div class="form-group">
+              <label>From</label>
+              <select id="from" required>
+                <option value="DEL">DEL - Delhi</option>
+                <option value="BOM">BOM - Mumbai</option>
+                <option value="BLR">BLR - Bengaluru</option>
+                <option value="HYD">HYD - Hyderabad</option>
+                <option value="MAA">MAA - Chennai</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>To</label>
+              <select id="to" required>
+                <option value="DXB">DXB - Dubai</option>
+                <option value="SIN">SIN - Singapore</option>
+                <option value="LHR">LHR - London</option>
+                <option value="JFK">JFK - New York</option>
+                <option value="BKK">BKK - Bangkok</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="date" required />
+            </div>
+            <div class="form-group">
+              <label>Passengers</label>
+              <select id="passengers">
+                <option>1 Adult</option>
+                <option>2 Adults</option>
+                <option>1 Adult + 1 Child</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Passenger Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" required />
+          </div>
+          <button type="submit">Search Flights →</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- SCREEN 2 -->
+    <div class="screen" id="screen2">
+      <div class="card">
+        <h2>🎫 Your Boarding Pass</h2>
+        <div class="boarding-pass">
+          <div class="pass-inner" id="passInner">
+            <div class="pass-face pass-front">
+              <div class="airline">SKYWARD AIRLINES</div>
+              <div class="flight-info">
+                <div class="city">
+                  <div class="code" id="fromCode">DEL</div>
+                  <div class="name" id="fromName">Delhi</div>
+                </div>
+                <div class="plane-icon">✈</div>
+                <div class="city">
+                  <div class="code" id="toCode">DXB</div>
+                  <div class="name" id="toName">Dubai</div>
+                </div>
+              </div>
+              <div class="pass-details">
+                <div><span>Passenger</span><strong id="passName">—</strong></div>
+                <div><span>Flight</span><strong id="flightNo">SW 482</strong></div>
+                <div><span>Date</span><strong id="passDate">—</strong></div>
+                <div><span>Gate</span><strong id="gateNo">B12</strong></div>
+                <div><span>Seat</span><strong id="seatNo">14A</strong></div>
+                <div><span>Boarding</span><strong>14:30</strong></div>
+              </div>
+            </div>
+            <div class="pass-face pass-back">
+              <div class="barcode"></div>
+              <p style="font-size:0.85rem; opacity:0.7;">Scan at security & boarding</p>
+              <p style="font-family:monospace; letter-spacing:2px;" id="pnr">PNR: X7K9M2</p>
+            </div>
+          </div>
+        </div>
+        <button id="flipBtn" style="margin-top:1.5rem;">Flip Pass</button>
+        <button id="toSecurity" class="btn-secondary">Proceed to Security →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3 -->
+    <div class="screen" id="screen3">
+      <div class="card">
+        <h2>🔒 Security Checkpoint</h2>
+        <p style="color:var(--muted); margin-bottom:1rem;">Place your boarding pass and belongings in the tray</p>
+        
+        <div class="scanner" id="scanner">
+          <div class="scan-line"></div>
+          <div class="person" id="person">🧍</div>
+        </div>
+
+        <div class="status" id="secStatus">Ready to scan</div>
+        
+        <button id="scanBtn">Start Security Scan</button>
+        <button id="toGate" class="btn-secondary hidden">Proceed to Gate →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4 -->
+    <div class="screen" id="screen4">
+      <div class="card">
+        <h2>🚪 Boarding Gate</h2>
+        
+        <div class="gate-display">
+          <div class="gate-number" id="displayGate">B12</div>
+          <div class="boarding-status" id="boardStatus">Boarding in progress...</div>
+        </div>
+
+        <div class="walkway">
+          <div class="passenger" id="passenger">🚶</div>
+        </div>
+
+        <div class="status" id="gateStatus">Waiting for boarding call...</div>
+        
+        <button id="boardBtn">Walk to Aircraft</button>
+        <button id="toTakeoff" class="btn-secondary hidden">Ready for Takeoff →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 5 - BLACK PLANE -->
+    <div class="screen" id="screen5">
+      <div class="card">
+        <h2>🛫 Final Destination</h2>
+        
+        <div class="sky">
+          <div class="clouds">
+            <div class="cloud"></div>
+            <div class="cloud"></div>
+            <div class="cloud"></div>
+          </div>
+          
+          <!-- BLACK PLANE SVG -->
+          <div class="plane" id="plane">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+          </div>
+          
+          <div class="runway"></div>
+        </div>
+
+        <div class="message" id="takeoffMsg">Aircraft is ready on the runway</div>
+        
+        <button id="takeoffBtn">Initiate Takeoff 🚀</button>
+        <button id="restart" class="btn-secondary hidden">Fly Again ↻</button>
+      </div>
+    </div>
+
+    <footer>
+      SkyJourney • Interactive Airport Experience ✈️
+    </footer>
+  </div>
+
+  <script>
+    const state = {
+      from: '', to: '', name: '', date: '',
+      flight: 'SW 482', gate: 'B12', seat: '14A'
+    };
+
+    const cityNames = {
+      DEL: 'Delhi', BOM: 'Mumbai', BLR: 'Bengaluru', HYD: 'Hyderabad', MAA: 'Chennai',
+      DXB: 'Dubai', SIN: 'Singapore', LHR: 'London', JFK: 'New York', BKK: 'Bangkok'
+    };
+
+    function showScreen(n) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`screen${n}`).classList.add('active');
+
+      for (let i = 1; i <= 5; i++) {
+        const step = document.getElementById(`step${i}`);
+        step.classList.remove('active', 'done');
+        if (i < n) step.classList.add('done');
+        if (i === n) step.classList.add('active');
+      }
+    }
+
+    function randomSeat() {
+      const row = Math.floor(Math.random() * 30) + 1;
+      const letter = ['A','B','C','D','E','F'][Math.floor(Math.random()*6)];
+      return row + letter;
+    }
+
+    function randomGate() {
+      const letter = ['A','B','C','D'][Math.floor(Math.random()*4)];
+      const num = Math.floor(Math.random() * 20) + 1;
+      return letter + num;
+    }
+
+    document.getElementById('date').valueAsDate = new Date(Date.now() + 86400000 * 3);
+
+    document.getElementById('searchForm').addEventListener('submit', e => {
+      e.preventDefault();
+      state.from = document.getElementById('from').value;
+      state.to = document.getElementById('to').value;
+      state.name = document.getElementById('name').value.trim() || 'Passenger';
+      state.date = document.getElementById('date').value;
+      state.seat = randomSeat();
+      state.gate = randomGate();
+
+      document.getElementById('fromCode').textContent = state.from;
+      document.getElementById('fromName').textContent = cityNames[state.from];
+      document.getElementById('toCode').textContent = state.to;
+      document.getElementById('toName').textContent = cityNames[state.to];
+      document.getElementById('passName').textContent = state.name.toUpperCase();
+      document.getElementById('passDate').textContent = new Date(state.date).toLocaleDateString('en-GB', {day:'2-digit', month:'short'});
+      document.getElementById('gateNo').textContent = state.gate;
+      document.getElementById('seatNo').textContent = state.seat;
+      document.getElementById('displayGate').textContent = state.gate;
+      document.getElementById('pnr').textContent = 'PNR: ' + Math.random().toString(36).substring(2,8).toUpperCase();
+
+      showScreen(2);
+    });
+
+    document.getElementById('flipBtn').addEventListener('click', () => {
+      document.getElementById('passInner').classList.toggle('flipped');
+    });
+
+    document.getElementById('toSecurity').addEventListener('click', () => showScreen(3));
+
+    document.getElementById('scanBtn').addEventListener('click', () => {
+      const scanner = document.getElementById('scanner');
+      const status = document.getElementById('secStatus');
+      const btn = document.getElementById('scanBtn');
+      const next = document.getElementById('toGate');
+
+      btn.disabled = true;
+      status.textContent = 'Scanning... Please stand still';
+      status.className = 'status';
+      scanner.classList.add('scanning');
+
+      setTimeout(() => {
+        status.textContent = '✅ All clear! You may proceed.';
+        status.className = 'status success';
+        scanner.classList.remove('scanning');
+        document.getElementById('person').textContent = '🧍‍♂️';
+        next.classList.remove('hidden');
+      }, 2800);
+    });
+
+    document.getElementById('toGate').addEventListener('click', () => showScreen(4));
+
+    document.getElementById('boardBtn').addEventListener('click', () => {
+      const passenger = document.getElementById('passenger');
+      const status = document.getElementById('gateStatus');
+      const btn = document.getElementById('boardBtn');
+      const next = document.getElementById('toTakeoff');
+
+      btn.disabled = true;
+      status.textContent = 'Boarding now... Please walk to the aircraft';
+      passenger.classList.add('walking');
+
+      setTimeout(() => {
+        status.textContent = '✅ You have boarded the aircraft!';
+        status.className = 'status success';
+        document.getElementById('boardStatus').textContent = 'Gate closed';
+        next.classList.remove('hidden');
+      }, 3100);
+    });
+
+    document.getElementById('toTakeoff').addEventListener('click', () => showScreen(5));
+
+    document.getElementById('takeoffBtn').addEventListener('click', () => {
+      const plane = document.getElementById('plane');
+      const msg = document.getElementById('takeoffMsg');
+      const btn = document.getElementById('takeoffBtn');
+      const restart = document.getElementById('restart');
+
+      btn.disabled = true;
+      msg.textContent = '🚀 Engines spooling up...';
+
+      setTimeout(() => {
+        msg.textContent = '✈️ Accelerate... Rotate...';
+        plane.classList.add('taking-off');
+      }, 1200);
+
+      setTimeout(() => {
+        msg.innerHTML = `🎉 Have a wonderful flight, <strong>${state.name}</strong>!<br>Welcome to ${cityNames[state.to]} ✈️`;
+        restart.classList.remove('hidden');
+      }, 4800);
+    });
+
+    document.getElementById('restart').addEventListener('click', () => {
+      document.getElementById('passInner').classList.remove('flipped');
+      document.getElementById('scanner').classList.remove('scanning');
+      document.getElementById('person').textContent = '🧍';
+      document.getElementById('secStatus').textContent = 'Ready to scan';
+      document.getElementById('secStatus').className = 'status';
+      document.getElementById('scanBtn').disabled = false;
+      document.getElementById('toGate').classList.add('hidden');
+
+      document.getElementById('passenger').classList.remove('walking');
+      document.getElementById('gateStatus').textContent = 'Waiting for boarding call...';
+      document.getElementById('gateStatus').className = 'status';
+      document.getElementById('boardStatus').textContent = 'Boarding in progress...';
+      document.getElementById('boardBtn').disabled = false;
+      document.getElementById('toTakeoff').classList.add('hidden');
+
+      document.getElementById('plane').classList.remove('taking-off');
+      document.getElementById('takeoffMsg').textContent = 'Aircraft is ready on the runway';
+      document.getElementById('takeoffBtn').disabled = false;
+      document.getElementById('restart').classList.add('hidden');
+
+      showScreen(1);
+    });
+  </script>
+</body>
+</html>

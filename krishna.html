@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Power of CSS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Inter:wght@500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #fff; font-family: 'Inter', sans-serif; }
+
+  /* INTRO */
+  .intro {
+    position: fixed; inset: 0; background: #fff;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000; transition: opacity 0.5s ease, visibility 0.5s;
+  }
+  .intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .enter-btn {
+    padding: 18px 52px; font-size: 15px; font-weight: 600;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: #111; background: transparent; border: 2px solid #111;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: color 0.3s;
+  }
+  .enter-btn::before {
+    content: ''; position: absolute; inset: 0; background: #111;
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.7,0,0.3,1); z-index: -1;
+  }
+  .enter-btn:hover { color: #fff; }
+  .enter-btn:hover::before { transform: scaleX(1); transform-origin: left; }
+
+  /* SCENE */
+  .scene {
+    position: fixed; inset: 0; perspective: 1300px;
+    perspective-origin: 50% 45%; opacity: 0; background: #000;
+  }
+  .scene.active { opacity: 1; }
+
+  .world {
+    position: absolute; inset: 0; transform-style: preserve-3d;
+  }
+  .scene.active .world {
+    animation: cameraPath 6.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  @keyframes cameraPath {
+    0%   { transform: translateZ(0) rotateX(0deg) rotateY(0deg); }
+    30%  { transform: translateZ(-400px) rotateX(10deg) rotateY(-20deg); }
+    60%  { transform: translateZ(-900px) rotateX(-6deg) rotateY(15deg); }
+    100% { transform: translateZ(-1400px) rotateX(4deg) rotateY(-5deg); }
+  }
+
+  /* Paper - Fast fold */
+  .paper {
+    position: absolute; inset: 0; background: #fff;
+    transform-style: preserve-3d; transform-origin: 50% 100%; z-index: 100;
+  }
+  .scene.active .paper {
+    animation: paperFold 1.3s cubic-bezier(0.6, 0.05, 0.2, 1) forwards;
+  }
+  @keyframes paperFold {
+    0%   { transform: rotateX(0) scale(1); opacity: 1; }
+    40%  { transform: rotateX(35deg) scale(0.95); }
+    100% { transform: rotateX(88deg) scale(0.6) translateY(55%); opacity: 0; }
+  }
+
+  /* Void */
+  .void {
+    position: absolute; inset: -50%;
+    background: radial-gradient(ellipse at center, #0a0a18 0%, #050510 60%, #000 100%);
+    opacity: 0; z-index: 1;
+  }
+  .scene.active .void {
+    animation: voidIn 0.8s ease 0.1s forwards;
+  }
+  @keyframes voidIn { to { opacity: 1; } }
+
+  /* Grid */
+  .grid {
+    position: absolute; left: 50%; top: 62%;
+    width: 1800px; height: 1800px;
+    transform: translate(-50%, -50%) rotateX(75deg) translateZ(-250px);
+    background-image: 
+      linear-gradient(rgba(0, 200, 255, 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 200, 255, 0.18) 1px, transparent 1px);
+    background-size: 55px 55px;
+    opacity: 0;
+    mask-image: radial-gradient(ellipse at center, black 25%, transparent 70%);
+  }
+  .scene.active .grid {
+    animation: gridIn 1.2s ease 0.4s forwards;
+  }
+  @keyframes gridIn { to { opacity: 0.75; } }
+
+  /* Layers - Fast rise */
+  .layer {
+    position: absolute; left: 50%; top: 50%;
+    transform-style: preserve-3d; opacity: 0;
+  }
+  .scene.active .layer {
+    animation: rise 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes rise {
+    0%   { opacity: 0; transform: translate(-50%, -50%) translateZ(-700px) scale(0.5); }
+    100% { opacity: 1; transform: translate(-50%, -50%) translateZ(var(--z)) scale(1); }
+  }
+
+  /* Cards */
+  .card {
+    position: absolute; width: 160px; height: 100px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px; backdrop-filter: blur(12px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: #fff; font-size: 13px; font-weight: 500; letter-spacing: 1px;
+  }
+  .card small { font-size: 10px; opacity: 0.55; margin-top: 5px; }
+
+  /* Cubes */
+  .cube {
+    position: absolute; width: 50px; height: 50px;
+    transform-style: preserve-3d;
+    animation: spin 9s linear infinite;
+  }
+  .cube div {
+    position: absolute; width: 50px; height: 50px;
+    background: rgba(0, 180, 255, 0.13);
+    border: 1px solid rgba(0, 210, 255, 0.45);
+  }
+  .cube .front  { transform: translateZ(25px); }
+  .cube .back   { transform: translateZ(-25px) rotateY(180deg); }
+  .cube .left   { transform: translateX(-25px) rotateY(-90deg); }
+  .cube .right  { transform: translateX(25px) rotateY(90deg); }
+  .cube .top    { transform: translateY(-25px) rotateX(90deg); }
+  .cube .bottom { transform: translateY(25px) rotateX(-90deg); }
+
+  @keyframes spin {
+    from { transform: rotateX(0) rotateY(0); }
+    to   { transform: rotateX(360deg) rotateY(360deg); }
+  }
+
+  /* Float Text */
+  .float-text {
+    position: absolute; font-family: 'Orbitron', sans-serif;
+    font-weight: 700; color: rgba(255,255,255,0.75);
+    letter-spacing: 2px; text-shadow: 0 0 18px rgba(0,200,255,0.5);
+    opacity: 0;
+  }
+  .scene.active .float-text {
+    animation: textIn 1.2s ease forwards;
+  }
+  @keyframes textIn {
+    0%   { opacity: 0; transform: translateY(30px) scale(0.8); }
+    100% { opacity: 0.8; transform: translateY(0) scale(1); }
+  }
+
+  /* Final Title - Fast */
+  .final-title {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    text-align: center; z-index: 300; opacity: 0;
+  }
+  .scene.active .final-title {
+    animation: titleIn 1.4s cubic-bezier(0.2, 0.9, 0.3, 1) 4.2s forwards;
+  }
+  @keyframes titleIn {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); filter: blur(20px); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+  }
+
+  .final-title h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(24px, 6.5vw, 46px);
+    font-weight: 800; line-height: 1.25;
+    background: linear-gradient(90deg, #00d2ff, #fff, #a855f7, #00d2ff);
+    background-size: 300% auto;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: gradientMove 3.5s linear infinite;
+  }
+  @keyframes gradientMove { to { background-position: 300% center; } }
+
+  .final-title p {
+    margin-top: 14px; font-size: 13px; letter-spacing: 6px;
+    color: rgba(255,255,255,0.5); text-transform: uppercase;
+  }
+
+  .title-burst {
+    position: fixed; top: 50%; left: 50%;
+    width: 350px; height: 350px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,210,255,0.3) 0%, transparent 70%);
+    opacity: 0; z-index: 250;
+  }
+  .scene.active .title-burst {
+    animation: burst 1.5s ease 4.2s forwards;
+  }
+  @keyframes burst {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    50%  { opacity: 1; }
+    100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1.3); }
+  }
+
+  .particle {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, #fff, transparent 70%);
+    opacity: 0; pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="intro" id="intro">
+    <button class="enter-btn" id="enterBtn">ENTER</button>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="void"></div>
+    <div class="paper"></div>
+    <div class="grid"></div>
+
+    <div class="world">
+ 
+      <div class="layer" style="--z: -380px; animation-delay: 0.35s;">
+        <div class="cube" style="left:-280px; top:-30px;">
+          <div class="front"></div><div class="back"></div>
+          <div class="left"></div><div class="right"></div>
+          <div class="top"></div><div class="bottom"></div>
+        </div>
+        <div class="cube" style="left:240px; top:50px; animation-direction:reverse;">
+          <div class="front"></div><div class="back"></div>
+          <div class="left"></div><div class="right"></div>
+          <div class="top"></div><div class="bottom"></div>
+        </div>
+      </div>
+
+    
+      <div class="layer" style="--z: -80px; animation-delay: 0.5s;">
+        <div class="card" style="left:-230px; top:-70px; transform:rotateY(15deg);">
+          PERSPECTIVE
+          <small>1300px</small>
+        </div>
+        <div class="card" style="left:160px; top:60px; transform:rotateY(-18deg);">
+          PRESERVE-3D
+          <small>transform-style</small>
+        </div>
+        <div class="float-text" style="left:-60px; top:-140px; font-size:20px; animation-delay:0.9s;">CSS</div>
+      </div>
+
+      <div class="layer" style="--z: 220px; animation-delay: 0.65s;">
+        <div class="card" style="left:-190px; top:-90px; transform:rotateX(10deg) rotateY(18deg);">
+          KEYFRAMES
+          <small>animation</small>
+        </div>
+        <div class="card" style="left:130px; top:-20px; transform:rotateX(-8deg) rotateY(-14deg);">
+          GRADIENTS
+          <small>+ shadows</small>
+        </div>
+        <div class="float-text" style="left:40px; top:120px; font-size:16px; animation-delay:1.1s;">TRANSFORM</div>
+      </div>
+    </div>
+
+    <div id="particles"></div>
+    <div class="title-burst"></div>
+
+    <div class="final-title">
+      <h1>THIS IS THE<br>POWER OF CSS 🤯</h1>
+      <p>Pure HTML + CSS</p>
+    </div>
+  </div>
+
+<script>
+  const intro = document.getElementById('intro');
+  const scene = document.getElementById('scene');
+  const enterBtn = document.getElementById('enterBtn');
+  const particles = document.getElementById('particles');
+
+
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    particles.appendChild(p);
+  }
+
+  enterBtn.addEventListener('click', () => {
+    intro.classList.add('hidden');
+    scene.classList.add('active');
+
+    document.querySelectorAll('.particle').forEach((p, i) => {
+      setTimeout(() => {
+        p.style.transition = 'opacity 0.8s ease';
+        p.style.opacity = (Math.random() * 0.5 + 0.3).toFixed(2);
+        p.style.animation = `float ${3 + Math.random() * 3}s ease-in-out infinite`;
+      }, 400 + i * 15);
+    });
+  });
+
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-40px); }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>
