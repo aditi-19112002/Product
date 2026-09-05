@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Password That Changes Everything</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;700&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ========== BASE LOCKED STATE ========== */
+  .container {
+    width: 100%;
+    max-width: 520px;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  .title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+    transition: all 0.5s ease;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: #888;
+    margin-bottom: 40px;
+    transition: all 0.5s ease;
+  }
+
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  input[type="password"],
+  input[type="text"] {
+    width: 100%;
+    padding: 18px 24px;
+    font-size: 1.15rem;
+    font-family: 'JetBrains Mono', monospace;
+    background: #151515;
+    border: 2px solid #333;
+    border-radius: 14px;
+    color: #fff;
+    outline: none;
+    transition: all 0.4s ease;
+    letter-spacing: 2px;
+  }
+
+  input:focus {
+    border-color: #555;
+  }
+
+  .strength-bar {
+    height: 4px;
+    background: #222;
+    border-radius: 4px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+  }
+
+  .status {
+    margin-top: 18px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    min-height: 24px;
+    transition: all 0.4s ease;
+  }
+
+  .hint {
+    margin-top: 40px;
+    font-size: 0.8rem;
+    color: #555;
+    transition: all 0.5s ease;
+  }
+
+  /* ========== WEAK / GLITCH STATE ========== */
+  body.weak {
+    background: #1a0505;
+  }
+
+  body.weak .title {
+    color: #ff3333;
+    animation: glitchText 0.8s infinite;
+    text-shadow: 2px 0 #00ffff, -2px 0 #ff00ff;
+  }
+
+  body.weak .subtitle {
+    color: #aa4444;
+    animation: shake 0.4s infinite;
+  }
+
+  body.weak input {
+    border-color: #ff2222;
+    background: #2a0a0a;
+    color: #ff6666;
+    animation: glitchInput 1.2s infinite;
+  }
+
+  body.weak .strength-fill {
+    background: #ff2222;
+    width: 25%;
+    box-shadow: 0 0 12px #ff2222;
+  }
+
+  body.weak .status {
+    color: #ff4444;
+  }
+
+  body.weak .container::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 0, 0, 0.03) 2px,
+      rgba(255, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes glitchText {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-3px, 2px); }
+    40% { transform: translate(3px, -1px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(2px, 1px); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  @keyframes glitchInput {
+    0%, 90%, 100% { transform: translate(0); filter: none; }
+    92% { transform: translate(-4px, 1px); filter: hue-rotate(90deg); }
+    94% { transform: translate(3px, -2px); }
+    96% { transform: translate(-2px, 2px); filter: hue-rotate(-90deg); }
+  }
+
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  /* ========== MEDIUM STATE ========== */
+  body.medium {
+    background: #0f0c08;
+  }
+
+  body.medium .title {
+    color: #f0c040;
+  }
+
+  body.medium .subtitle {
+    color: #a08040;
+  }
+
+  body.medium input {
+    border-color: #c9a227;
+    background: #1a160e;
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.15);
+  }
+
+  body.medium .strength-fill {
+    background: linear-gradient(90deg, #c9a227, #e6c35c);
+    width: 60%;
+    box-shadow: 0 0 12px #c9a227;
+  }
+
+  body.medium .status {
+    color: #e6c35c;
+  }
+
+  body.medium .hint {
+    color: #665522;
+  }
+
+  /* ========== STRONG / PREMIUM STATE ========== */
+  body.strong {
+    background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0f172a 100%);
+  }
+
+  body.strong .title {
+    color: #e2e8f0;
+    font-size: 2rem;
+  }
+
+  body.strong .subtitle {
+    color: #94a3b8;
+  }
+
+  body.strong input {
+    border-color: #3b82f6;
+    background: rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.25);
+    backdrop-filter: blur(10px);
+  }
+
+  body.strong input:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 40px rgba(96, 165, 250, 0.4);
+  }
+
+  body.strong .strength-fill {
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+    width: 100%;
+    box-shadow: 0 0 15px #3b82f6;
+  }
+
+  body.strong .status {
+    color: #60a5fa;
+  }
+
+  body.strong .hint {
+    color: #475569;
+  }
+
+  body.strong .premium-badge {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 8px 18px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== SECRET / MATRIX STATE ========== */
+  body.secret {
+    background: #000;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  body.secret .container {
+    max-width: 700px;
+  }
+
+  body.secret .title {
+    font-size: 2.8rem;
+    color: #00ff41;
+    text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41;
+    letter-spacing: 4px;
+    animation: matrixGlow 2s ease-in-out infinite alternate;
+  }
+
+  body.secret .subtitle {
+    color: #00cc33;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+  }
+
+  body.secret input {
+    border: 2px solid #00ff41;
+    background: rgba(0, 20, 0, 0.8);
+    color: #00ff41;
+    font-family: 'Orbitron', sans-serif;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+    text-align: center;
+  }
+
+  body.secret .strength-fill {
+    background: #00ff41;
+    width: 100%;
+    box-shadow: 0 0 20px #00ff41;
+  }
+
+  body.secret .status {
+    color: #00ff41;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+  }
+
+  body.secret .hint {
+    color: #006622;
+  }
+
+  body.secret .matrix-msg {
+    margin-top: 40px;
+    font-size: 1.3rem;
+    color: #00ff41;
+    line-height: 1.8;
+    animation: fadeInUp 1s ease;
+  }
+
+  @keyframes matrixGlow {
+    from { text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41; }
+    to { text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41, 0 0 80px #00ff41; }
+  }
+
+  /* Matrix rain background */
+  #matrixCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 1s ease;
+    pointer-events: none;
+  }
+
+  body.secret #matrixCanvas {
+    opacity: 0.7;
+  }
+
+  /* Floating particles for strong state */
+  .particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  body.strong .particles {
+    opacity: 1;
+  }
+
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #60a5fa;
+    border-radius: 50%;
+    animation: floatParticle 8s linear infinite;
+  }
+
+  @keyframes floatParticle {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="matrixCanvas"></canvas>
+<div class="particles" id="particles"></div>
+
+<div class="container">
+  <h1 class="title" id="title">Enter Password</h1>
+  <p class="subtitle" id="subtitle">The interface will react to your strength</p>
+
+  <div class="input-wrapper">
+    <input type="password" id="password" placeholder="Type your password..." autocomplete="off" spellcheck="false">
+    <div class="strength-bar">
+      <div class="strength-fill" id="strengthFill"></div>
+    </div>
+  </div>
+
+  <div class="status" id="status">Waiting for input...</div>
+
+  <div id="extraContent"></div>
+
+  <p class="hint" id="hint">Try a weak, medium, strong... or a secret password</p>
+</div>
+
+<script>
+  const passwordInput = document.getElementById('password');
+  const title = document.getElementById('title');
+  const subtitle = document.getElementById('subtitle');
+  const status = document.getElementById('status');
+  const strengthFill = document.getElementById('strengthFill');
+  const extraContent = document.getElementById('extraContent');
+  const hint = document.getElementById('hint');
+  const body = document.body;
+
+  const SECRET = 'matrix';
+
+  // Create floating particles for strong mode
+  function createParticles() {
+    const container = document.getElementById('particles');
+    container.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.classList.add('particle');
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDelay = Math.random() * 8 + 's';
+      p.style.animationDuration = (Math.random() * 6 + 6) + 's';
+      p.style.background = ['#60a5fa', '#8b5cf6', '#06b6d4', '#a78bfa'][Math.floor(Math.random() * 4)];
+      container.appendChild(p);
+    }
+  }
+  createParticles();
+
+  // Matrix rain
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+  let matrixAnimation;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const fontSize = 16;
+  let columns = canvas.width / fontSize;
+  let drops = [];
+
+  function initMatrix() {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = Array(columns).fill(1);
+  }
+
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#00ff41';
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+    matrixAnimation = requestAnimationFrame(drawMatrix);
+  }
+
+  function startMatrix() {
+    initMatrix();
+    if (!matrixAnimation) drawMatrix();
+  }
+
+  function stopMatrix() {
+    cancelAnimationFrame(matrixAnimation);
+    matrixAnimation = null;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Strength checker
+  function checkStrength(pwd) {
+    if (!pwd) return 'empty';
+
+    if (pwd.toLowerCase() === SECRET) return 'secret';
+
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 10) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    if (score <= 2) return 'weak';
+    if (score <= 4) return 'medium';
+    return 'strong';
+  }
+
+  // Main reaction function
+  function react(pwd) {
+    const strength = checkStrength(pwd);
+
+    // Reset classes
+    body.className = '';
+    extraContent.innerHTML = '';
+    stopMatrix();
+
+    if (strength === 'empty') {
+      title.textContent = 'Enter Password';
+      subtitle.textContent = 'The interface will react to your strength';
+      status.textContent = 'Waiting for input...';
+      status.style.color = '#888';
+      strengthFill.style.width = '0%';
+      hint.textContent = 'Try a weak, medium, strong... or a secret password';
+      return;
+    }
+
+    if (strength === 'weak') {
+      body.classList.add('weak');
+      title.textContent = '⚠ WEAK PASSWORD';
+      subtitle.textContent = 'System integrity compromised...';
+      status.textContent = 'BROKEN INTERFACE • HIGH RISK';
+      strengthFill.style.width = '25%';
+      hint.textContent = 'This password is easily crackable';
+    }
+
+    if (strength === 'medium') {
+      body.classList.add('medium');
+      title.textContent = 'Partial Access';
+      subtitle.textContent = 'Some layers unlocked...';
+      status.textContent = 'MEDIUM STRENGTH • LIMITED ACCESS';
+      strengthFill.style.width = '60%';
+      hint.textContent = 'Getting better. Add more complexity.';
+    }
+
+    if (strength === 'strong') {
+      body.classList.add('strong');
+      title.textContent = 'Premium Access Granted';
+      subtitle.textContent = 'Full interface unlocked';
+      status.textContent = 'STRONG • MAXIMUM SECURITY';
+      strengthFill.style.width = '100%';
+      hint.textContent = 'Excellent password strength';
+      extraContent.innerHTML = `<div class="premium-badge">✦ PREMIUM MODE ACTIVE</div>`;
+    }
+
+    if (strength === 'secret') {
+      body.classList.add('secret');
+      title.textContent = 'THE MATRIX';
+      subtitle.textContent = 'Welcome to the real world';
+      status.textContent = 'SECRET ACCESS • REALITY UNLOCKED';
+      strengthFill.style.width = '100%';
+      hint.textContent = 'There is no spoon...';
+      extraContent.innerHTML = `
+        <div class="matrix-msg">
+          You have taken the red pill.<br>
+          The entire website has transformed.
+        </div>
+      `;
+      startMatrix();
+    }
+  }
+
+  passwordInput.addEventListener('input', (e) => {
+    react(e.target.value);
+  });
+
+  
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Krishna Particle Animation</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:white;
+    overflow:hidden;
+    font-family:Arial;
+}
+
+canvas{
+    display:block;
+}
+
+#upload{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    color:white;
+}
+
+button{
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:15px 30px;
+    border:none;
+    border-radius:30px;
+    background:white;
+    color:black;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<input type="file" id="upload" accept="image/*">
+
+<canvas id="canvas"></canvas>
+
+<button id="btn">✨ Create Krishna Ji</button>
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let particles = [];
+let formed = false;
+
+class Particle {
+
+    constructor(x, y, color){
+
+        this.targetX = x;
+        this.targetY = y;
+
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+
+        this.color = color;
+        this.size = Math.random() * 2 + 1;
+    }
+
+    update(){
+
+        if(formed){
+
+            this.x += (this.targetX - this.x) * 0.05;
+            this.y += (this.targetY - this.y) * 0.05;
+
+        }
+        else{
+
+            this.x += (Math.random() - 0.5) * 2;
+            this.y += (Math.random() - 0.5) * 2;
+
+        }
+    }
+
+    draw(){
+
+        ctx.fillStyle = this.color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+}
+
+
+document.getElementById("upload").addEventListener("change", function(e){
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        const img = new Image();
+
+        img.onload = function(){
+
+            particles = [];
+
+            const tempCanvas =
+                document.createElement("canvas");
+
+            const tempCtx =
+                tempCanvas.getContext("2d");
+
+            const scale =
+                Math.min(
+                    canvas.width / img.width,
+                    canvas.height / img.height
+                ) * 0.7;
+
+            const width = Math.floor(img.width * scale);
+            const height = Math.floor(img.height * scale);
+
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+
+            tempCtx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+            );
+
+            const data =
+                tempCtx.getImageData(
+                    0,
+                    0,
+                    width,
+                    height
+                ).data;
+
+            const startX =
+                (canvas.width - width) / 2;
+
+            const startY =
+                (canvas.height - height) / 2;
+
+            for(let y = 0; y < height; y += 5){
+
+                for(let x = 0; x < width; x += 5){
+
+                    const index =
+                        (y * width + x) * 4;
+
+                    const r = data[index];
+                    const g = data[index + 1];
+                    const b = data[index + 2];
+
+                    particles.push(
+                        new Particle(
+                            startX + x,
+                            startY + y,
+                            `rgb(${r},${g},${b})`
+                        )
+                    );
+                }
+            }
+
+        };
+
+        img.src = event.target.result;
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+document.getElementById("btn").onclick = function(){
+
+    formed = !formed;
+
+    this.innerText = 
+        formed
+        ? "🎨 Scatter Again"
+        : "✨ Create Krishna Ji";
+
+};
+
+
+function animate(){
+
+    ctx.fillStyle =
+        "rgba(255,255,255,0.25)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    particles.forEach(p => {
+
+        p.update();
+        p.draw();
+
+    });
+
+    requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
