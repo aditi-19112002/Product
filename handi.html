@@ -1,0 +1,516 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Human Pyramid Handi Fod</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    height:100vh;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(#6cc9ff 0%,#bcecff 65%,#62b84d 65%);
+}
+
+h1{
+    position:absolute;
+    width:100%;
+    text-align:center;
+    top:25px;
+    color:white;
+    z-index:20;
+    text-shadow:0 3px 5px #333;
+}
+
+/* ===== MATKI ROPE ===== */
+
+.rope{
+    position:absolute;
+    width:5px;
+    height:180px;
+    background:#5c3518;
+    left:50%;
+    top:0;
+    transform:translateX(-50%);
+}
+
+/* ===== MATKI ===== */
+
+.matki{
+    position:absolute;
+    top:170px;
+    left:50%;
+    width:110px;
+    height:90px;
+    transform:translateX(-50%);
+    z-index:10;
+}
+
+.matki-top{
+    position:absolute;
+    width:120px;
+    height:25px;
+    background:#c97728;
+    border:4px solid #5a2b0d;
+    border-radius:50%;
+    left:-5px;
+    top:-5px;
+}
+
+.matki-body{
+    position:absolute;
+    width:100px;
+    height:80px;
+    top:12px;
+    left:5px;
+    background:linear-gradient(90deg,#9b4d15,#e7983f,#8a3e10);
+    border-radius:25px 25px 45px 45px;
+    border:4px solid #5a2b0d;
+}
+
+/* ===== BROKEN MATKI ===== */
+
+.matki-piece{
+    position:absolute;
+    width:55px;
+    height:75px;
+    top:170px;
+    left:50%;
+    display:none;
+    z-index:15;
+    background:linear-gradient(#e7983f,#8a3e10);
+    border:4px solid #5a2b0d;
+}
+
+.left-piece{
+    border-radius:30px 5px 40px 20px;
+}
+
+.right-piece{
+    border-radius:5px 30px 20px 40px;
+}
+
+.break-left{
+    display:block;
+    animation:breakLeft 2s forwards;
+}
+
+.break-right{
+    display:block;
+    animation:breakRight 2s forwards;
+}
+
+@keyframes breakLeft{
+    from{
+        transform:translate(-55px,0) rotate(0);
+    }
+    to{
+        transform:translate(-250px,350px) rotate(-500deg);
+        opacity:0;
+    }
+}
+
+@keyframes breakRight{
+    from{
+        transform:translate(0,0) rotate(0);
+    }
+    to{
+        transform:translate(250px,350px) rotate(500deg);
+        opacity:0;
+    }
+}
+
+/* ===== SPLASH ===== */
+
+.splash{
+    position:absolute;
+    width:15px;
+    height:15px;
+    background:white;
+    border-radius:50%;
+    display:none;
+    z-index:30;
+}
+
+.splash.show{
+    display:block;
+    animation:splashFall 2.5s forwards;
+}
+
+@keyframes splashFall{
+    0%{
+        transform:translate(0,0) scale(1);
+        opacity:1;
+    }
+
+    100%{
+        transform:translate(var(--x),450px);
+        opacity:0;
+    }
+}
+
+/* ===== PYRAMID ===== */
+
+.pyramid{
+    position:absolute;
+    bottom:25px;
+    left:50%;
+    width:700px;
+    height:500px;
+    transform:translateX(-50%);
+}
+
+.person{
+    position:absolute;
+    width:75px;
+    height:130px;
+    opacity:0;
+    transform:translateX(-500px);
+    transition:1s ease;
+}
+
+.person.show{
+    opacity:1;
+    transform:translateX(0);
+}
+
+/* HEAD */
+
+.head{
+    width:45px;
+    height:45px;
+    background:#f4b38b;
+    border:2px solid #222;
+    border-radius:50%;
+    margin:auto;
+}
+
+/* BODY */
+
+.body{
+    width:60px;
+    height:55px;
+    margin:auto;
+    background:#ff5a36;
+    border:2px solid #222;
+    border-radius:15px 15px 5px 5px;
+}
+
+/* LEGS */
+
+.legs{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+}
+
+.leg{
+    width:20px;
+    height:35px;
+    background:#263b6b;
+    border-radius:5px;
+}
+
+/* ===== PYRAMID POSITIONS ===== */
+
+/* Bottom */
+
+.p1{bottom:0;left:80px;}
+.p2{bottom:0;left:180px;}
+.p3{bottom:0;left:280px;}
+.p4{bottom:0;left:380px;}
+.p5{bottom:0;left:480px;}
+
+/* Second */
+
+.p6{bottom:110px;left:130px;}
+.p7{bottom:110px;left:230px;}
+.p8{bottom:110px;left:330px;}
+.p9{bottom:110px;left:430px;}
+
+/* Third */
+
+.p10{bottom:220px;left:180px;}
+.p11{bottom:220px;left:280px;}
+.p12{bottom:220px;left:380px;}
+
+/* TOP */
+
+.p13{
+    bottom:330px;
+    left:280px;
+}
+
+/* Top person hand */
+
+.p13::after{
+    content:"💪";
+    position:absolute;
+    font-size:40px;
+    right:-35px;
+    top:0;
+}
+
+/* JUMP + HIT */
+
+.p13.hit{
+    animation:hitMatki 1s ease-in-out forwards;
+}
+
+@keyframes hitMatki{
+
+    0%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-100px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+}
+
+/* ===== MESSAGE ===== */
+
+.message{
+    position:absolute;
+    top:70px;
+    width:100%;
+    text-align:center;
+    font-size:45px;
+    color:#fff;
+    font-weight:bold;
+    text-shadow:0 4px 8px #333;
+    opacity:0;
+    transform:scale(.4);
+    transition:1s;
+    z-index:100;
+}
+
+.message.show{
+    opacity:1;
+    transform:scale(1);
+}
+
+/* BUTTON */
+
+button{
+    position:absolute;
+    bottom:20px;
+    right:20px;
+    padding:12px 20px;
+    border:none;
+    border-radius:30px;
+    background:#6d28d9;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    z-index:200;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    .pyramid{
+        transform:translateX(-50%) scale(.6);
+        transform-origin:bottom center;
+    }
+
+    .message{
+        font-size:30px;
+    }
+
+    h1{
+        font-size:20px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+
+<div class="rope"></div>
+
+<!-- MATKI -->
+
+<div class="matki" id="matki">
+    <div class="matki-top"></div>
+    <div class="matki-body"></div>
+</div>
+
+<!-- BROKEN PIECES -->
+
+<div class="matki-piece left-piece" id="leftPiece"></div>
+<div class="matki-piece right-piece" id="rightPiece"></div>
+
+<div class="message" id="message">
+    🎉 HAPPY JANMASHTAMI 🎉
+</div>
+
+
+<!-- PYRAMID -->
+
+<div class="pyramid">
+
+    <!-- Bottom -->
+
+    <div class="person p1"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p2"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p3"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p4"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p5"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+
+    <!-- Second -->
+
+    <div class="person p6"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p7"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p8"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p9"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+
+    <!-- Third -->
+
+    <div class="person p10"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p11"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+    <div class="person p12"><div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div></div>
+
+    <!-- Top Person -->
+
+    <div class="person p13" id="topPerson">
+        <div class="head"></div>
+        <div class="body"></div>
+        <div class="legs">
+            <div class="leg"></div>
+            <div class="leg"></div>
+        </div>
+    </div>
+
+</div>
+
+<button onclick="start()">🔄 Replay</button>
+
+
+<script>
+
+function createSplash(){
+
+    for(let i=0;i<40;i++){
+
+        let drop=document.createElement("div");
+
+        drop.className="splash";
+
+        drop.style.left="50%";
+        drop.style.top="250px";
+
+        drop.style.setProperty(
+            "--x",
+            (Math.random()*500-250)+"px"
+        );
+
+        document.body.appendChild(drop);
+
+        setTimeout(()=>{
+            drop.classList.add("show");
+        },50);
+
+        setTimeout(()=>{
+            drop.remove();
+        },3000);
+    }
+}
+
+
+function start(){
+
+    const people=document.querySelectorAll(".person");
+
+    const matki=document.getElementById("matki");
+
+    const topPerson=document.getElementById("topPerson");
+
+    const leftPiece=document.getElementById("leftPiece");
+
+    const rightPiece=document.getElementById("rightPiece");
+
+    const message=document.getElementById("message");
+
+
+    /* RESET */
+
+    people.forEach(p=>{
+        p.classList.remove("show");
+    });
+
+    topPerson.classList.remove("hit");
+
+    matki.style.display="block";
+
+    leftPiece.className="matki-piece left-piece";
+
+    rightPiece.className="matki-piece right-piece";
+
+    message.classList.remove("show");
+
+
+  
+
+    people.forEach((person,index)=>{
+
+        setTimeout(()=>{
+
+            person.classList.add("show");
+
+        },index*500);
+
+    });
+
+
+ 
+
+    setTimeout(()=>{
+
+        topPerson.classList.add("hit");
+
+    },7000);
+
+
+   
+
+    setTimeout(()=>{
+
+        matki.style.display="none";
+
+        leftPiece.classList.add("break-left");
+
+        rightPiece.classList.add("break-right");
+
+        createSplash();
+
+        message.classList.add("show");
+
+    },7600);
+
+}
+
+
+window.onload=start;
+
+</script>
+
+</body>
+</html>
+```

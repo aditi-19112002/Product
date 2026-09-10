@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One Website • 6 Technologies</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f0f0f0; color: #111; }
+
+    #controls {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px;
+      background: white; padding: 16px; border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15); width: 260px;
+    }
+    #controls button {
+      padding: 12px 16px; border: none; border-radius: 8px;
+      background: #111; color: white; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; text-align: left; font-size: 14px;
+    }
+    #controls button:hover:not(:disabled) { background: #333; transform: translateY(-1px); }
+    #controls button:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
+    #controls .step-label { font-size: 12px; color: #666; margin-bottom: 4px; }
+    #status {
+      margin-top: 12px; padding: 10px; background: #f8f8f8;
+      border-radius: 8px; font-size: 13px; line-height: 1.4;
+    }
+    #app { min-height: 100vh; }
+
+    @media (max-width: 768px) {
+      #controls {
+        top: auto; bottom: 0; left: 0; right: 0; width: 100%;
+        border-radius: 16px 16px 0 0; flex-direction: row; flex-wrap: wrap;
+        gap: 8px; padding: 12px; justify-content: center;
+      }
+      #controls .step-label, #status { display: none; }
+      #controls button {
+        flex: 1 1 30%; min-width: 100px; text-align: center;
+        font-size: 13px; padding: 11px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="controls">
+    <div class="step-label">Click in order →</div>
+    <button id="btn-html"     onclick="addHTML()">1️⃣  Add HTML</button>
+    <button id="btn-css"      onclick="addCSS()" disabled>2️⃣  Add CSS</button>
+    <button id="btn-js"       onclick="addJS()" disabled>3️⃣  Add JavaScript</button>
+    <button id="btn-tailwind" onclick="addTailwind()" disabled>4️⃣  Add Tailwind</button>
+    <button id="btn-gsap"     onclick="addGSAP()" disabled>5️⃣  Add GSAP</button>
+    <button id="btn-react"    onclick="addReact()" disabled>6️⃣  Add React</button>
+
+    <div id="status">
+      <strong>Current Stage:</strong><br>
+      <span id="stage-text">Empty page</span>
+    </div>
+  </div>
+
+  <div id="app"></div>
+
+  <script>
+    let stage = 0;
+    const stages = ["Empty page","HTML Structure","Styled with CSS","Interactive (JS)","Modern UI (Tailwind)","Cinematic Version (GSAP)","Dynamic React Dashboard"];
+
+    function updateStatus() {
+      document.getElementById('stage-text').textContent = stages[stage];
+    }
+    function enableNext(id) {
+      document.getElementById(id).disabled = false;
+    }
+
+    // 1. HTML
+    function addHTML() {
+      if (stage >= 1) return;
+      stage = 1;
+      document.getElementById('app').innerHTML = `
+        <header id="header">
+          <div class="logo">⚡ NovaDash</div>
+          <nav>
+            <a href="#">Dashboard</a>
+            <a href="#">Analytics</a>
+            <a href="#">Settings</a>
+          </nav>
+        </header>
+        <div class="layout">
+          <aside id="sidebar">
+            <h3>Menu</h3>
+            <ul>
+              <li>Overview</li>
+              <li>Projects</li>
+              <li>Team</li>
+              <li>Reports</li>
+            </ul>
+          </aside>
+          <main id="main">
+            <h1>Welcome to NovaDash</h1>
+            <p class="subtitle">Your modern project dashboard</p>
+            <div class="cards">
+              <div class="card"><h3>Active Projects</h3><p class="number">12</p></div>
+              <div class="card"><h3>Team Members</h3><p class="number">48</p></div>
+              <div class="card"><h3>Tasks Done</h3><p class="number">284</p></div>
+              <div class="card"><h3>Revenue</h3><p class="number">$42k</p></div>
+            </div>
+            <div id="react-area"></div>
+          </main>
+        </div>
+      `;
+      document.getElementById('btn-html').disabled = true;
+      enableNext('btn-css');
+      updateStatus();
+    }
+
+    // 2. CSS
+    function addCSS() {
+      if (stage >= 2) return;
+      stage = 2;
+      const style = document.createElement('style');
+      style.textContent = `
+        body { background: #f4f6f9; color: #1a1a2e; }
+        #header { background: #1a1a2e; color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.3rem; font-weight: 700; }
+        nav a { color: #ccc; margin-left: 16px; text-decoration: none; font-size: 14px; }
+        nav a:hover { color: white; }
+        .layout { display: flex; min-height: calc(100vh - 64px); }
+        #sidebar { width: 220px; background: white; padding: 20px; border-right: 1px solid #e5e7eb; }
+        #sidebar h3 { margin-bottom: 16px; font-size: 0.85rem; color: #666; text-transform: uppercase; }
+        #sidebar ul { list-style: none; }
+        #sidebar li { padding: 11px 14px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        #sidebar li:hover { background: #f0f4ff; color: #4f46e5; }
+        #main { flex: 1; padding: 24px 20px; }
+        #main h1 { font-size: 1.7rem; margin-bottom: 6px; }
+        .subtitle { color: #666; margin-bottom: 24px; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+        .card { background: white; border-radius: 14px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; transition: 0.2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .card h3 { font-size: 0.9rem; color: #666; margin-bottom: 10px; }
+        .number { font-size: 1.8rem; font-weight: 700; }
+        @media (max-width: 768px) { #sidebar { display: none; } .cards { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 480px) { .cards { grid-template-columns: 1fr; } }
+      `;
+      document.head.appendChild(style);
+      document.getElementById('btn-css').disabled = true;
+      enableNext('btn-js');
+      updateStatus();
+    }
+
+    // 3. JavaScript
+    function addJS() {
+      if (stage >= 3) return;
+      stage = 3;
+      const header = document.getElementById('header');
+      const btn = document.createElement('button');
+      btn.id = 'dark-toggle';
+      btn.textContent = '🌙 Dark';
+      btn.style.cssText = 'margin-left:12px;padding:7px 12px;border:none;border-radius:8px;background:#4f46e5;color:white;font-weight:600;cursor:pointer;font-size:13px;';
+      header.querySelector('nav').appendChild(btn);
+
+      let dark = false;
+      btn.onclick = () => {
+        dark = !dark;
+        document.body.classList.toggle('dark-mode', dark);
+        btn.textContent = dark ? '☀️ Light' : '🌙 Dark';
+      };
+
+      const darkStyle = document.createElement('style');
+      darkStyle.textContent = `
+        body.dark-mode { background: #0f172a; color: #e2e8f0; }
+        body.dark-mode #header { background: #020617; }
+        body.dark-mode #sidebar { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+        body.dark-mode .card { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+        body.dark-mode .card h3 { color: #94a3b8; }
+        body.dark-mode .number { color: #f1f5f9; }
+        body.dark-mode .subtitle { color: #94a3b8; }
+      `;
+      document.head.appendChild(darkStyle);
+
+      document.querySelectorAll('.card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.onclick = () => {
+          card.style.transform = 'scale(0.97)';
+          setTimeout(() => card.style.transform = '', 150);
+        };
+      });
+
+      document.getElementById('btn-js').disabled = true;
+      enableNext('btn-tailwind');
+      updateStatus();
+    }
+
+    // 4. Tailwind
+    function addTailwind() {
+      if (stage >= 4) return;
+      stage = 4;
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.tailwindcss.com';
+      script.onload = () => {
+        document.getElementById('app').innerHTML = `
+          <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 py-5 flex justify-between items-center shadow-xl sticky top-0 z-50">
+            <div class="text-xl font-bold tracking-tight flex items-center gap-2">
+              <span class="text-2xl">⚡</span> NovaDash
+            </div>
+            <nav class="flex items-center gap-6 text-sm">
+              <a href="#" class="text-slate-300 hover:text-white transition">Dashboard</a>
+              <a href="#" class="text-slate-300 hover:text-white transition hidden sm:inline">Analytics</a>
+              <a href="#" class="text-slate-300 hover:text-white transition hidden sm:inline">Settings</a>
+              <button id="dark-toggle" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-semibold transition text-sm">
+                🌙 Dark
+              </button>
+            </nav>
+          </header>
+
+          <div class="flex min-h-[calc(100vh-72px)]">
+            <aside class="w-64 bg-white border-r border-slate-200 p-6 hidden md:block">
+              <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-5">Menu</h3>
+              <ul class="space-y-2 text-sm">
+                <li class="px-4 py-3 rounded-xl bg-indigo-50 text-indigo-700 font-medium cursor-pointer flex items-center gap-3">
+                  <span>📊</span> Overview
+                </li>
+                <li class="px-4 py-3 rounded-xl hover:bg-slate-100 cursor-pointer transition flex items-center gap-3">
+                  <span>📁</span> Projects
+                </li>
+                <li class="px-4 py-3 rounded-xl hover:bg-slate-100 cursor-pointer transition flex items-center gap-3">
+                  <span>👥</span> Team
+                </li>
+                <li class="px-4 py-3 rounded-xl hover:bg-slate-100 cursor-pointer transition flex items-center gap-3">
+                  <span>📈</span> Reports
+                </li>
+              </ul>
+            </aside>
+
+            <main class="flex-1 p-6 sm:p-10 bg-slate-50">
+              <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Welcome to NovaDash</h1>
+                <p class="text-slate-500">Your modern project dashboard • Powered by Tailwind</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 card">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-medium text-slate-500">Active Projects</h3>
+                    <span class="text-2xl">🚀</span>
+                  </div>
+                  <p class="text-3xl font-bold text-slate-900">12</p>
+                  <p class="text-xs text-green-600 mt-2">+2 this week</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 card">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-medium text-slate-500">Team Members</h3>
+                    <span class="text-2xl">👥</span>
+                  </div>
+                  <p class="text-3xl font-bold text-slate-900">48</p>
+                  <p class="text-xs text-green-600 mt-2">+5 this month</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 card">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-medium text-slate-500">Tasks Done</h3>
+                    <span class="text-2xl">✅</span>
+                  </div>
+                  <p class="text-3xl font-bold text-slate-900">284</p>
+                  <p class="text-xs text-green-600 mt-2">+32 today</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 card">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-medium text-slate-500">Revenue</h3>
+                    <span class="text-2xl">💰</span>
+                  </div>
+                  <p class="text-3xl font-bold text-slate-900">$42k</p>
+                  <p class="text-xs text-green-600 mt-2">+12% vs last month</p>
+                </div>
+              </div>
+              <div id="react-area"></div>
+            </main>
+          </div>
+        `;
+
+        let dark = false;
+        document.getElementById('dark-toggle').onclick = function() {
+          dark = !dark;
+          document.body.classList.toggle('bg-slate-900', dark);
+          this.textContent = dark ? '☀️ Light' : '🌙 Dark';
+        };
+
+        document.getElementById('btn-tailwind').disabled = true;
+        enableNext('btn-gsap');
+        updateStatus();
+      };
+      document.head.appendChild(script);
+    }
+
+    // 5. GSAP
+    function addGSAP() {
+      if (stage >= 5) return;
+      stage = 5;
+
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+      script.onload = () => {
+        document.getElementById('app').innerHTML = `
+          <div class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden">
+            <header id="header" class="px-6 py-5 flex justify-between items-center border-b border-white/10 backdrop-blur-md bg-black/20 sticky top-0 z-50">
+              <div class="text-2xl font-bold flex items-center gap-3">
+                <span class="text-3xl">⚡</span>
+                <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">NovaDash</span>
+              </div>
+              <nav class="flex items-center gap-6 text-sm">
+                <a href="#" class="text-slate-300 hover:text-white transition">Dashboard</a>
+                <a href="#" class="text-slate-300 hover:text-white transition hidden sm:inline">Analytics</a>
+                <button id="dark-toggle" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-full font-semibold transition text-sm">
+                  🌙 Dark
+                </button>
+              </nav>
+            </header>
+
+            <div class="flex min-h-[calc(100vh-80px)]">
+              <aside id="sidebar" class="w-64 border-r border-white/10 p-6 hidden md:block bg-black/20 backdrop-blur">
+                <h3 class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-6">Navigation</h3>
+                <ul class="space-y-2 text-sm">
+                  <li class="px-4 py-3 rounded-xl bg-indigo-600/30 text-indigo-200 font-medium cursor-pointer flex items-center gap-3 border border-indigo-500/30">
+                    <span>📊</span> Overview
+                  </li>
+                  <li class="px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer transition flex items-center gap-3">
+                    <span>📁</span> Projects
+                  </li>
+                  <li class="px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer transition flex items-center gap-3">
+                    <span>👥</span> Team
+                  </li>
+                  <li class="px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer transition flex items-center gap-3">
+                    <span>📈</span> Reports
+                  </li>
+                </ul>
+              </aside>
+
+              <main class="flex-1 p-6 sm:p-10">
+                <div class="mb-10">
+                  <h1 class="text-4xl sm:text-5xl font-bold mb-3 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+                    Welcome to NovaDash
+                  </h1>
+                  <p class="text-indigo-200/80 text-lg">Cinematic experience powered by GSAP</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6" id="cards-container">
+                  <div class="card bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-sm font-medium text-indigo-200">Active Projects</h3>
+                      <span class="text-3xl">🚀</span>
+                    </div>
+                    <p class="text-4xl font-bold">12</p>
+                    <p class="text-xs text-green-400 mt-3">+2 this week</p>
+                  </div>
+                  <div class="card bg-gradient-to-br from-blue-600/20 to-cyan-600/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-sm font-medium text-blue-200">Team Members</h3>
+                      <span class="text-3xl">👥</span>
+                    </div>
+                    <p class="text-4xl font-bold">48</p>
+                    <p class="text-xs text-green-400 mt-3">+5 this month</p>
+                  </div>
+                  <div class="card bg-gradient-to-br from-emerald-600/20 to-green-600/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-sm font-medium text-emerald-200">Tasks Done</h3>
+                      <span class="text-3xl">✅</span>
+                    </div>
+                    <p class="text-4xl font-bold">284</p>
+                    <p class="text-xs text-green-400 mt-3">+32 today</p>
+                  </div>
+                  <div class="card bg-gradient-to-br from-amber-600/20 to-orange-600/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-sm font-medium text-amber-200">Revenue</h3>
+                      <span class="text-3xl">💰</span>
+                    </div>
+                    <p class="text-4xl font-bold">$42k</p>
+                    <p class="text-xs text-green-400 mt-3">+12% vs last month</p>
+                  </div>
+                </div>
+
+                <!-- React Area - Centered -->
+                <div id="react-area" class="mt-16 flex justify-center"></div>
+              </main>
+            </div>
+          </div>
+        `;
+
+        gsap.from('#header', { y: -100, opacity: 0, duration: 1, ease: 'power4.out' });
+        gsap.from('#sidebar', { x: -150, opacity: 0, duration: 1.1, delay: 0.2, ease: 'power4.out' });
+        gsap.from('main h1', { y: 40, opacity: 0, duration: 0.9, delay: 0.4 });
+        gsap.from('main p', { y: 30, opacity: 0, duration: 0.8, delay: 0.55 });
+        gsap.from('.card', {
+          y: 80, opacity: 0, scale: 0.85,
+          duration: 0.9, stagger: 0.15, delay: 0.7,
+          ease: 'back.out(1.7)'
+        });
+
+        document.querySelectorAll('.card').forEach(card => {
+          card.addEventListener('mouseenter', () => gsap.to(card, { scale: 1.05, y: -10, duration: 0.3 }));
+          card.addEventListener('mouseleave', () => gsap.to(card, { scale: 1, y: 0, duration: 0.3 }));
+        });
+
+        document.getElementById('btn-gsap').disabled = true;
+        enableNext('btn-react');
+        updateStatus();
+      };
+      document.head.appendChild(script);
+    }
+
+    // 6. REACT - Centered Live Dashboard
+    function addReact() {
+      if (stage >= 6) return;
+      stage = 6;
+
+      const area = document.getElementById('react-area');
+      
+      // Centered loading
+      area.innerHTML = `
+        <div style="width:100%; max-width:700px; margin:0 auto; padding:20px; text-align:center;">
+          <div style="padding:20px; background:rgba(79,70,229,0.3); border-radius:16px; border:1px solid rgba(255,255,255,0.1);">
+            ⏳ Loading Live Dashboard...
+          </div>
+        </div>
+      `;
+
+      setTimeout(() => {
+        area.innerHTML = `
+          <div style="width:100%; max-width:700px; margin: 0 auto;">
+            <div style="
+              padding: 32px;
+              background: linear-gradient(135deg, rgba(79,70,229,0.45), rgba(124,58,237,0.45));
+              border-radius: 24px;
+              border: 1px solid rgba(255,255,255,0.15);
+              backdrop-filter: blur(12px);
+              box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+              text-align: center;
+            ">
+              <div style="margin-bottom: 28px;">
+                <h2 style="font-size: 26px; font-weight: 700; margin-bottom: 8px;">🚀 Live React Dashboard</h2>
+                <span id="live-time" style="font-size: 14px; opacity: 0.85;"></span>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                <div style="background: rgba(255,255,255,0.12); padding: 20px; border-radius: 16px;">
+                  <div style="font-size: 14px; opacity: 0.8; margin-bottom: 8px;">Projects</div>
+                  <div id="s1" style="font-size: 32px; font-weight: 700;">12</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.12); padding: 20px; border-radius: 16px;">
+                  <div style="font-size: 14px; opacity: 0.8; margin-bottom: 8px;">Members</div>
+                  <div id="s2" style="font-size: 32px; font-weight: 700;">48</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.12); padding: 20px; border-radius: 16px;">
+                  <div style="font-size: 14px; opacity: 0.8; margin-bottom: 8px;">Tasks</div>
+                  <div id="s3" style="font-size: 32px; font-weight: 700;">284</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.12); padding: 20px; border-radius: 16px;">
+                  <div style="font-size: 14px; opacity: 0.8; margin-bottom: 8px;">Revenue</div>
+                  <div id="s4" style="font-size: 32px; font-weight: 700;">$42k</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Live updating numbers
+        let stats = { p: 12, m: 48, t: 284, r: 42 };
+        setInterval(() => {
+          stats.p = Math.max(8, stats.p + Math.floor(Math.random() * 3) - 1);
+          stats.m += Math.floor(Math.random() * 2);
+          stats.t += Math.floor(Math.random() * 5);
+          stats.r += Math.floor(Math.random() * 3);
+
+          document.getElementById('s1').textContent = stats.p;
+          document.getElementById('s2').textContent = stats.m;
+          document.getElementById('s3').textContent = stats.t;
+          document.getElementById('s4').textContent = '$' + stats.r + 'k';
+          document.getElementById('live-time').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+        }, 2000);
+
+       
+        if (window.gsap) {
+          gsap.from('#react-area > div', {
+            y: 50,
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.8,
+            ease: 'back.out(1.4)'
+          });
+        }
+
+        document.getElementById('btn-react').disabled = true;
+        updateStatus();
+      }, 500);
+    }
+
+    updateStatus();
+  </script>
+</body>
+</html>

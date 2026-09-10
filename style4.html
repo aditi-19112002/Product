@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HTML CSS JS Form Transformation</title>
+
+<style>
+
+/* =========================
+   BASIC PAGE
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:#111827;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container{
+    width:100%;
+    max-width:900px;
+    text-align:center;
+}
+
+h1{
+    font-size:clamp(28px,5vw,50px);
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#94a3b8;
+    margin-bottom:35px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.buttons{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:40px;
+}
+
+button{
+    border:none;
+    padding:14px 25px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.html-btn{
+    background:#f97316;
+    color:white;
+}
+
+.css-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.js-btn{
+    background:#eab308;
+    color:#111;
+}
+
+button:hover{
+    transform:translateY(-4px);
+}
+
+/* =========================
+   FORM AREA
+========================= */
+
+.stage{
+    min-height:420px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* =========================
+   STEP 1: HTML
+========================= */
+
+.form-box{
+    display:none;
+    width:350px;
+    text-align:left;
+    padding:20px;
+}
+
+.form-box.show{
+    display:block;
+}
+
+.form-box h2{
+    margin-bottom:25px;
+}
+
+.form-box label{
+    display:block;
+    margin:12px 0 7px;
+}
+
+.form-box input{
+    width:100%;
+    padding:12px;
+    border:1px solid #777;
+    outline:none;
+}
+
+.form-box button{
+    margin-top:20px;
+    width:100%;
+    background:#ddd;
+    color:#333;
+}
+
+/* =========================
+   STEP 2: CSS STYLE
+========================= */
+
+.form-box.styled{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    padding:35px;
+    border-radius:25px;
+    backdrop-filter:blur(15px);
+    box-shadow:0 20px 50px rgba(0,0,0,0.4);
+    animation:pop 0.6s ease;
+}
+
+.form-box.styled h2{
+    text-align:center;
+    font-size:28px;
+    margin-bottom:30px;
+}
+
+.form-box.styled label{
+    color:#cbd5e1;
+    font-size:14px;
+}
+
+.form-box.styled input{
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.08);
+    color:white;
+    padding:15px;
+    transition:0.3s;
+}
+
+.form-box.styled input:focus{
+    border-color:#8b5cf6;
+    box-shadow:0 0 15px rgba(139,92,246,0.4);
+}
+
+.form-box.styled button{
+    background:linear-gradient(
+        135deg,
+        #8b5cf6,
+        #2563eb
+    );
+    color:white;
+    border-radius:12px;
+    padding:15px;
+    box-shadow:0 10px 25px rgba(37,99,235,0.4);
+}
+
+@keyframes pop{
+
+    from{
+        opacity:0;
+        transform:scale(0.8);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+/* =========================
+   SUCCESS MESSAGE
+========================= */
+
+.success{
+    display:none;
+    text-align:center;
+    padding:15px;
+    margin-top:15px;
+    background:#16a34a;
+    border-radius:10px;
+    animation:pop 0.5s ease;
+}
+
+.success.show{
+    display:block;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.status{
+    margin-top:25px;
+    font-size:15px;
+    color:#94a3b8;
+}
+
+.status span{
+    color:white;
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Build a Form Step by Step </h1>
+
+    <p class="subtitle">
+        HTML → CSS → JavaScript
+    </p>
+
+
+    <!-- CONTROL BUTTONS -->
+
+    <div class="buttons">
+
+        <button class="html-btn" onclick="createHTML()">
+            1. Add HTML
+        </button>
+
+        <button class="css-btn" onclick="addCSS()">
+            2. Add CSS
+        </button>
+
+        <button class="js-btn" onclick="addJavaScript()">
+            3. Add JavaScript
+        </button>
+
+    </div>
+
+
+    <!-- FORM STAGE -->
+
+    <div class="stage">
+
+        <div class="form-box" id="formBox">
+
+            <h2>Create Account</h2>
+
+            <label>Full Name</label>
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your name"
+            >
+
+
+            <label>Email Address</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+            >
+
+
+            <button
+                type="button"
+                id="submitBtn"
+            >
+                Sign Up
+            </button>
+
+
+            <div class="success" id="success">
+                🎉 Account Created Successfully!
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="status" id="status">
+
+        Current Step:
+        <span>Click “Add HTML” to begin</span>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   JAVASCRIPT
+========================= */
+
+let htmlAdded = false;
+let cssAdded = false;
+let jsAdded = false;
+
+
+/* STEP 1: SHOW HTML */
+
+function createHTML(){
+
+    const form =
+        document.getElementById("formBox");
+
+    form.classList.add("show");
+
+    htmlAdded = true;
+
+    document.querySelector(
+        "#status span"
+    ).innerText =
+    "HTML Structure Created ✓";
+
+}
+
+
+/* STEP 2: APPLY CSS */
+
+function addCSS(){
+
+    if(!htmlAdded){
+
+        alert("First create the HTML structure!");
+
+        return;
+
+    }
+
+
+    const form =
+        document.getElementById("formBox");
+
+    form.classList.add("styled");
+
+    cssAdded = true;
+
+    document.querySelector(
+        "#status span"
+    ).innerText =
+    "CSS Styling Applied 🎨";
+
+}
+
+
+/* STEP 3: ADD JAVASCRIPT */
+
+function addJavaScript(){
+
+    if(!htmlAdded){
+
+        alert("First add HTML!");
+
+        return;
+
+    }
+
+
+    if(!cssAdded){
+
+        alert("Now add CSS styling first!");
+
+        return;
+
+    }
+
+
+    if(jsAdded){
+
+        return;
+
+    }
+
+
+    jsAdded = true;
+
+
+    const button =
+        document.getElementById("submitBtn");
+
+
+    button.addEventListener(
+        "click",
+        function(){
+
+            const name =
+                document.getElementById("name");
+
+            const email =
+                document.getElementById("email");
+
+
+            if(
+                name.value.trim() === "" ||
+                email.value.trim() === ""
+            ){
+
+                alert(
+                    "Please fill all fields!"
+                );
+
+                return;
+
+            }
+
+
+            document
+                .getElementById("success")
+                .classList.add("show");
+
+
+        }
+    );
+
+
+    document.querySelector(
+        "#status span"
+    ).innerText =
+    "JavaScript Functionality Added ⚡";
+
+}
+
+</script>
+
+</body>
+</html>

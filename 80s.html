@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>80s Retro Photo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff00cc, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255,0,204,0.5);
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .upload-box {
+            border: 3px dashed #555;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #222;
+        }
+
+        .upload-box:hover {
+            border-color: #ff00cc;
+            background: #2a1a2a;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #ff00cc, #00ffff);
+            color: #000;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,0,204,0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .image-box {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+        }
+
+        .image-box h3 {
+            margin-bottom: 12px;
+            color: #00ffff;
+        }
+
+        canvas, img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        input[type="range"] {
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>80s RETRO PHOTO</h1>
+    <p class="subtitle">Normal photo upload karo → Instant 80s VHS style</p>
+
+    <div class="container">
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <p style="font-size: 1.3rem; margin-bottom: 10px;">📷 Photo Upload Karo</p>
+            <p style="color: #888;">Click yahan ya drag & drop</p>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="convertBtn" disabled>Retro Style Lagao</button>
+            <button class="btn" id="downloadBtn" disabled style="background: linear-gradient(90deg, #00ff88, #00ccff);">Download Karo</button>
+        </div>
+
+        <div class="controls" style="margin-top: 15px;">
+            <label>
+                Intensity:
+                <input type="range" id="intensity" min="0.3" max="1.2" step="0.1" value="0.85">
+            </label>
+            <label>
+                <input type="checkbox" id="scanlines" checked> Scanlines
+            </label>
+            <label>
+                <input type="checkbox" id="grain" checked> Film Grain
+            </label>
+        </div>
+
+        <div class="preview-area">
+            <div class="image-box">
+                <h3>Original</h3>
+                <img id="originalPreview" style="display:none;">
+            </div>
+            <div class="image-box">
+                <h3>80s Retro</h3>
+                <canvas id="retroCanvas" style="display:none;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const originalPreview = document.getElementById('originalPreview');
+        const canvas = document.getElementById('retroCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let originalImage = null;
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                originalImage = new Image();
+                originalImage.onload = function() {
+                    originalPreview.src = event.target.result;
+                    originalPreview.style.display = 'block';
+                    convertBtn.disabled = false;
+                    downloadBtn.disabled = true;
+                    canvas.style.display = 'none';
+                };
+                originalImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        convertBtn.addEventListener('click', applyRetroEffect);
+        downloadBtn.addEventListener('click', downloadImage);
+
+        function applyRetroEffect() {
+            if (!originalImage) return;
+
+            // Canvas size set karo
+            canvas.width = originalImage.width;
+            canvas.height = originalImage.height;
+            canvas.style.display = 'block';
+
+            // Original image draw karo
+            ctx.drawImage(originalImage, 0, 0);
+
+            // Intensity
+            const intensity = parseFloat(document.getElementById('intensity').value);
+            const useScanlines = document.getElementById('scanlines').checked;
+            const useGrain = document.getElementById('grain').checked;
+
+            // Pixel data lo
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            // 1. Color grading (80s faded + magenta/cyan shift)
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+
+                // Sepia + faded look
+                const tr = 0.393 * r + 0.769 * g + 0.189 * b;
+                const tg = 0.349 * r + 0.686 * g + 0.168 * b;
+                const tb = 0.272 * r + 0.534 * g + 0.131 * b;
+
+                // Mix original + sepia according to intensity
+                r = r * (1 - intensity) + tr * intensity;
+                g = g * (1 - intensity) + tg * intensity;
+                b = b * (1 - intensity) + tb * intensity;
+
+                // Slight magenta/cyan push (classic 80s)
+                r = Math.min(255, r * 1.15);
+                b = Math.min(255, b * 1.1);
+                g = g * 0.92;
+
+                // Reduce contrast a bit (faded film)
+                r = (r - 128) * 0.85 + 128;
+                g = (g - 128) * 0.85 + 128;
+                b = (b - 128) * 0.85 + 128;
+
+                data[i]     = Math.max(0, Math.min(255, r));
+                data[i + 1] = Math.max(0, Math.min(255, g));
+                data[i + 2] = Math.max(0, Math.min(255, b));
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            // 2. Film Grain
+            if (useGrain) {
+                const grainData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const gData = grainData.data;
+                for (let i = 0; i < gData.length; i += 4) {
+                    const noise = (Math.random() - 0.5) * 35 * intensity;
+                    gData[i]     = Math.max(0, Math.min(255, gData[i] + noise));
+                    gData[i + 1] = Math.max(0, Math.min(255, gData[i + 1] + noise));
+                    gData[i + 2] = Math.max(0, Math.min(255, gData[i + 2] + noise));
+                }
+                ctx.putImageData(grainData, 0, 0);
+            }
+
+            // 3. Scanlines (VHS style)
+            if (useScanlines) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                for (let y = 0; y < canvas.height; y += 3) {
+                    ctx.fillRect(0, y, canvas.width, 1.5);
+                }
+            }
+
+            // 4. Soft vignette
+            const gradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, canvas.height * 0.3,
+                canvas.width / 2, canvas.height / 2, canvas.height * 0.8
+            );
+            gradient.addColorStop(0, 'rgba(0,0,0,0)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0.45)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            downloadBtn.disabled = false;
+        }
+
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = '80s-retro-photo.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Drag & Drop support
+        const uploadBox = document.querySelector('.upload-box');
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#ff00cc';
+        });
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.style.borderColor = '#555';
+        });
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#555';
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+</body>
+</html>

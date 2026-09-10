@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Morphing Multi-Step Form</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    body {
+      transition: background 0.4s ease;
+    }
+
+    .form-box {
+      animation: appear 0.5s ease;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .shake {
+      animation: shake 0.35s ease;
+    }
+
+    @keyframes shake {
+      25% { transform: translateX(-8px); }
+      50% { transform: translateX(8px); }
+      75% { transform: translateX(-5px); }
+    }
+  </style>
+</head>
+
+<body id="body"
+  class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-100 flex items-center justify-center p-5">
+
+  <!-- Theme Button -->
+  <button id="themeBtn"
+    class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white shadow-lg text-gray-700">
+    <i class="fa-solid fa-moon"></i>
+  </button>
+
+  <div class="w-full max-w-md">
+
+    <!-- Progress -->
+    <div id="progressArea" class="mb-5 hidden">
+
+      <div class="flex justify-between text-xs font-semibold text-gray-500 mb-2">
+        <span>Account Registration</span>
+        <span id="stepText">Step 1 of 6</span>
+      </div>
+
+      <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div id="progress"
+          class="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-500"
+          style="width: 16%">
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Main Form -->
+    <div id="box"
+      class="form-box bg-white rounded-3xl shadow-2xl p-6">
+
+      <!-- Icon -->
+      <div id="iconBox"
+        class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-2xl shadow-lg">
+
+        <i id="icon" class="fa-solid fa-building-columns"></i>
+
+      </div>
+
+
+      <!-- Welcome -->
+      <div id="welcome">
+
+        <h1 class="text-2xl font-bold text-center text-gray-800">
+          Open New Account
+        </h1>
+
+        <p class="text-gray-500 text-sm text-center mt-2">
+          Complete the form in a few simple steps
+        </p>
+
+        <button id="startBtn"
+          class="w-full mt-7 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-lg hover:scale-[1.02] transition">
+
+          Get Started
+          <i class="fa-solid fa-arrow-right ml-2"></i>
+
+        </button>
+
+      </div>
+
+
+      <!-- Form -->
+      <div id="formArea" class="hidden">
+
+        <h2 id="title"
+          class="text-xl font-bold text-center text-gray-800 mb-2">
+        </h2>
+
+        <p id="description"
+          class="text-sm text-center text-gray-500 mb-6">
+        </p>
+
+
+        <!-- Input -->
+        <div class="relative">
+
+          <input id="input"
+            class="w-full border-2 border-gray-200 rounded-xl px-4 py-4 outline-none focus:border-blue-500 transition"
+            autocomplete="off">
+
+          <input type="file"
+            id="fileInput"
+            class="hidden"
+            accept="image/*">
+
+        </div>
+
+
+        <!-- Image Preview -->
+        <div id="previewBox"
+          class="hidden mt-5 text-center">
+
+          <img id="previewImg"
+            class="w-28 h-28 object-cover rounded-2xl mx-auto border-4 border-blue-100">
+
+          <p id="previewName"
+            class="text-xs text-gray-500 mt-2">
+          </p>
+
+        </div>
+
+
+        <!-- Error -->
+        <p id="errorMsg"
+          class="hidden text-red-500 text-sm mt-3">
+        </p>
+
+
+        <!-- Buttons -->
+        <div class="flex gap-3 mt-6">
+
+          <button id="backBtn"
+            class="hidden w-14 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-100 transition">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+          </button>
+
+          <button id="nextBtn"
+            class="flex-1 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:scale-[1.02] transition">
+
+            Continue
+            <i class="fa-solid fa-arrow-right ml-2"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- Success -->
+      <div id="successArea"
+        class="hidden text-center py-5">
+
+        <div
+          class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl mx-auto">
+
+          <i class="fa-solid fa-check"></i>
+
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-800 mt-5">
+          Request Submitted!
+        </h2>
+
+        <p class="text-gray-500 text-sm mt-2">
+          Your account opening request has been submitted successfully.
+        </p>
+
+        <button id="restartBtn"
+          class="mt-6 px-6 py-3 bg-gray-900 text-white rounded-xl">
+
+          Create Another Request
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- Summary -->
+    <div id="summary"
+      class="hidden mt-5 bg-white rounded-2xl shadow-lg p-5">
+
+      <h3 class="font-bold text-gray-800 mb-3">
+        Submitted Details
+      </h3>
+
+      <div id="summaryData"
+        class="text-sm text-gray-600 space-y-2">
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    const steps = [
+
+      {
+        title: "What's your name?",
+        description: "Enter your full name",
+        placeholder: "Enter Full Name",
+        type: "text",
+        icon: "fa-solid fa-user",
+        key: "Full Name"
+      },
+
+      {
+        title: "Your mobile number",
+        description: "We'll use this for verification",
+        placeholder: "Enter 10 digit mobile number",
+        type: "tel",
+        icon: "fa-solid fa-phone",
+        key: "Mobile Number"
+      },
+
+      {
+        title: "Date of birth",
+        description: "Enter your date of birth",
+        placeholder: "",
+        type: "date",
+        icon: "fa-solid fa-calendar",
+        key: "Date of Birth"
+      },
+
+      {
+        title: "Aadhaar number",
+        description: "Enter your 12 digit Aadhaar number",
+        placeholder: "Enter Aadhaar Number",
+        type: "text",
+        icon: "fa-solid fa-id-card",
+        key: "Aadhaar Number"
+      },
+
+      {
+        title: "PAN number",
+        description: "Enter your PAN card number",
+        placeholder: "ABCDE1234F",
+        type: "text",
+        icon: "fa-solid fa-address-card",
+        key: "PAN Number"
+      },
+
+      {
+        title: "Upload your photo",
+        description: "Choose a clear profile photo",
+        placeholder: "Click here to upload photo",
+        type: "file",
+        icon: "fa-solid fa-camera",
+        key: "Photo"
+      }
+
+    ];
+
+
+    let currentStep = 0;
+
+    const formData = {};
+
+    const startBtn = document.getElementById("startBtn");
+    const welcome = document.getElementById("welcome");
+    const formArea = document.getElementById("formArea");
+
+    const input = document.getElementById("input");
+    const fileInput = document.getElementById("fileInput");
+
+    const title = document.getElementById("title");
+    const description = document.getElementById("description");
+
+    const icon = document.getElementById("icon");
+
+    const nextBtn = document.getElementById("nextBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    const progress = document.getElementById("progress");
+    const progressArea = document.getElementById("progressArea");
+    const stepText = document.getElementById("stepText");
+
+    const errorMsg = document.getElementById("errorMsg");
+
+    const previewBox = document.getElementById("previewBox");
+    const previewImg = document.getElementById("previewImg");
+    const previewName = document.getElementById("previewName");
+
+    const successArea = document.getElementById("successArea");
+    const summary = document.getElementById("summary");
+    const summaryData = document.getElementById("summaryData");
+
+    const restartBtn = document.getElementById("restartBtn");
+
+
+    /* Start Form */
+
+    startBtn.addEventListener("click", () => {
+
+      welcome.classList.add("hidden");
+
+      formArea.classList.remove("hidden");
+
+      progressArea.classList.remove("hidden");
+
+      loadStep();
+
+    });
+
+
+    /* Load Step */
+
+    function loadStep() {
+
+      const step = steps[currentStep];
+
+      title.textContent = step.title;
+
+      description.textContent = step.description;
+
+      input.placeholder = step.placeholder;
+
+      input.value = "";
+
+      input.type = step.type === "file" ? "text" : step.type;
+
+      input.readOnly = step.type === "file";
+
+      icon.className = step.icon;
+
+      errorMsg.classList.add("hidden");
+
+      previewBox.classList.add("hidden");
+
+      const percentage = ((currentStep + 1) / steps.length) * 100;
+
+      progress.style.width = percentage + "%";
+
+      stepText.textContent =
+        `Step ${currentStep + 1} of ${steps.length}`;
+
+
+      if (currentStep > 0) {
+        backBtn.classList.remove("hidden");
+      } else {
+        backBtn.classList.add("hidden");
+      }
+
+
+      if (step.type === "file") {
+
+        input.style.cursor = "pointer";
+
+        input.onclick = () => fileInput.click();
+
+      } else {
+
+        input.style.cursor = "text";
+
+        input.onclick = null;
+
+        setTimeout(() => input.focus(), 200);
+
+      }
+
+
+      nextBtn.innerHTML =
+        currentStep === steps.length - 1
+          ? `Submit <i class="fa-solid fa-check ml-2"></i>`
+          : `Continue <i class="fa-solid fa-arrow-right ml-2"></i>`;
+
+    }
+
+
+    /* Input Validation */
+
+    input.addEventListener("input", () => {
+
+      errorMsg.classList.add("hidden");
+
+      if (currentStep === 1) {
+
+        input.value =
+          input.value.replace(/\D/g, "").slice(0, 10);
+
+      }
+
+
+      if (currentStep === 3) {
+
+        input.value =
+          input.value.replace(/\D/g, "").slice(0, 12);
+
+      }
+
+
+      if (currentStep === 4) {
+
+        input.value =
+          input.value.toUpperCase().slice(0, 10);
+
+      }
+
+    });
+
+
+    /* File Upload */
+
+    fileInput.addEventListener("change", () => {
+
+      const file = fileInput.files[0];
+
+      if (!file) return;
+
+      input.value = file.name;
+
+      previewName.textContent = file.name;
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+
+        previewImg.src = e.target.result;
+
+        previewBox.classList.remove("hidden");
+
+      };
+
+      reader.readAsDataURL(file);
+
+    });
+
+
+    /* Next Button */
+
+    nextBtn.addEventListener("click", nextStep);
+
+
+    input.addEventListener("keydown", (e) => {
+
+      if (e.key === "Enter") {
+        nextStep();
+      }
+
+    });
+
+
+    function nextStep() {
+
+      const step = steps[currentStep];
+
+      errorMsg.classList.add("hidden");
+
+
+      /* File Validation */
+
+      if (step.type === "file") {
+
+        if (!fileInput.files[0]) {
+
+          showError("Please upload your photo");
+
+          return;
+
+        }
+
+        formData[step.key] = fileInput.files[0].name;
+
+      }
+
+
+      /* Text Validation */
+
+      else {
+
+        if (!input.value.trim()) {
+
+          showError("This field is required");
+
+          return;
+
+        }
+
+
+        if (currentStep === 1 && input.value.length !== 10) {
+
+          showError("Mobile number must be exactly 10 digits");
+
+          return;
+
+        }
+
+
+        if (currentStep === 3 && input.value.length !== 12) {
+
+          showError("Aadhaar number must be exactly 12 digits");
+
+          return;
+
+        }
+
+
+        if (
+          currentStep === 4 &&
+          !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(input.value)
+        ) {
+
+          showError("Enter a valid PAN number");
+
+          return;
+
+        }
+
+
+        formData[step.key] = input.value;
+
+      }
+
+
+      currentStep++;
+
+
+      if (currentStep < steps.length) {
+
+        fileInput.value = "";
+
+        formArea.classList.add("hidden");
+
+        setTimeout(() => {
+
+          formArea.classList.remove("hidden");
+
+          loadStep();
+
+        }, 150);
+
+      }
+
+      else {
+
+        showSuccess();
+
+      }
+
+    }
+
+
+    /* Back Button */
+
+    backBtn.addEventListener("click", () => {
+
+      if (currentStep > 0) {
+
+        currentStep--;
+
+        loadStep();
+
+      }
+
+    });
+
+
+    /* Error */
+
+    function showError(message) {
+
+      errorMsg.textContent = message;
+
+      errorMsg.classList.remove("hidden");
+
+      formArea.classList.add("shake");
+
+      setTimeout(() => {
+        formArea.classList.remove("shake");
+      }, 400);
+
+    }
+
+
+    /* Success */
+
+    function showSuccess() {
+
+      formArea.classList.add("hidden");
+
+      progressArea.classList.add("hidden");
+
+      successArea.classList.remove("hidden");
+
+      summary.classList.remove("hidden");
+
+      summaryData.innerHTML = "";
+
+
+      Object.entries(formData).forEach(([key, value]) => {
+
+        const item = document.createElement("div");
+
+        item.className =
+          "flex justify-between border-b pb-2";
+
+        item.innerHTML =
+          `<span class="font-medium">${key}</span>
+           <span>${value}</span>`;
+
+        summaryData.appendChild(item);
+
+      });
+
+    }
+
+
+    /* Restart */
+
+    restartBtn.addEventListener("click", () => {
+
+      currentStep = 0;
+
+      Object.keys(formData).forEach(
+        key => delete formData[key]
+      );
+
+      successArea.classList.add("hidden");
+
+      summary.classList.add("hidden");
+
+      welcome.classList.remove("hidden");
+
+    });
+
+
+    /* Dark Mode */
+
+    const themeBtn =
+      document.getElementById("themeBtn");
+
+    const body =
+      document.getElementById("body");
+
+    let dark = false;
+
+
+    themeBtn.addEventListener("click", () => {
+
+      dark = !dark;
+
+
+      if (dark) {
+
+        body.className =
+          "min-h-screen bg-gray-950 flex items-center justify-center p-5";
+
+        themeBtn.innerHTML =
+          '<i class="fa-solid fa-sun text-yellow-500"></i>';
+
+      }
+
+      else {
+
+        body.className =
+          "min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-100 flex items-center justify-center p-5";
+
+        themeBtn.innerHTML =
+          '<i class="fa-solid fa-moon"></i>';
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>
