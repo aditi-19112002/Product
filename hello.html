@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aditi Keshri — HTML to CSS</title>
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+}
+
+body{
+    background:#08080a;
+    color:white;
+    font-family:Arial, sans-serif;
+    overflow:hidden;
+}
+
+
+/* =====================================================
+   CODE EDITOR
+===================================================== */
+
+.editor{
+
+    position:fixed;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:9999;
+
+    background:#08080a !important;
+
+    color:#ddd;
+
+    overflow:hidden;
+
+    transition:
+        transform 1.2s cubic-bezier(.7,0,.2,1),
+        opacity 1s ease;
+}
+
+.editor.hide{
+
+    transform:translateY(-100%);
+
+    opacity:0;
+}
+
+
+/* TOP BAR */
+
+.editor-top{
+
+    height:58px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 22px;
+
+    background:#101012 !important;
+
+    border-bottom:1px solid #202024;
+}
+
+.dot{
+
+    width:11px;
+    height:11px;
+
+    border-radius:50%;
+
+    background:#444;
+
+    display:inline-block;
+
+    margin-right:7px;
+}
+
+.editor-title{
+
+    margin-left:18px;
+
+    color:#777;
+
+    font-size:13px;
+
+    font-family:Arial,sans-serif;
+}
+
+
+/* CODE */
+
+.code{
+
+    padding:35px;
+
+    width:100%;
+    max-width:1050px;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size:
+        clamp(12px,1.7vw,19px);
+
+    line-height:1.85;
+}
+
+.code-line{
+
+    opacity:0;
+
+    transform:translateX(-12px);
+
+    transition:.3s;
+
+    white-space:pre-wrap;
+}
+
+.code-line.show{
+
+    opacity:1;
+
+    transform:translateX(0);
+}
+
+
+/* HTML COLORS */
+
+.html-tag{
+    color:#ff6b9d;
+}
+
+.html-attr{
+    color:#67d9ff;
+}
+
+.html-value{
+    color:#a8ff78;
+}
+
+
+/* CSS COLORS */
+
+.css-selector{
+    color:#c084fc;
+}
+
+.css-property{
+    color:#67d9ff;
+}
+
+.css-value{
+    color:#a8ff78;
+}
+
+.comment{
+    color:#555;
+}
+
+
+/* CURSOR */
+
+.cursor{
+
+    display:inline-block;
+
+    width:8px;
+    height:20px;
+
+    background:#fff;
+
+    vertical-align:middle;
+
+    animation:blink .6s infinite;
+}
+
+@keyframes blink{
+
+    50%{
+        opacity:0;
+    }
+}
+
+
+/* =====================================================
+   PORTFOLIO
+===================================================== */
+
+.portfolio{
+
+    position:relative;
+
+    width:100%;
+    min-height:100vh;
+
+    padding:25px 6%;
+
+    overflow:hidden;
+
+    background:#050505 !important;
+
+    color:white;
+
+    isolation:isolate;
+}
+
+
+/* =====================================================
+   BACKGROUND GLOW
+===================================================== */
+
+.glow{
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    border-radius:50%;
+
+    filter:blur(130px);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:2s;
+
+    z-index:-1;
+}
+
+.glow.one{
+
+    background:#7c3aed;
+
+    top:-250px;
+    left:-150px;
+}
+
+.glow.two{
+
+    background:#ec4899;
+
+    right:-250px;
+    bottom:-250px;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar{
+
+    position:relative;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:10px 0 30px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    opacity:0;
+
+    transform:translateY(-20px);
+
+    transition:1s;
+}
+
+.logo{
+
+    font-size:23px;
+
+    font-weight:900;
+
+    letter-spacing:-1px;
+}
+
+.logo span{
+    color:#a78bfa;
+}
+
+.nav-links{
+
+    display:flex;
+
+    gap:32px;
+
+    list-style:none;
+}
+
+.nav-links a{
+
+    color:#777;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    transition:.3s;
+}
+
+.nav-links a:hover{
+
+    color:white;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero{
+
+    position:relative;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    min-height:78vh;
+
+    display:grid;
+
+    grid-template-columns:1.3fr .7fr;
+
+    align-items:center;
+
+    gap:60px;
+}
+
+
+/* CONTENT */
+
+.hero-content{
+
+    opacity:0;
+
+    transform:translateY(40px);
+
+    transition:
+        opacity 1.2s,
+        transform 1.2s;
+}
+
+.small{
+
+    color:#a78bfa;
+
+    letter-spacing:4px;
+
+    font-size:12px;
+
+    margin-bottom:20px;
+}
+
+
+/* NAME */
+
+.name{
+
+    font-size:
+        clamp(60px,9vw,125px);
+
+    line-height:.88;
+
+    letter-spacing:-8px;
+
+    font-weight:900;
+}
+
+.name .gradient{
+
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #a78bfa,
+            #f472b6,
+            #fff
+        );
+
+    background-size:300%;
+
+    -webkit-background-clip:text;
+
+    background-clip:text;
+
+    color:transparent;
+
+    animation:
+        gradientMove 5s linear infinite;
+}
+
+@keyframes gradientMove{
+
+    0%{
+        background-position:0%;
+    }
+
+    100%{
+        background-position:300%;
+    }
+}
+
+
+/* ROLE */
+
+.role{
+
+    margin-top:30px;
+
+    color:#aaa;
+
+    font-size:20px;
+}
+
+.role b{
+    color:white;
+}
+
+
+/* DESCRIPTION */
+
+.description{
+
+    max-width:530px;
+
+    color:#777;
+
+    line-height:1.7;
+
+    margin-top:18px;
+
+    font-size:15px;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.buttons{
+
+    display:flex;
+
+    gap:14px;
+
+    margin-top:32px;
+}
+
+.btn{
+
+    padding:15px 25px;
+
+    border-radius:100px;
+
+    text-decoration:none;
+
+    color:white;
+
+    border:1px solid #292929;
+
+    background:#0c0c0f;
+
+    transition:.4s;
+}
+
+.btn.primary{
+
+    border:none;
+
+    background:
+        linear-gradient(
+            100deg,
+            #7c3aed,
+            #ec4899
+        );
+
+    box-shadow:
+        0 10px 40px #7c3aed44;
+}
+
+.btn:hover{
+
+    transform:
+        translateY(-5px)
+        scale(1.03);
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+.profile{
+
+    position:relative;
+
+    width:280px;
+    height:280px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    opacity:0;
+
+    transform:
+        scale(.7)
+        rotate(-15deg);
+
+    transition:
+        opacity 1.5s,
+        transform 1.5s;
+}
+
+.profile::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-3px;
+
+    border-radius:50%;
+
+    background:
+        conic-gradient(
+            #7c3aed,
+            #ec4899,
+            #22d3ee,
+            #7c3aed
+        );
+
+    animation:
+        spin 5s linear infinite;
+}
+
+.profile::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:5px;
+
+    border-radius:50%;
+
+    background:#09090c;
+}
+
+.profile-text{
+
+    position:relative;
+
+    z-index:2;
+
+    text-align:center;
+}
+
+.profile-text strong{
+
+    display:block;
+
+    font-size:55px;
+}
+
+.profile-text span{
+
+    color:#888;
+
+    font-size:10px;
+
+    letter-spacing:3px;
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.stats{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:35px;
+
+    opacity:0;
+
+    transform:translateY(20px);
+
+    transition:1s;
+}
+
+.stat{
+
+    padding:14px 20px;
+
+    border:
+        1px solid #222;
+
+    border-radius:15px;
+
+    background:
+        rgba(255,255,255,.03);
+
+    backdrop-filter:blur(10px);
+}
+
+.stat strong{
+
+    font-size:17px;
+}
+
+.stat span{
+
+    display:block;
+
+    color:#666;
+
+    font-size:10px;
+
+    margin-top:4px;
+}
+
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+.particles{
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transition:2s;
+}
+
+.p{
+
+    position:absolute;
+
+    width:3px;
+    height:3px;
+
+    background:white;
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 12px white;
+
+    animation:
+        floating 4s infinite ease-in-out;
+}
+
+@keyframes floating{
+
+    0%,
+    100%{
+
+        transform:
+            translateY(0);
+
+        opacity:.2;
+    }
+
+    50%{
+
+        transform:
+            translateY(-35px);
+
+        opacity:1;
+    }
+}
+
+
+/* =====================================================
+   WOW STATE
+===================================================== */
+
+.wow .glow{
+
+    opacity:.32;
+}
+
+.wow .navbar{
+
+    opacity:1;
+
+    transform:
+        translateY(0);
+}
+
+.wow .hero-content{
+
+    opacity:1;
+
+    transform:
+        translateY(0);
+}
+
+.wow .profile{
+
+    opacity:1;
+
+    transform:
+        scale(1)
+        rotate(0);
+}
+
+.wow .stats{
+
+    opacity:1;
+
+    transform:
+        translateY(0);
+}
+
+.wow .particles{
+
+    opacity:1;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:800px){
+
+    .portfolio{
+
+        padding:
+            20px;
+    }
+
+    .nav-links{
+
+        display:none;
+    }
+
+    .hero{
+
+        grid-template-columns:1fr;
+
+        text-align:center;
+
+        gap:35px;
+    }
+
+    .name{
+
+        font-size:65px;
+
+        letter-spacing:-5px;
+    }
+
+    .description{
+
+        margin:
+            18px auto 0;
+    }
+
+    .buttons,
+    .stats{
+
+        justify-content:center;
+
+        flex-wrap:wrap;
+    }
+
+    .profile{
+
+        width:190px;
+        height:190px;
+    }
+
+    .profile-text strong{
+
+        font-size:40px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     FINAL PORTFOLIO
+===================================================== -->
+
+<main class="portfolio">
+
+    <div class="glow one"></div>
+
+    <div class="glow two"></div>
+
+
+    <!-- PARTICLES -->
+
+    <div class="particles">
+
+        <i class="p" style="left:8%;top:20%"></i>
+
+        <i class="p"
+           style="left:15%;top:70%;animation-delay:1s"></i>
+
+        <i class="p"
+           style="left:25%;top:35%;animation-delay:2s"></i>
+
+        <i class="p"
+           style="left:40%;top:80%;animation-delay:.5s"></i>
+
+        <i class="p"
+           style="left:55%;top:15%;animation-delay:1.5s"></i>
+
+        <i class="p"
+           style="left:67%;top:60%;animation-delay:2.5s"></i>
+
+        <i class="p"
+           style="left:80%;top:25%;animation-delay:1s"></i>
+
+        <i class="p"
+           style="left:92%;top:75%;animation-delay:3s"></i>
+
+        <i class="p"
+           style="left:72%;top:85%;animation-delay:2s"></i>
+
+        <i class="p"
+           style="left:35%;top:15%;animation-delay:3s"></i>
+
+    </div>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            AK<span>.</span>
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="#">Home</a>
+            </li>
+
+            <li>
+                <a href="#">About</a>
+            </li>
+
+            <li>
+                <a href="#">Projects</a>
+            </li>
+
+            <li>
+                <a href="#">Contact</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+
+        <!-- LEFT -->
+
+        <div class="hero-content">
+
+            <div class="small">
+                HELLO, I'M
+            </div>
+
+
+            <h1 class="name">
+
+                Aditi
+
+                <br>
+
+                <span class="gradient">
+                    Keshri.
+                </span>
+
+            </h1>
+
+
+            <div class="role">
+
+                <b>Frontend Developer</b>
+
+                <span> • Creative Coder</span>
+
+            </div>
+
+
+            <p class="description">
+
+                I create modern, responsive and
+                interactive digital experiences
+                using code, creativity and a little
+                bit of magic.
+
+            </p>
+
+
+            <div class="buttons">
+
+                <a
+                    href="#"
+                    class="btn primary">
+
+                    View Projects ↗
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="btn">
+
+                    Contact Me
+
+                </a>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <strong>
+                        HTML
+                    </strong>
+
+                    <span>
+                        STRUCTURE
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong>
+                        CSS
+                    </strong>
+
+                    <span>
+                        DESIGN
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong>
+                        JS
+                    </strong>
+
+                    <span>
+                        INTERACTION
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div class="profile">
+
+            <div class="profile-text">
+
+                <strong>
+                    AK
+                </strong>
+
+                <span>
+                    CREATIVE DEVELOPER
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- =====================================================
+     CODE EDITOR
+===================================================== -->
+
+<div
+    class="editor"
+    id="editor">
+
+
+    <div class="editor-top">
+
+        <span class="dot"></span>
+
+        <span class="dot"></span>
+
+        <span class="dot"></span>
+
+
+        <span
+            class="editor-title"
+            id="filename">
+
+            index.html
+
+        </span>
+
+    </div>
+
+
+    <div
+        class="code"
+        id="code">
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   HTML CODE
+===================================================== */
+
+const htmlLines = [
+
+`<span class="html-tag">&lt;nav&gt;</span>`,
+
+`  <span class="html-tag">&lt;h2&gt;</span>Aditi Keshri<span class="html-tag">&lt;/h2&gt;</span>`,
+
+`  <span class="html-tag">&lt;a&gt;</span>About<span class="html-tag">&lt;/a&gt;</span>`,
+
+`  <span class="html-tag">&lt;a&gt;</span>Projects<span class="html-tag">&lt;/a&gt;</span>`,
+
+`<span class="html-tag">&lt;/nav&gt;</span>`,
+
+` `,
+
+`<span class="html-tag">&lt;section</span> <span class="html-attr">class</span>=<span class="html-value">"hero"</span><span class="html-tag">&gt;</span>`,
+
+`  <span class="html-tag">&lt;h1&gt;</span>Aditi Keshri<span class="html-tag">&lt;/h1&gt;</span>`,
+
+`  <span class="html-tag">&lt;p&gt;</span>Frontend Developer<span class="html-tag">&lt;/p&gt;</span>`,
+
+`  <span class="html-tag">&lt;button&gt;</span>View Projects<span class="html-tag">&lt;/button&gt;</span>`,
+
+`<span class="html-tag">&lt;/section&gt;</span>`
+
+];
+
+
+/* =====================================================
+   CSS CODE
+===================================================== */
+
+const cssLines = [
+
+`<span class="comment">/* Let's transform this... */</span>`,
+
+`<span class="css-selector">body</span>{`,
+
+`  <span class="css-property">background</span>: <span class="css-value">#050505</span>;`,
+
+`  <span class="css-property">color</span>: <span class="css-value">white</span>;`,
+
+`}`,
+
+` `,
+
+`<span class="css-selector">.hero</span>{`,
+
+`  <span class="css-property">display</span>: <span class="css-value">grid</span>;`,
+
+`  <span class="css-property">min-height</span>: <span class="css-value">80vh</span>;`,
+
+`  <span class="css-property">align-items</span>: <span class="css-value">center</span>;`,
+
+`}`,
+
+` `,
+
+`<span class="css-selector">.name</span>{`,
+
+`  <span class="css-property">font-size</span>: <span class="css-value">clamp(60px,9vw,125px)</span>;`,
+
+`  <span class="css-property">letter-spacing</span>: <span class="css-value">-8px</span>;`,
+
+`  <span class="css-property">font-weight</span>: <span class="css-value">900</span>;`,
+
+`}`,
+
+` `,
+
+`<span class="css-selector">.gradient</span>{`,
+
+`  <span class="css-property">background</span>: <span class="css-value">linear-gradient(...)</span>;`,
+
+`  <span class="css-property">background-size</span>: <span class="css-value">300%</span>;`,
+
+`  <span class="css-property">color</span>: <span class="css-value">transparent</span>;`,
+
+`}`,
+
+` `,
+
+`<span class="css-selector">.profile</span>{`,
+
+`  <span class="css-property">border-radius</span>: <span class="css-value">50%</span>;`,
+
+`  <span class="css-property">background</span>: <span class="css-value">conic-gradient(...)</span>;`,
+
+`  <span class="css-property">animation</span>: <span class="css-value">spin 5s infinite</span>;`,
+
+`}`,
+
+` `,
+
+`<span class="css-selector">.btn</span>{`,
+
+`  <span class="css-property">border-radius</span>: <span class="css-value">100px</span>;`,
+
+`  <span class="css-property">background</span>: <span class="css-value">linear-gradient(...)</span>;`,
+
+`  <span class="css-property">box-shadow</span>: <span class="css-value">0 10px 40px #7c3aed</span>;`,
+
+`}`,
+
+` `,
+
+`<span class="comment">/* Aditi Keshri — Portfolio Complete ✨ */</span>`
+
+];
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const code =
+    document.getElementById("code");
+
+const editor =
+    document.getElementById("editor");
+
+const filename =
+    document.getElementById("filename");
+
+
+/* =====================================================
+   SHOW CODE
+===================================================== */
+
+function showCode(lines, speed, callback){
+
+    code.innerHTML = "";
+
+    let index = 0;
+
+
+    function next(){
+
+        if(index >= lines.length){
+
+            if(callback){
+                callback();
+            }
+
+            return;
+        }
+
+
+        const line =
+            document.createElement("div");
+
+
+        line.className =
+            "code-line";
+
+
+        line.innerHTML =
+            lines[index] +
+            `<span class="cursor"></span>`;
+
+
+        code.appendChild(line);
+
+
+        requestAnimationFrame(()=>{
+
+            line.classList.add("show");
+
+        });
+
+
+        index++;
+
+
+        setTimeout(
+            next,
+            speed
+        );
+    }
+
+
+    next();
+}
+
+
+/* =====================================================
+   START ANIMATION
+===================================================== */
+
+setTimeout(()=>{
+
+
+    /* HTML */
+
+    showCode(
+        htmlLines,
+        330,
+        ()=>{
+
+
+            setTimeout(()=>{
+
+
+              
+
+                filename.innerText =
+                    "style.css";
+
+
+            
+
+                showCode(
+                    cssLines,
+                    175,
+                    ()=>{
+
+
+                        setTimeout(()=>{
+
+
+                           
+
+                            document.body
+                                .classList
+                                .add("wow");
+
+
+                            filename.innerText =
+                                "✨ portfolio.css";
+
+
+                      
+                            setTimeout(()=>{
+
+
+                                editor
+                                    .classList
+                                    .add("hide");
+
+
+                            },1800);
+
+
+                        },600);
+
+                    }
+                );
+
+
+            },900);
+
+        }
+    );
+
+
+},600);
+
+
+
+
+document.addEventListener(
+    "click",
+    ()=>{
+
+        if(
+            editor.classList
+            .contains("hide")
+        ){
+
+            location.reload();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
