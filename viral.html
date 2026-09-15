@@ -1,0 +1,1610 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Seed to Website</title>
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+body{
+    font-family:Arial, sans-serif;
+}
+
+
+/* =====================================================
+   GROWTH WORLD
+===================================================== */
+
+.growth-world{
+
+    position:fixed;
+    inset:0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #bdefff 0%,
+            #eaffff 48%,
+            #9edb7c 48%,
+            #5cae57 100%
+        );
+
+    transition:1s;
+}
+
+
+/* =====================================================
+   SUN
+===================================================== */
+
+.sun{
+
+    position:absolute;
+
+    width:100px;
+    height:100px;
+
+    right:10%;
+    top:10%;
+
+    border-radius:50%;
+
+    background:#ffd85c;
+
+    box-shadow:
+        0 0 40px #ffd85c,
+        0 0 100px #ffd85c88;
+
+    animation:sunPulse 4s infinite;
+}
+
+@keyframes sunPulse{
+
+    0%,100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.08);
+    }
+}
+
+
+/* =====================================================
+   CLOUDS
+===================================================== */
+
+.cloud{
+
+    position:absolute;
+
+    width:150px;
+    height:45px;
+
+    background:white;
+
+    border-radius:50px;
+
+    opacity:.8;
+
+    animation:cloudMove 18s linear infinite;
+}
+
+.cloud:before,
+.cloud:after{
+
+    content:"";
+
+    position:absolute;
+
+    background:white;
+
+    border-radius:50%;
+}
+
+.cloud:before{
+
+    width:70px;
+    height:70px;
+
+    left:25px;
+    top:-35px;
+}
+
+.cloud:after{
+
+    width:55px;
+    height:55px;
+
+    right:20px;
+    top:-25px;
+}
+
+.cloud.one{
+    top:15%;
+    left:-200px;
+}
+
+.cloud.two{
+    top:30%;
+    left:-300px;
+
+    animation-delay:7s;
+}
+
+@keyframes cloudMove{
+
+    to{
+        transform:translateX(130vw);
+    }
+}
+
+
+/* =====================================================
+   GROWTH TITLE
+===================================================== */
+
+.growth-title{
+
+    position:absolute;
+
+    top:7%;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    text-align:center;
+
+    color:#21452a;
+
+    transition:.5s;
+}
+
+.growth-title h1{
+
+    font-family:Georgia,serif;
+
+    font-size:clamp(35px,5vw,65px);
+
+    margin-bottom:8px;
+}
+
+.growth-title p{
+
+    color:#52765b;
+
+    letter-spacing:2px;
+
+    font-size:13px;
+}
+
+
+/* =====================================================
+   STAGE TEXT
+===================================================== */
+
+.stage{
+
+    position:absolute;
+
+    bottom:12%;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    background:#ffffffdd;
+
+    backdrop-filter:blur(10px);
+
+    padding:12px 25px;
+
+    border-radius:50px;
+
+    color:#315c39;
+
+    font-weight:bold;
+
+    font-size:14px;
+
+    box-shadow:0 10px 30px #0002;
+
+    white-space:nowrap;
+
+    transition:.4s;
+}
+
+
+/* =====================================================
+   SOIL
+===================================================== */
+
+.soil{
+
+    position:absolute;
+
+    left:50%;
+    bottom:0;
+
+    transform:translateX(-50%);
+
+    width:100%;
+    height:18%;
+
+    background:#68452d;
+
+    border-radius:50% 50% 0 0 / 20% 20% 0 0;
+
+}
+
+
+/* =====================================================
+   PLANT
+===================================================== */
+
+.plant{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:14%;
+
+    width:260px;
+    height:390px;
+
+    transform:translateX(-50%);
+
+}
+
+
+/* =====================================================
+   SEED
+===================================================== */
+
+.seed{
+
+    position:absolute;
+
+    width:30px;
+    height:22px;
+
+    background:#76502f;
+
+    border-radius:50%;
+
+    left:50%;
+    bottom:10px;
+
+    transform:translateX(-50%);
+
+    transition:1s;
+}
+
+
+/* =====================================================
+   ROOT
+===================================================== */
+
+.root{
+
+    position:absolute;
+
+    left:50%;
+    bottom:-20px;
+
+    width:5px;
+    height:0;
+
+    background:#f1d7a8;
+
+    transform:rotate(5deg);
+
+    transform-origin:top;
+
+    transition:2s;
+}
+
+.root:before{
+
+    content:"";
+
+    position:absolute;
+
+    width:4px;
+    height:60px;
+
+    background:#f1d7a8;
+
+    left:-18px;
+    top:40px;
+
+    transform:rotate(-35deg);
+}
+
+.root:after{
+
+    content:"";
+
+    position:absolute;
+
+    width:4px;
+    height:55px;
+
+    background:#f1d7a8;
+
+    right:-20px;
+    top:70px;
+
+    transform:rotate(35deg);
+}
+
+
+/* =====================================================
+   STEM
+===================================================== */
+
+.stem{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:20px;
+
+    width:10px;
+    height:0;
+
+    background:
+        linear-gradient(
+            to right,
+            #26723c,
+            #53a956
+        );
+
+    border-radius:10px;
+
+    transform:translateX(-50%);
+
+    transform-origin:bottom;
+
+    transition:3s;
+}
+
+
+/* =====================================================
+   LEAVES
+===================================================== */
+
+.leaf{
+
+    position:absolute;
+
+    width:95px;
+    height:42px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #65bd61,
+            #267b3c
+        );
+
+    border-radius:100% 0 100% 0;
+
+    opacity:0;
+
+    transform:scale(0);
+
+    transition:1.2s;
+
+    box-shadow:0 8px 15px #24773c33;
+}
+
+.leaf.left1{
+
+    left:25px;
+    bottom:155px;
+
+    transform:rotate(-30deg) scale(0);
+}
+
+.leaf.right1{
+
+    right:25px;
+    bottom:205px;
+
+    transform:rotate(30deg) scale(0);
+}
+
+.leaf.left2{
+
+    left:20px;
+    bottom:270px;
+
+    transform:rotate(-25deg) scale(0);
+}
+
+.leaf.right2{
+
+    right:20px;
+    bottom:310px;
+
+    transform:rotate(25deg) scale(0);
+}
+
+
+/* =====================================================
+   FLOWER BUD
+===================================================== */
+
+.bud{
+
+    position:absolute;
+
+    width:48px;
+    height:65px;
+
+    background:#ec5c91;
+
+    border-radius:50% 50% 45% 45%;
+
+    left:50%;
+
+    top:40px;
+
+    transform:
+        translateX(-50%)
+        scale(0);
+
+    opacity:0;
+
+    transition:1.5s;
+
+    box-shadow:
+        0 0 25px #ec5c9166;
+}
+
+
+/* =====================================================
+   FLOWER
+===================================================== */
+
+.flower{
+
+    position:absolute;
+
+    width:150px;
+    height:150px;
+
+    left:50%;
+    top:0;
+
+    transform:
+        translateX(-50%)
+        scale(0);
+
+    opacity:0;
+
+    transition:2s;
+
+    filter:drop-shadow(0 10px 20px #ff4f9133);
+}
+
+
+/* PETALS */
+
+.petal{
+
+    position:absolute;
+
+    width:65px;
+    height:90px;
+
+    left:42px;
+    top:30px;
+
+    background:#ff5b9d;
+
+    border-radius:50%;
+
+    transform-origin:50% 80%;
+}
+
+.petal:nth-child(1){
+    transform:rotate(0deg) translateY(-35px);
+}
+
+.petal:nth-child(2){
+    transform:rotate(60deg) translateY(-35px);
+}
+
+.petal:nth-child(3){
+    transform:rotate(120deg) translateY(-35px);
+}
+
+.petal:nth-child(4){
+    transform:rotate(180deg) translateY(-35px);
+}
+
+.petal:nth-child(5){
+    transform:rotate(240deg) translateY(-35px);
+}
+
+.petal:nth-child(6){
+    transform:rotate(300deg) translateY(-35px);
+}
+
+.flower-center{
+
+    position:absolute;
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    background:#ffd34e;
+
+    left:52px;
+    top:52px;
+
+    z-index:3;
+
+    box-shadow:
+        0 0 25px #ffd34e99;
+}
+
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+.particles{
+
+    position:fixed;
+
+    inset:0;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    z-index:30;
+}
+
+.particle{
+
+    position:absolute;
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#ff70aa;
+
+    animation:particleExplode 2s forwards;
+}
+
+@keyframes particleExplode{
+
+    0%{
+
+        opacity:1;
+
+        transform:
+            translate(0,0)
+            scale(1);
+
+    }
+
+    100%{
+
+        opacity:0;
+
+        transform:
+            translate(
+                calc((var(--x) - 50vw)),
+                calc((var(--y) - 50vh))
+            )
+            scale(0);
+
+    }
+}
+
+
+/* =====================================================
+   WEBSITE
+===================================================== */
+
+.website{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:50;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transform:scale(1.08);
+
+    transition:
+        opacity 1.2s,
+        transform 1.2s;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            #ffdce9,
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 85% 70%,
+            #dff8df,
+            transparent 30%
+        ),
+
+        #fffafd;
+
+    color:#263127;
+
+    overflow:auto;
+}
+
+.website.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+    transform:scale(1);
+}
+
+
+/* NAVBAR */
+
+.navbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:25px 7%;
+
+}
+
+.logo{
+
+    font-family:Georgia,serif;
+
+    font-size:30px;
+
+    color:#dc4e88;
+
+}
+
+.navbar ul{
+
+    display:flex;
+
+    gap:30px;
+
+    list-style:none;
+
+}
+
+.navbar li{
+
+    color:#59615a;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+}
+
+
+/* HERO */
+
+.hero{
+
+    min-height:80vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:30px 8%;
+
+    gap:40px;
+
+}
+
+.hero-text{
+
+    max-width:600px;
+
+    animation:heroIn 1.3s .5s both;
+
+}
+
+.hero-text small{
+
+    color:#db4d87;
+
+    letter-spacing:4px;
+
+    font-weight:bold;
+
+}
+
+.hero-text h1{
+
+    font-family:Georgia,serif;
+
+    font-size:clamp(55px,8vw,105px);
+
+    line-height:.88;
+
+    font-weight:400;
+
+    margin:20px 0;
+
+}
+
+.hero-text h1 span{
+
+    color:#e95391;
+
+    font-style:italic;
+
+}
+
+.hero-text p{
+
+    max-width:470px;
+
+    color:#737a74;
+
+    line-height:1.8;
+
+}
+
+.hero-button{
+
+    margin-top:30px;
+
+    padding:15px 30px;
+
+    border:0;
+
+    border-radius:50px;
+
+    background:#e95391;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:0 15px 35px #e9539144;
+
+    transition:.3s;
+
+}
+
+.hero-button:hover{
+
+    transform:translateY(-5px);
+
+}
+
+
+/* FLOWER ART */
+
+.flower-art{
+
+    width:400px;
+    height:450px;
+
+    position:relative;
+
+    animation:artFloat 4s infinite ease-in-out;
+}
+
+.big-flower{
+
+    position:absolute;
+
+    width:260px;
+    height:260px;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+}
+
+.big-petal{
+
+    position:absolute;
+
+    width:110px;
+    height:150px;
+
+    left:75px;
+    top:55px;
+
+    border-radius:50%;
+
+    background:#f05c9b;
+
+    transform-origin:50% 80%;
+
+}
+
+.big-petal:nth-child(1){
+    transform:rotate(0deg) translateY(-50px);
+}
+
+.big-petal:nth-child(2){
+    transform:rotate(60deg) translateY(-50px);
+}
+
+.big-petal:nth-child(3){
+    transform:rotate(120deg) translateY(-50px);
+}
+
+.big-petal:nth-child(4){
+    transform:rotate(180deg) translateY(-50px);
+}
+
+.big-petal:nth-child(5){
+    transform:rotate(240deg) translateY(-50px);
+}
+
+.big-petal:nth-child(6){
+    transform:rotate(300deg) translateY(-50px);
+}
+
+.big-center{
+
+    position:absolute;
+
+    width:75px;
+    height:75px;
+
+    border-radius:50%;
+
+    background:#ffd452;
+
+    left:93px;
+    top:93px;
+
+    z-index:5;
+
+    box-shadow:0 0 50px #ffd45299;
+}
+
+
+/* CARDS */
+
+.cards{
+
+    position:absolute;
+
+    bottom:20px;
+    right:0;
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+.mini-card{
+
+    width:120px;
+
+    padding:15px;
+
+    background:#ffffffcc;
+
+    backdrop-filter:blur(15px);
+
+    border-radius:18px;
+
+    box-shadow:0 15px 35px #0001;
+
+}
+
+.mini-card span{
+
+    font-size:25px;
+}
+
+.mini-card p{
+
+    font-size:12px;
+
+    color:#777;
+
+    margin-top:7px;
+
+}
+
+
+/* ANIMATIONS */
+
+@keyframes heroIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(40px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes artFloat{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-18px);
+    }
+
+}
+
+
+/* =====================================================
+   GROWTH STATES
+===================================================== */
+
+
+/* ROOT */
+
+.root.grow{
+
+    height:130px;
+
+}
+
+
+/* STEM */
+
+.stem.grow{
+
+    height:330px;
+
+}
+
+
+/* LEAVES */
+
+.leaf.grow{
+
+    opacity:1;
+
+}
+
+.leaf.left1.grow{
+
+    transform:rotate(-30deg) scale(1);
+
+}
+
+.leaf.right1.grow{
+
+    transform:rotate(30deg) scale(1);
+
+}
+
+.leaf.left2.grow{
+
+    transform:rotate(-25deg) scale(1);
+
+}
+
+.leaf.right2.grow{
+
+    transform:rotate(25deg) scale(1);
+
+}
+
+
+/* BUD */
+
+.bud.grow{
+
+    opacity:1;
+
+    transform:
+        translateX(-50%)
+        scale(1);
+
+}
+
+
+/* FLOWER */
+
+.flower.bloom{
+
+    opacity:1;
+
+    transform:
+        translateX(-50%)
+        scale(1);
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:700px){
+
+    .sun{
+
+        width:65px;
+        height:65px;
+
+        right:7%;
+    }
+
+    .growth-title h1{
+
+        font-size:38px;
+    }
+
+    .plant{
+
+        transform:
+            translateX(-50%)
+            scale(.75);
+    }
+
+    .stage{
+
+        bottom:7%;
+
+        font-size:12px;
+
+        padding:10px 18px;
+    }
+
+    .navbar ul{
+
+        display:none;
+    }
+
+    .hero{
+
+        flex-direction:column;
+
+        text-align:center;
+
+        padding-top:30px;
+    }
+
+    .hero-text p{
+
+        margin:auto;
+    }
+
+    .hero-text h1{
+
+        font-size:62px;
+    }
+
+    .flower-art{
+
+        width:280px;
+        height:280px;
+
+        transform:scale(.75);
+    }
+
+    .cards{
+
+        display:none;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     PLANT WORLD
+===================================================== -->
+
+<div class="growth-world" id="growthWorld">
+
+    <div class="sun"></div>
+
+    <div class="cloud one"></div>
+    <div class="cloud two"></div>
+
+
+    <div class="growth-title">
+
+        <h1>Watch It Grow 🌱</h1>
+
+        <p>FROM ONE TINY SEED...</p>
+
+    </div>
+
+
+    <div class="soil"></div>
+
+
+    <!-- PLANT -->
+
+    <div class="plant">
+
+        <div class="seed"></div>
+
+        <div class="root" id="root"></div>
+
+        <div class="stem" id="stem"></div>
+
+
+        <div class="leaf left1" id="leaf1"></div>
+
+        <div class="leaf right1" id="leaf2"></div>
+
+        <div class="leaf left2" id="leaf3"></div>
+
+        <div class="leaf right2" id="leaf4"></div>
+
+
+        <!-- BUD -->
+
+        <div class="bud" id="bud"></div>
+
+
+        <!-- FLOWER -->
+
+        <div class="flower" id="flower">
+
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+
+            <div class="flower-center"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="stage" id="stage">
+
+        🌱 Planting the seed...
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PARTICLES
+===================================================== -->
+
+<div class="particles" id="particles"></div>
+
+
+<!-- =====================================================
+     FINAL WEBSITE
+===================================================== -->
+
+<section class="website" id="website">
+
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Bloom.
+        </div>
+
+        <ul>
+
+            <li>Home</li>
+            <li>Flowers</li>
+            <li>Garden</li>
+            <li>About</li>
+            <li>Contact</li>
+
+        </ul>
+
+    </nav>
+
+
+    <main class="hero">
+
+
+        <div class="hero-text">
+
+            <small>
+                GROW • BLOOM • INSPIRE
+            </small>
+
+            <h1>
+
+                Let Your<br>
+
+                <span>Dreams Bloom.</span>
+
+            </h1>
+
+            <p>
+
+                Beautiful things take time to grow.
+                Just like this website — it started
+                with one tiny seed and became something
+                beautiful.
+
+            </p>
+
+            <button class="hero-button">
+
+                EXPLORE THE GARDEN →
+
+            </button>
+
+        </div>
+
+
+        <!-- FLOWER -->
+
+        <div class="flower-art">
+
+            <div class="big-flower">
+
+                <div class="big-petal"></div>
+                <div class="big-petal"></div>
+                <div class="big-petal"></div>
+                <div class="big-petal"></div>
+                <div class="big-petal"></div>
+                <div class="big-petal"></div>
+
+                <div class="big-center"></div>
+
+            </div>
+
+
+            <div class="cards">
+
+                <div class="mini-card">
+
+                    <span>🌸</span>
+
+                    <p>
+                        BLOOM
+                    </p>
+
+                </div>
+
+
+                <div class="mini-card">
+
+                    <span>🌿</span>
+
+                    <p>
+                        GROW
+                    </p>
+
+                </div>
+
+
+                <div class="mini-card">
+
+                    <span>✨</span>
+
+                    <p>
+                        INSPIRE
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+</section>
+
+
+<script>
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const stage =
+document.getElementById("stage");
+
+const root =
+document.getElementById("root");
+
+const stem =
+document.getElementById("stem");
+
+const leaf1 =
+document.getElementById("leaf1");
+
+const leaf2 =
+document.getElementById("leaf2");
+
+const leaf3 =
+document.getElementById("leaf3");
+
+const leaf4 =
+document.getElementById("leaf4");
+
+const bud =
+document.getElementById("bud");
+
+const flower =
+document.getElementById("flower");
+
+const growthWorld =
+document.getElementById("growthWorld");
+
+const website =
+document.getElementById("website");
+
+const particles =
+document.getElementById("particles");
+
+
+/* =====================================================
+   CREATE PARTICLES
+===================================================== */
+
+function createParticles(){
+
+    particles.innerHTML="";
+
+    for(let i=0;i<100;i++){
+
+        const p =
+        document.createElement("div");
+
+        p.className="particle";
+
+        const x =
+        Math.random()*window.innerWidth;
+
+        const y =
+        Math.random()*window.innerHeight;
+
+        p.style.left =
+        "50%";
+
+        p.style.top =
+        "45%";
+
+        p.style.setProperty(
+            "--x",
+            x+"px"
+        );
+
+        p.style.setProperty(
+            "--y",
+            y+"px"
+        );
+
+        p.style.animationDelay =
+        Math.random()*.7+"s";
+
+        particles.appendChild(p);
+
+    }
+
+}
+
+
+/* =====================================================
+   COMPLETE GROWTH PROCESS
+===================================================== */
+
+
+/* STAGE 1 */
+
+setTimeout(()=>{
+
+    stage.innerText =
+    "🌱 Seed planted...";
+
+},1000);
+
+
+/* STAGE 2 — ROOT */
+
+setTimeout(()=>{
+
+    root.classList.add("grow");
+
+    stage.innerText =
+    "🌱 Roots are growing underground...";
+
+},2500);
+
+
+/* STAGE 3 — STEM */
+
+setTimeout(()=>{
+
+    stem.classList.add("grow");
+
+    stage.innerText =
+    "🌿 The stem is reaching for the sunlight...";
+
+},5000);
+
+
+/* STAGE 4 — FIRST LEAVES */
+
+setTimeout(()=>{
+
+    leaf1.classList.add("grow");
+
+    stage.innerText =
+    "🍃 First leaf appears...";
+
+},8000);
+
+
+/* STAGE 5 */
+
+setTimeout(()=>{
+
+    leaf2.classList.add("grow");
+
+    stage.innerText =
+    "🍃 Growing more leaves...";
+
+},9500);
+
+
+/* STAGE 6 */
+
+setTimeout(()=>{
+
+    leaf3.classList.add("grow");
+
+    leaf4.classList.add("grow");
+
+    stage.innerText =
+    "🌿 The plant is almost ready...";
+
+},11000);
+
+
+/* STAGE 7 — BUD */
+
+setTimeout(()=>{
+
+    bud.classList.add("grow");
+
+    stage.innerText =
+    "🌸 A tiny flower bud is forming...";
+
+},13000);
+
+
+/* STAGE 8 — FLOWER */
+
+setTimeout(()=>{
+
+    bud.style.opacity="0";
+
+    flower.classList.add("bloom");
+
+    stage.innerText =
+    "🌸 LOOK! IT'S BLOOMING!";
+
+},15000);
+
+
+/* =====================================================
+   MAGIC TRANSFORMATION
+===================================================== */
+
+setTimeout(()=>{
+
+    stage.innerText =
+    "✨ Turning the flower into a website...";
+
+},17000);
+
+
+setTimeout(()=>{
+
+    createParticles();
+
+    particles.style.opacity="1";
+
+},18000);
+
+
+setTimeout(()=>{
+
+    growthWorld.style.opacity="0";
+
+    particles.style.opacity="0";
+
+    website.classList.add("show");
+
+},20000);
+
+
+document
+.querySelector(".hero-button")
+.addEventListener("click",()=>{
+
+    alert(
+        "🌸 Every beautiful thing starts with a tiny beginning."
+    );
+
+});
+
+</script>
+
+</body>
+</html>
+```
