@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Gravity Website</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+}
+
+body{
+    overflow:hidden;
+    background:#030303;
+    color:white;
+    font-family:Arial, sans-serif;
+}
+
+/* =========================
+   CANVAS
+========================= */
+
+canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+/* =========================
+   UI
+========================= */
+
+.ui{
+    position:fixed;
+    inset:0;
+    z-index:5;
+    pointer-events:none;
+}
+
+nav{
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 6%;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+    letter-spacing:4px;
+}
+
+.logo span{
+    opacity:.4;
+}
+
+.status{
+    border:1px solid #333;
+    padding:9px 15px;
+    border-radius:30px;
+    font-size:11px;
+    color:#999;
+    letter-spacing:2px;
+}
+
+/* =========================
+   CENTER
+========================= */
+
+.center{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    width:90%;
+}
+
+.label{
+    color:#777;
+    font-size:11px;
+    letter-spacing:5px;
+    margin-bottom:20px;
+}
+
+h1{
+    font-size:clamp(55px,9vw,125px);
+    line-height:.85;
+    letter-spacing:-7px;
+}
+
+h1 span{
+    display:block;
+    background:linear-gradient(90deg,#fff,#555);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.subtitle{
+    color:#777;
+    max-width:430px;
+    margin:25px auto 0;
+    line-height:1.6;
+}
+
+/* =========================
+   GRAVITY POINT
+========================= */
+
+.gravity-point{
+    position:absolute;
+    width:18px;
+    height:18px;
+    border:1px solid white;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:
+        0 0 15px white,
+        0 0 40px rgba(255,255,255,.4);
+}
+
+/* =========================
+   BOTTOM
+========================= */
+
+.bottom{
+    position:absolute;
+    bottom:35px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#555;
+    font-size:11px;
+    letter-spacing:3px;
+    white-space:nowrap;
+}
+
+/* =========================
+   CLICK FLASH
+========================= */
+
+.flash{
+    position:fixed;
+    width:20px;
+    height:20px;
+    border:1px solid white;
+    border-radius:50%;
+    transform:translate(-50%,-50%) scale(1);
+    pointer-events:none;
+    z-index:10;
+    animation:flash .7s ease-out forwards;
+}
+
+@keyframes flash{
+    to{
+        transform:translate(-50%,-50%) scale(20);
+        opacity:0;
+    }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px){
+
+    nav{
+        padding:0 20px;
+    }
+
+    .status{
+        font-size:9px;
+    }
+
+    h1{
+        font-size:60px;
+        letter-spacing:-4px;
+    }
+
+    .subtitle{
+        font-size:13px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+
+<div class="ui">
+
+    <nav>
+
+        <div class="logo">
+            GRAV<span>ITY</span>
+        </div>
+
+        <div class="status" id="status">
+            GRAVITY: ACTIVE
+        </div>
+
+    </nav>
+
+
+    <div class="center">
+
+        <div class="label">
+            EXPERIMENT 001
+        </div>
+
+        <h1>
+            EVERYTHING
+            <span>HAS GRAVITY.</span>
+        </h1>
+
+        <p class="subtitle">
+            Move your cursor. Change gravity.
+            Click anywhere to create a gravitational explosion.
+        </p>
+
+    </div>
+
+
+    <div
+        class="gravity-point"
+        id="gravityPoint">
+    </div>
+
+
+    <div class="bottom">
+        MOVE • ATTRACT • EXPLODE
+    </div>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   CANVAS SETUP
+========================================== */
+
+const canvas =
+document.getElementById("canvas");
+
+const ctx =
+canvas.getContext("2d");
+
+let W;
+let H;
+
+function resize(){
+
+    W = canvas.width =
+        window.innerWidth * devicePixelRatio;
+
+    H = canvas.height =
+        window.innerHeight * devicePixelRatio;
+
+    canvas.style.width =
+        window.innerWidth + "px";
+
+    canvas.style.height =
+        window.innerHeight + "px";
+
+    ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+}
+
+resize();
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+
+/* ==========================================
+   MOUSE
+========================================== */
+
+let mouse = {
+    x:window.innerWidth/2,
+    y:window.innerHeight/2,
+    active:false
+};
+
+window.addEventListener(
+    "mousemove",
+    e=>{
+
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+
+        updateGravityPoint();
+
+    }
+);
+
+
+/* ==========================================
+   GRAVITY POINT
+========================================== */
+
+const gravityPoint =
+document.getElementById("gravityPoint");
+
+function updateGravityPoint(){
+
+    gravityPoint.style.left =
+        mouse.x + "px";
+
+    gravityPoint.style.top =
+        mouse.y + "px";
+}
+
+
+/* ==========================================
+   PARTICLES
+========================================== */
+
+const particles = [];
+
+class Particle{
+
+    constructor(x,y){
+
+        this.x = x;
+        this.y = y;
+
+        this.vx =
+            (Math.random()-.5)*2;
+
+        this.vy =
+            (Math.random()-.5)*2;
+
+        this.size =
+            Math.random()*2+1;
+
+        this.life = 1;
+
+        this.maxLife = 1;
+
+    }
+
+    update(){
+
+        /* GRAVITY */
+
+        const dx =
+            mouse.x-this.x;
+
+        const dy =
+            mouse.y-this.y;
+
+        const distance =
+            Math.sqrt(dx*dx+dy*dy);
+
+        if(distance > 20){
+
+            const force =
+                1200 /
+                (distance*distance);
+
+            this.vx +=
+                dx/distance * force;
+
+            this.vy +=
+                dy/distance * force;
+
+        }
+
+
+        /* FRICTION */
+
+        this.vx *= .995;
+        this.vy *= .995;
+
+
+        /* SPEED LIMIT */
+
+        const speed =
+            Math.sqrt(
+                this.vx*this.vx +
+                this.vy*this.vy
+            );
+
+        if(speed > 7){
+
+            this.vx =
+                this.vx/speed*7;
+
+            this.vy =
+                this.vy/speed*7;
+
+        }
+
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+
+        /* WRAP */
+
+        if(this.x < -20)
+            this.x = innerWidth+20;
+
+        if(this.x > innerWidth+20)
+            this.x = -20;
+
+        if(this.y < -20)
+            this.y = innerHeight+20;
+
+        if(this.y > innerHeight+20)
+            this.y = -20;
+
+    }
+
+
+    draw(){
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.7)";
+
+        ctx.fill();
+
+    }
+
+}
+
+
+/* ==========================================
+   CREATE PARTICLES
+========================================== */
+
+for(let i=0;i<220;i++){
+
+    particles.push(
+
+        new Particle(
+            Math.random()*innerWidth,
+            Math.random()*innerHeight
+        )
+
+    );
+
+}
+
+
+/* ==========================================
+   ORBITING OBJECTS
+========================================== */
+
+const objects = [];
+
+for(let i=0;i<18;i++){
+
+    objects.push({
+
+        angle:
+            Math.random()*Math.PI*2,
+
+        distance:
+            120+Math.random()*260,
+
+        size:
+            8+Math.random()*16,
+
+        speed:
+            .001+Math.random()*.003,
+
+        wobble:
+            Math.random()*Math.PI*2
+
+    });
+
+}
+
+
+/* ==========================================
+   EXPLOSION
+========================================== */
+
+function explosion(x,y){
+
+    for(let i=0;i<100;i++){
+
+        const angle =
+            Math.random()*Math.PI*2;
+
+        const speed =
+            Math.random()*12+3;
+
+        const p =
+            new Particle(x,y);
+
+        p.vx =
+            Math.cos(angle)*speed;
+
+        p.vy =
+            Math.sin(angle)*speed;
+
+        particles.push(p);
+
+    }
+
+
+    /* remove old particles */
+
+    while(particles.length > 400){
+
+        particles.shift();
+
+    }
+
+
+    /* visual flash */
+
+    const flash =
+        document.createElement("div");
+
+    flash.className =
+        "flash";
+
+    flash.style.left =
+        x+"px";
+
+    flash.style.top =
+        y+"px";
+
+    document.body.appendChild(flash);
+
+    setTimeout(
+        ()=>flash.remove(),
+        700
+    );
+
+}
+
+
+/* ==========================================
+   CLICK
+========================================== */
+
+window.addEventListener(
+    "click",
+    e=>{
+
+        explosion(
+            e.clientX,
+            e.clientY
+        );
+
+    }
+);
+
+
+/* ==========================================
+   DRAW ORBITS
+========================================== */
+
+function drawObjects(){
+
+    objects.forEach(obj=>{
+
+        obj.angle += obj.speed;
+
+        const x =
+            mouse.x +
+            Math.cos(obj.angle) *
+            obj.distance;
+
+        const y =
+            mouse.y +
+            Math.sin(obj.angle) *
+            obj.distance;
+
+        /* orbit line */
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            mouse.x,
+            mouse.y
+        );
+
+        ctx.lineTo(
+            x,
+            y
+        );
+
+        ctx.strokeStyle =
+            "rgba(255,255,255,.025)";
+
+        ctx.stroke();
+
+
+        /* object */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            obj.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.8)";
+
+        ctx.fill();
+
+
+        /* glow */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            obj.size*3,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.03)";
+
+        ctx.fill();
+
+    });
+
+}
+
+
+/* ==========================================
+   CONNECT PARTICLES
+========================================== */
+
+function connections(){
+
+    for(let i=0;i<particles.length;i++){
+
+        for(
+            let j=i+1;
+            j<particles.length;
+            j++
+        ){
+
+            const a =
+                particles[i];
+
+            const b =
+                particles[j];
+
+            const dx =
+                a.x-b.x;
+
+            const dy =
+                a.y-b.y;
+
+            const distance =
+                Math.sqrt(dx*dx+dy*dy);
+
+            if(distance < 90){
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    a.x,
+                    a.y
+                );
+
+                ctx.lineTo(
+                    b.x,
+                    b.y
+                );
+
+                ctx.strokeStyle =
+                    `rgba(255,255,255,${
+                        .08*(1-distance/90)
+                    })`;
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* ==========================================
+   ANIMATION
+========================================== */
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        innerWidth,
+        innerHeight
+    );
+
+  
+    particles.forEach(p=>{
+
+        p.update();
+        p.draw();
+
+    });
+
+
+    connections();
+
+    drawObjects();
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>

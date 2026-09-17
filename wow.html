@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Control Everything</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    color:white;
+    background:#08090d;
+    overflow-x:hidden;
+    transition:.5s;
+}
+
+/* BACKGROUND */
+
+.background{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:
+        radial-gradient(circle at 20% 20%,#4c1d95 0,transparent 30%),
+        radial-gradient(circle at 80% 80%,#075985 0,transparent 30%),
+        #08090d;
+    transition:.5s;
+}
+
+.grid{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    opacity:.12;
+
+    background-image:
+        linear-gradient(#fff 1px,transparent 1px),
+        linear-gradient(90deg,#fff 1px,transparent 1px);
+
+    background-size:45px 45px;
+}
+
+/* HEADER */
+
+header{
+    width:min(1150px,92%);
+    margin:25px auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-weight:900;
+    letter-spacing:3px;
+}
+
+.live{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:#777;
+    font-size:11px;
+}
+
+.dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#00ff88;
+    box-shadow:0 0 12px #00ff88;
+}
+
+/* MAIN */
+
+main{
+    width:min(1150px,92%);
+    margin:70px auto;
+}
+
+.hero{
+    text-align:center;
+    margin-bottom:55px;
+}
+
+.hero small{
+    color:#8b5cf6;
+    letter-spacing:5px;
+    font-size:10px;
+}
+
+.hero h1{
+    font-size:clamp(45px,8vw,90px);
+    letter-spacing:-6px;
+    margin:15px 0;
+}
+
+.hero p{
+    color:#777;
+    font-size:14px;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+    display:grid;
+    grid-template-columns:1.4fr .6fr;
+    gap:20px;
+}
+
+/* PREVIEW */
+
+.preview{
+    min-height:430px;
+    position:relative;
+    padding:25px;
+
+    border:1px solid #ffffff15;
+    border-radius:30px;
+
+    background:#ffffff06;
+    backdrop-filter:blur(20px);
+
+    overflow:hidden;
+}
+
+.preview-top{
+    display:flex;
+    justify-content:space-between;
+    color:#777;
+    font-size:11px;
+}
+
+.preview-content{
+    height:330px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+
+    gap:25px;
+}
+
+/* ORB */
+
+.orb{
+    width:150px;
+    height:150px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            white,
+            #8b5cf6 20%,
+            #06b6d4 55%,
+            #111 75%
+        );
+
+    box-shadow:
+        0 0 40px #8b5cf680,
+        0 0 100px #06b6d440;
+
+    animation:float 2s ease-in-out infinite;
+
+    transition:.5s;
+}
+
+@keyframes float{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-20px);
+    }
+
+}
+
+/* CARDS */
+
+.cards{
+    display:flex;
+    gap:10px;
+}
+
+.card{
+    width:100px;
+    height:60px;
+
+    border:1px solid #ffffff15;
+    border-radius:12px;
+
+    background:#ffffff08;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#777;
+    font-size:11px;
+
+    transition:.5s;
+}
+
+/* CONTROLS */
+
+.controls{
+    padding:25px;
+
+    border:1px solid #ffffff15;
+    border-radius:30px;
+
+    background:#ffffff06;
+    backdrop-filter:blur(20px);
+}
+
+.controls h2{
+    font-size:18px;
+    margin-bottom:5px;
+}
+
+.controls>p{
+    color:#666;
+    font-size:11px;
+    margin-bottom:25px;
+}
+
+.control{
+    width:100%;
+    height:58px;
+
+    margin-bottom:12px;
+
+    border:1px solid #ffffff15;
+    border-radius:15px;
+
+    background:#ffffff08;
+
+    color:white;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 17px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    text-align:left;
+}
+
+.control:hover{
+    transform:translateX(6px);
+    background:#ffffff12;
+    border-color:#ffffff35;
+}
+
+.control:active{
+    transform:scale(.97);
+}
+
+.control-icon{
+    width:35px;
+    font-size:20px;
+}
+
+.control-info{
+    flex:1;
+}
+
+.control-title{
+    font-size:12px;
+    font-weight:bold;
+}
+
+.control-desc{
+    color:#666;
+    font-size:9px;
+    margin-top:4px;
+}
+
+.arrow{
+    color:#555;
+}
+
+/* STATUS */
+
+.status{
+    margin-top:15px;
+
+    padding:14px 18px;
+
+    border:1px solid #ffffff10;
+    border-radius:12px;
+
+    background:#0003;
+
+    color:#777;
+    font-size:11px;
+}
+
+.status span{
+    color:#00ff88;
+}
+
+/* LIGHT MODE */
+
+body.light{
+    color:#111;
+    background:#f3f4f6;
+}
+
+body.light .background{
+    background:
+        radial-gradient(circle at 20% 20%,#ddd6fe,transparent 30%),
+        radial-gradient(circle at 80% 80%,#bae6fd,transparent 30%),
+        #f3f4f6;
+}
+
+body.light .grid{
+    opacity:.08;
+}
+
+body.light .preview,
+body.light .controls{
+    background:#ffffff90;
+    border-color:#00000012;
+}
+
+body.light .control{
+    background:#ffffff80;
+    border-color:#00000010;
+    color:#111;
+}
+
+body.light .control-desc,
+body.light .hero p,
+body.light .controls>p{
+    color:#777;
+}
+
+/* COLOR MODES */
+
+body.pink .background{
+    background:
+        radial-gradient(circle at 20% 20%,#9d174d,transparent 30%),
+        radial-gradient(circle at 80% 80%,#7e22ce,transparent 30%),
+        #10070d;
+}
+
+body.green .background{
+    background:
+        radial-gradient(circle at 20% 20%,#065f46,transparent 30%),
+        radial-gradient(circle at 80% 80%,#166534,transparent 30%),
+        #020907;
+}
+
+/* BOOST */
+
+body.boost .orb{
+    animation-duration:.45s;
+}
+
+body.boost .card{
+    animation:cardMove .5s infinite alternate;
+}
+
+@keyframes cardMove{
+    to{
+        transform:translateY(-8px);
+    }
+}
+
+/* FREEZE */
+
+body.freeze *{
+    animation-play-state:paused !important;
+}
+
+/* ORB STATES */
+
+.orb.boosted{
+    transform:scale(1.25);
+}
+
+.orb.frozen{
+    filter:grayscale(1);
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+
+    bottom:30px;
+    left:50%;
+
+    transform:translate(-50%,100px);
+
+    padding:13px 22px;
+
+    border:1px solid #ffffff20;
+    border-radius:12px;
+
+    background:#11151c;
+
+    font-size:12px;
+
+    opacity:0;
+
+    transition:.4s;
+
+    z-index:100;
+}
+
+.toast.show{
+    transform:translate(-50%,0);
+    opacity:1;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:850px){
+
+    .dashboard{
+        grid-template-columns:1fr;
+    }
+
+    main{
+        margin-top:40px;
+    }
+
+}
+
+@media(max-width:500px){
+
+    .preview{
+        min-height:360px;
+    }
+
+    .preview-content{
+        height:280px;
+    }
+
+    .orb{
+        width:120px;
+        height:120px;
+    }
+
+    .card{
+        width:80px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="background"></div>
+<div class="grid"></div>
+
+
+<header>
+
+    <div class="logo">
+        CTRL.X
+    </div>
+
+    <div class="live">
+        <span class="dot"></span>
+        SYSTEM ONLINE
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="hero">
+
+        <small>INTERACTIVE CONTROL SYSTEM</small>
+
+        <h1>
+            CONTROL<br>
+            EVERYTHING.
+        </h1>
+
+        <p>
+            Click the controls and watch the interface react.
+        </p>
+
+    </section>
+
+
+    <section class="dashboard">
+
+
+        <!-- PREVIEW -->
+
+        <div class="preview">
+
+            <div class="preview-top">
+
+                <span>LIVE PREVIEW</span>
+
+                <span id="modeText">
+                    DEFAULT MODE
+                </span>
+
+            </div>
+
+
+            <div class="preview-content">
+
+                <div
+                    class="orb"
+                    id="orb"
+                ></div>
+
+
+                <div class="cards">
+
+                    <div class="card">
+                        SYSTEM
+                    </div>
+
+                    <div class="card">
+                        DATA
+                    </div>
+
+                    <div class="card">
+                        CLOUD
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTROLS -->
+
+        <div class="controls">
+
+            <h2>
+                Controls
+            </h2>
+
+            <p>
+                Every control changes the live interface.
+            </p>
+
+
+            <!-- COLOR -->
+
+            <button
+                class="control"
+                id="colorBtn"
+            >
+
+                <div class="control-icon">
+                    🎨
+                </div>
+
+                <div class="control-info">
+
+                    <div class="control-title">
+                        CHANGE COLOR
+                    </div>
+
+                    <div class="control-desc">
+                        Switch visual theme
+                    </div>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </button>
+
+
+            <!-- THEME -->
+
+            <button
+                class="control"
+                id="themeBtn"
+            >
+
+                <div class="control-icon">
+                    🌙
+                </div>
+
+                <div class="control-info">
+
+                    <div class="control-title">
+                        DARK / LIGHT
+                    </div>
+
+                    <div class="control-desc">
+                        Change interface mode
+                    </div>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </button>
+
+
+            <!-- BOOST -->
+
+            <button
+                class="control"
+                id="boostBtn"
+            >
+
+                <div class="control-icon">
+                    ⚡
+                </div>
+
+                <div class="control-info">
+
+                    <div class="control-title">
+                        BOOST SYSTEM
+                    </div>
+
+                    <div class="control-desc">
+                        Increase animation speed
+                    </div>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </button>
+
+
+            <!-- FREEZE -->
+
+            <button
+                class="control"
+                id="freezeBtn"
+            >
+
+                <div class="control-icon">
+                    ❄️
+                </div>
+
+                <div class="control-info">
+
+                    <div class="control-title">
+                        FREEZE
+                    </div>
+
+                    <div class="control-desc">
+                        Pause the entire interface
+                    </div>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </button>
+
+
+            <!-- RESET -->
+
+            <button
+                class="control"
+                id="resetBtn"
+            >
+
+                <div class="control-icon">
+                    ↻
+                </div>
+
+                <div class="control-info">
+
+                    <div class="control-title">
+                        RESET SYSTEM
+                    </div>
+
+                    <div class="control-desc">
+                        Restore everything
+                    </div>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+            </button>
+
+
+            <div class="status">
+
+                STATUS:
+                <span id="status">
+                    READY
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+/* ELEMENTS */
+
+const body =
+document.body;
+
+const orb =
+document.getElementById("orb");
+
+const status =
+document.getElementById("status");
+
+const modeText =
+document.getElementById("modeText");
+
+const toast =
+document.getElementById("toast");
+
+
+/* TOAST */
+
+function showToast(text){
+
+    toast.textContent =
+        text;
+
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+
+        toast.classList.remove("show");
+
+    },1800);
+
+}
+
+
+/* COLOR */
+
+const colors =
+[
+    "pink",
+    "green",
+    "default"
+];
+
+let colorIndex = 0;
+
+document
+.getElementById("colorBtn")
+.addEventListener(
+    "click",
+    ()=>{
+
+        body.classList.remove(
+            "pink",
+            "green"
+        );
+
+        colorIndex++;
+
+        if(colorIndex >= colors.length){
+            colorIndex = 0;
+        }
+
+        const selected =
+            colors[colorIndex];
+
+        if(selected !== "default"){
+
+            body.classList.add(
+                selected
+            );
+
+        }
+
+        modeText.textContent =
+            selected.toUpperCase()+" MODE";
+
+        status.textContent =
+            "COLOR CHANGED";
+
+        showToast(
+            "🎨 Theme color changed"
+        );
+
+    }
+);
+
+
+/* LIGHT / DARK */
+
+document
+.getElementById("themeBtn")
+.addEventListener(
+    "click",
+    ()=>{
+
+        body.classList.toggle(
+            "light"
+        );
+
+        const light =
+            body.classList.contains(
+                "light"
+            );
+
+        modeText.textContent =
+            light
+            ? "LIGHT MODE"
+            : "DARK MODE";
+
+        status.textContent =
+            light
+            ? "LIGHT MODE"
+            : "DARK MODE";
+
+        showToast(
+            light
+            ? "☀️ Light mode activated"
+            : "🌙 Dark mode activated"
+        );
+
+    }
+);
+
+
+/* BOOST */
+
+let boosted = false;
+
+document
+.getElementById("boostBtn")
+.addEventListener(
+    "click",
+    ()=>{
+
+        boosted =
+            !boosted;
+
+        body.classList.toggle(
+            "boost",
+            boosted
+        );
+
+        orb.classList.toggle(
+            "boosted",
+            boosted
+        );
+
+        status.textContent =
+            boosted
+            ? "BOOST ACTIVE"
+            : "NORMAL SPEED";
+
+        showToast(
+            boosted
+            ? "⚡ SYSTEM BOOSTED"
+            : "⚡ NORMAL SPEED"
+        );
+
+    }
+);
+
+
+/* FREEZE */
+
+let frozen = false;
+
+document
+.getElementById("freezeBtn")
+.addEventListener(
+    "click",
+    ()=>{
+
+        frozen =
+            !frozen;
+
+        body.classList.toggle(
+            "freeze",
+            frozen
+        );
+
+        orb.classList.toggle(
+            "frozen",
+            frozen
+        );
+
+        status.textContent =
+            frozen
+            ? "SYSTEM FROZEN"
+            : "SYSTEM RESUMED";
+
+        showToast(
+            frozen
+            ? "❄️ Everything frozen"
+            : "▶️ System resumed"
+        );
+
+    }
+);
+
+
+
+document
+.getElementById("resetBtn")
+.addEventListener(
+    "click",
+    ()=>{
+
+        body.className = "";
+
+        colorIndex = 0;
+
+        boosted = false;
+
+        frozen = false;
+
+        modeText.textContent =
+            "DEFAULT MODE";
+
+        status.textContent =
+            "READY";
+
+        showToast(
+            "↻ System completely reset"
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>

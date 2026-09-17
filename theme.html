@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Time Machine</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --accent:#00ff88;
+  --bg:#08090c;
+  --card:rgba(255,255,255,.07);
+  --text:#fff;
+}
+
+body{
+  min-height:100vh;
+  overflow:hidden;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:
+    background .8s,
+    color .8s;
+}
+
+/* BACKGROUND */
+
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  overflow:hidden;
+}
+
+.glow{
+  position:absolute;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  background:var(--accent);
+  filter:blur(180px);
+  opacity:.12;
+  transition:1s;
+}
+
+.glow.one{
+  top:-250px;
+  left:-200px;
+}
+
+.glow.two{
+  right:-250px;
+  bottom:-250px;
+}
+
+/* HEADER */
+
+header{
+  height:80px;
+  padding:0 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  backdrop-filter:blur(20px);
+}
+
+.logo{
+  font-size:22px;
+  font-weight:900;
+}
+
+.logo span{
+  color:var(--accent);
+  transition:.7s;
+}
+
+.live{
+  font-size:12px;
+  color:#999;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.live-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 15px var(--accent);
+}
+
+/* MAIN */
+
+main{
+  min-height:calc(100vh - 80px);
+  display:grid;
+  grid-template-columns:1fr 430px;
+  align-items:center;
+  gap:50px;
+  padding:40px 7%;
+}
+
+/* HERO */
+
+.badge{
+  display:inline-block;
+  padding:8px 14px;
+  border:1px solid var(--accent);
+  border-radius:50px;
+  color:var(--accent);
+  font-size:11px;
+  letter-spacing:2px;
+  margin-bottom:22px;
+  transition:.7s;
+}
+
+h1{
+  font-size:clamp(55px,8vw,110px);
+  line-height:.86;
+  letter-spacing:-6px;
+  transition:.7s;
+}
+
+h1 span{
+  color:var(--accent);
+  transition:.7s;
+}
+
+.description{
+  max-width:570px;
+  margin-top:28px;
+  color:#999;
+  line-height:1.7;
+  font-size:16px;
+}
+
+/* PREVIEW */
+
+.preview{
+  margin-top:35px;
+  padding:22px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:25px;
+  background:var(--card);
+  backdrop-filter:blur(20px);
+  transition:.8s;
+}
+
+.preview-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.window-dots{
+  display:flex;
+  gap:6px;
+}
+
+.window-dots i{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#555;
+}
+
+.preview-title{
+  color:#888;
+  font-size:11px;
+}
+
+.preview-content{
+  height:130px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+
+.mini-card{
+  flex:1;
+  height:100%;
+  border-radius:15px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.8s;
+}
+
+/* MACHINE */
+
+.machine{
+  padding:28px;
+  border-radius:30px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(25px);
+  box-shadow:0 30px 100px rgba(0,0,0,.4);
+  transition:.8s;
+}
+
+.machine-title{
+  text-align:center;
+  color:#888;
+  font-size:11px;
+  letter-spacing:3px;
+  margin-bottom:20px;
+}
+
+.year{
+  text-align:center;
+  font-size:80px;
+  font-weight:900;
+  color:var(--accent);
+  line-height:1;
+  text-shadow:0 0 35px var(--accent);
+  transition:.5s;
+}
+
+.era{
+  text-align:center;
+  margin-top:10px;
+  color:#aaa;
+  font-size:14px;
+  min-height:20px;
+}
+
+/* SLIDER */
+
+.slider-wrap{
+  margin-top:35px;
+}
+
+input[type="range"]{
+  width:100%;
+  appearance:none;
+  height:7px;
+  border-radius:10px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--accent) 0%,
+      var(--accent) 50%,
+      #333 50%,
+      #333 100%
+    );
+  outline:none;
+}
+
+input[type="range"]::-webkit-slider-thumb{
+  appearance:none;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background:#fff;
+  border:5px solid var(--accent);
+  box-shadow:
+    0 0 20px var(--accent);
+  cursor:pointer;
+}
+
+input[type="range"]::-moz-range-thumb{
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:#fff;
+  border:5px solid var(--accent);
+  cursor:pointer;
+}
+
+.years{
+  display:flex;
+  justify-content:space-between;
+  margin-top:14px;
+  color:#666;
+  font-size:10px;
+}
+
+/* INFO */
+
+.info{
+  margin-top:25px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.info-box{
+  padding:13px;
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.info-box small{
+  color:#666;
+  display:block;
+  font-size:9px;
+  margin-bottom:5px;
+}
+
+.info-box strong{
+  font-size:12px;
+}
+
+/* BUTTON */
+
+button{
+  width:100%;
+  margin-top:15px;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:var(--accent);
+  color:#000;
+  font-weight:900;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 40px var(--accent);
+}
+
+/* =========================
+   ERAS
+========================= */
+
+/* 1990 */
+
+body[data-era="1990"]{
+  font-family:"Courier New",monospace;
+  background:#111;
+}
+
+body[data-era="1990"] .machine,
+body[data-era="1990"] .preview{
+  border-radius:0;
+  backdrop-filter:none;
+  background:#d8d8d8;
+  color:#000;
+}
+
+body[data-era="1990"] h1{
+  font-family:"Courier New",monospace;
+  text-transform:uppercase;
+  letter-spacing:-2px;
+}
+
+body[data-era="1990"] .mini-card{
+  border-radius:0;
+  background:#aaa;
+}
+
+body[data-era="1990"] .description{
+  color:#aaa;
+}
+
+/* 2000 */
+
+body[data-era="2000"]{
+  background:#dce9f5;
+  color:#152238;
+}
+
+body[data-era="2000"] .machine,
+body[data-era="2000"] .preview{
+  background:linear-gradient(
+    145deg,
+    #fff,
+    #b9d4ef
+  );
+  border:2px solid #7194b8;
+  border-radius:8px;
+  color:#152238;
+  backdrop-filter:none;
+}
+
+body[data-era="2000"] .description{
+  color:#53657a;
+}
+
+body[data-era="2000"] .mini-card{
+  border-radius:5px;
+  background:linear-gradient(#fff,#aac8e5);
+}
+
+/* 2010 */
+
+body[data-era="2010"]{
+  background:#171717;
+}
+
+body[data-era="2010"] .machine,
+body[data-era="2010"] .preview{
+  background:linear-gradient(
+    145deg,
+    rgba(255,255,255,.12),
+    rgba(255,255,255,.03)
+  );
+  border-radius:18px;
+}
+
+body[data-era="2010"] .mini-card{
+  border-radius:10px;
+}
+
+/* 2020 */
+
+body[data-era="2020"]{
+  background:#07070b;
+}
+
+body[data-era="2020"] .machine,
+body[data-era="2020"] .preview{
+  border-radius:28px;
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(25px);
+}
+
+body[data-era="2020"] .mini-card{
+  border-radius:18px;
+}
+
+/* 2030 */
+
+body[data-era="2030"]{
+  background:#030812;
+}
+
+body[data-era="2030"] .machine,
+body[data-era="2030"] .preview{
+  border-radius:35px;
+  background:rgba(0,255,255,.04);
+  border-color:rgba(0,255,255,.25);
+  box-shadow:
+    0 0 50px rgba(0,255,255,.1),
+    inset 0 0 40px rgba(0,255,255,.03);
+}
+
+body[data-era="2030"] .mini-card{
+  border-radius:25px;
+  border-color:rgba(0,255,255,.25);
+}
+
+/* 2050 */
+
+body[data-era="2050"]{
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      #17215d,
+      #03030b 65%
+    );
+}
+
+body[data-era="2050"] .machine{
+  border-radius:45px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.14),
+      rgba(255,255,255,.03)
+    );
+  border-color:rgba(255,255,255,.3);
+  box-shadow:
+    0 0 80px rgba(111,76,255,.25),
+    inset 0 0 50px rgba(255,255,255,.04);
+}
+
+body[data-era="2050"] .preview{
+  border-radius:40px;
+}
+
+body[data-era="2050"] .mini-card{
+  border-radius:30px;
+  transform:perspective(500px) rotateY(-8deg);
+}
+
+/* PARTICLES */
+
+.particle{
+  position:fixed;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--accent);
+  pointer-events:none;
+  animation:particle 1.5s forwards;
+}
+
+@keyframes particle{
+  from{
+    opacity:1;
+    transform:translate(0,0) scale(1);
+  }
+  to{
+    opacity:0;
+    transform:
+      translate(
+        calc((var(--x) - .5) * 500px),
+        calc((var(--y) - .5) * 500px)
+      )
+      scale(0);
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+  body{
+    overflow:auto;
+  }
+
+  main{
+    grid-template-columns:1fr;
+    padding:30px 5%;
+  }
+
+  h1{
+    font-size:58px;
+  }
+
+  .year{
+    font-size:65px;
+  }
+
+}
+
+@media(max-width:500px){
+
+  header{
+    padding:0 5%;
+  }
+
+  .live{
+    display:none;
+  }
+
+  main{
+    gap:25px;
+  }
+
+  h1{
+    font-size:48px;
+  }
+
+  .description{
+    font-size:14px;
+  }
+
+  .machine{
+    padding:20px;
+  }
+
+}
+</style>
+</head>
+
+<body data-era="2020">
+
+<div class="bg">
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+</div>
+
+<header>
+
+  <div class="logo">
+    TIME<span>OS</span>
+  </div>
+
+  <div class="live">
+    <div class="live-dot"></div>
+    TEMPORAL SYSTEM ONLINE
+  </div>
+
+</header>
+
+
+<main>
+
+<section>
+
+  <div class="badge">
+    ⏳ HTML TIME MACHINE
+  </div>
+
+  <h1>
+    Travel<br>
+    <span>through time.</span>
+  </h1>
+
+  <p class="description">
+    One website. Six different eras.
+    Drag the timeline and watch the entire
+    interface evolve from the early web
+    to the future.
+  </p>
+
+
+  <div class="preview">
+
+    <div class="preview-top">
+
+      <div class="window-dots">
+        <i></i>
+        <i></i>
+        <i></i>
+      </div>
+
+      <div class="preview-title">
+        LIVE WEBSITE PREVIEW
+      </div>
+
+    </div>
+
+
+    <div class="preview-content">
+
+      <div class="mini-card"></div>
+      <div class="mini-card"></div>
+      <div class="mini-card"></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="machine">
+
+  <div class="machine-title">
+    SELECT YOUR ERA
+  </div>
+
+  <div class="year" id="year">
+    2020
+  </div>
+
+  <div class="era" id="era">
+    Modern Web
+  </div>
+
+
+  <div class="slider-wrap">
+
+    <input
+      id="timeSlider"
+      type="range"
+      min="0"
+      max="5"
+      value="3"
+      step="1"
+    >
+
+    <div class="years">
+      <span>1990</span>
+      <span>2000</span>
+      <span>2010</span>
+      <span>2020</span>
+      <span>2030</span>
+      <span>2050</span>
+    </div>
+
+  </div>
+
+
+  <div class="info">
+
+    <div class="info-box">
+      <small>ERA</small>
+      <strong id="eraType">MODERN</strong>
+    </div>
+
+    <div class="info-box">
+      <small>STYLE</small>
+      <strong id="styleType">GLASS</strong>
+    </div>
+
+    <div class="info-box">
+      <small>TECH</small>
+      <strong id="techType">HTML + CSS</strong>
+    </div>
+
+    <div class="info-box">
+      <small>STATUS</small>
+      <strong>TIME LOCKED</strong>
+    </div>
+
+  </div>
+
+
+  <button id="randomBtn">
+    ⚡ RANDOM YEAR
+  </button>
+
+</section>
+
+</main>
+
+
+<script>
+
+const slider =
+  document.getElementById("timeSlider");
+
+const year =
+  document.getElementById("year");
+
+const era =
+  document.getElementById("era");
+
+const eraType =
+  document.getElementById("eraType");
+
+const styleType =
+  document.getElementById("styleType");
+
+const techType =
+  document.getElementById("techType");
+
+const randomBtn =
+  document.getElementById("randomBtn");
+
+
+const eras = [
+
+  {
+    year:"1990",
+    name:"Early Web",
+    type:"RETRO",
+    style:"PIXEL / BASIC",
+    tech:"HTML",
+    color:"#00ff88"
+  },
+
+  {
+    year:"2000",
+    name:"Dot-Com Era",
+    type:"WEB 1.0",
+    style:"GLOSSY",
+    tech:"HTML + TABLES",
+    color:"#1683ff"
+  },
+
+  {
+    year:"2010",
+    name:"Social Web",
+    type:"WEB 2.0",
+    style:"GLOSSY / GRADIENT",
+    tech:"HTML + CSS3",
+    color:"#ff4d9d"
+  },
+
+  {
+    year:"2020",
+    name:"Modern Web",
+    type:"MODERN",
+    style:"GLASS",
+    tech:"HTML + CSS + JS",
+    color:"#a855f7"
+  },
+
+  {
+    year:"2030",
+    name:"Future Web",
+    type:"FUTURISTIC",
+    style:"NEON",
+    tech:"AI + WEBGL",
+    color:"#00e5ff"
+  },
+
+  {
+    year:"2050",
+    name:"Unknown Future",
+    type:"POST-WEB",
+    style:"HOLOGRAPHIC",
+    tech:"NEURAL UI",
+    color:"#8b5cf6"
+  }
+
+];
+
+
+function update(){
+
+  const index =
+    Number(slider.value);
+
+  const data =
+    eras[index];
+
+  document.body.dataset.era =
+    data.year;
+
+  year.textContent =
+    data.year;
+
+  era.textContent =
+    data.name;
+
+  eraType.textContent =
+    data.type;
+
+  styleType.textContent =
+    data.style;
+
+  techType.textContent =
+    data.tech;
+
+  document.documentElement
+    .style
+    .setProperty(
+      "--accent",
+      data.color
+    );
+
+
+  /* Slider progress */
+
+  const percent =
+    (index / 5) * 100;
+
+  slider.style.background = `
+    linear-gradient(
+      90deg,
+      ${data.color} 0%,
+      ${data.color} ${percent}%,
+      #333 ${percent}%,
+      #333 100%
+    )
+  `;
+
+
+  createParticles(18);
+}
+
+
+/* Slider */
+
+slider.addEventListener(
+  "input",
+  update
+);
+
+
+/* Random year */
+
+randomBtn.addEventListener(
+  "click",
+  () => {
+
+    let current =
+      Number(slider.value);
+
+    let next;
+
+    do{
+      next =
+        Math.floor(Math.random()*6);
+    }
+    while(next === current);
+
+    slider.value = next;
+
+    update();
+
+  }
+);
+
+
+/* Particle effect */
+
+function createParticles(amount){
+
+  for(let i=0;i<amount;i++){
+
+    const p =
+      document.createElement("div");
+
+    p.className =
+      "particle";
+
+    p.style.left =
+      "50%";
+
+    p.style.top =
+      "50%";
+
+    p.style.setProperty(
+      "--x",
+      Math.random()
+    );
+
+    p.style.setProperty(
+      "--y",
+      Math.random()
+    );
+
+    document.body.appendChild(p);
+
+    setTimeout(
+      () => p.remove(),
+      1500
+    );
+
+  }
+
+}
+
+
+/* Keyboard */
+
+document.addEventListener(
+  "keydown",
+  (e) => {
+
+    if(e.key === "ArrowRight"){
+
+      slider.value =
+        Math.min(
+          5,
+          Number(slider.value)+1
+        );
+
+      update();
+
+    }
+
+    if(e.key === "ArrowLeft"){
+
+      slider.value =
+        Math.max(
+          0,
+          Number(slider.value)-1
+        );
+
+      update();
+
+    }
+
+  }
+);
+
+
+/* Initial */
+
+update();
+
+</script>
+
+</body>
+</html>

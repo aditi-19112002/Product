@@ -1,0 +1,1123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Living Website</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#05050a;
+    color:white;
+    cursor:none;
+}
+
+/* ==============================
+   BACKGROUND
+============================== */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:-50%;
+    background:
+        radial-gradient(circle at 50% 50%,#33205a55,transparent 25%),
+        radial-gradient(circle at 20% 30%,#ff2d8a22,transparent 20%),
+        radial-gradient(circle at 80% 70%,#00d9ff18,transparent 20%);
+    animation:bgMove 10s ease-in-out infinite alternate;
+}
+
+@keyframes bgMove{
+    from{
+        transform:translate(-3%,-3%) scale(1);
+    }
+    to{
+        transform:translate(3%,3%) scale(1.1);
+    }
+}
+
+
+/* ==============================
+   CUSTOM CURSOR
+============================== */
+
+.cursor{
+    position:fixed;
+    width:18px;
+    height:18px;
+    border:2px solid white;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:999;
+    transform:translate(-50%,-50%);
+    transition:
+        width .2s,
+        height .2s,
+        background .2s;
+}
+
+.cursor-dot{
+    position:fixed;
+    width:5px;
+    height:5px;
+    background:white;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:1000;
+    transform:translate(-50%,-50%);
+}
+
+
+/* ==============================
+   MAIN
+============================== */
+
+.app{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+}
+
+
+/* ==============================
+   HEADER
+============================== */
+
+.top{
+    position:absolute;
+    top:30px;
+    left:6%;
+    right:6%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+    letter-spacing:3px;
+}
+
+.status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    color:#aaa;
+    letter-spacing:2px;
+}
+
+.status-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#49ff9a;
+    box-shadow:0 0 15px #49ff9a;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        opacity:.3;
+        transform:scale(.7);
+    }
+}
+
+
+/* ==============================
+   CHARACTER
+============================== */
+
+.character{
+    width:min(90vw,850px);
+    min-height:540px;
+
+    border:1px solid #ffffff15;
+    background:#ffffff07;
+    backdrop-filter:blur(25px);
+
+    border-radius:40px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:
+        0 40px 100px #0008,
+        inset 0 1px #ffffff10;
+
+    position:relative;
+
+    transition:
+        transform .4s,
+        border .4s;
+}
+
+.character:hover{
+    border-color:#ffffff25;
+}
+
+
+/* ==============================
+   FACE
+============================== */
+
+.face{
+    width:300px;
+    height:250px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle at 50% 25%,
+            #555,
+            #202027 55%,
+            #101015 100%
+        );
+
+    position:relative;
+
+    box-shadow:
+        0 20px 70px #000,
+        inset 0 0 40px #ffffff08;
+
+    transition:.4s;
+}
+
+
+/* ==============================
+   EYES
+============================== */
+
+.eye{
+    position:absolute;
+
+    width:78px;
+    height:100px;
+
+    background:#f7f7ff;
+
+    border-radius:50%;
+
+    top:65px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 0 30px #ffffff18;
+
+    transition:.25s;
+}
+
+.eye.left{
+    left:48px;
+}
+
+.eye.right{
+    right:48px;
+}
+
+.pupil{
+    position:absolute;
+
+    width:35px;
+    height:48px;
+
+    background:#080810;
+
+    border-radius:50%;
+
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%);
+
+    transition:
+        transform .08s linear;
+}
+
+.pupil::after{
+    content:"";
+
+    position:absolute;
+
+    width:10px;
+    height:10px;
+
+    background:white;
+
+    border-radius:50%;
+
+    top:8px;
+    left:8px;
+}
+
+
+/* ==============================
+   MOUTH
+============================== */
+
+.mouth{
+    position:absolute;
+
+    width:65px;
+    height:25px;
+
+    left:50%;
+    bottom:45px;
+
+    transform:translateX(-50%);
+
+    border-bottom:5px solid #aaa;
+
+    border-radius:0 0 50px 50px;
+
+    transition:.3s;
+}
+
+
+/* ==============================
+   EMOTIONS
+============================== */
+
+.character.happy .mouth{
+    width:80px;
+    height:35px;
+    border-bottom:7px solid #ff75b5;
+}
+
+.character.happy .face{
+    box-shadow:
+        0 0 80px #ff3d9a33,
+        0 20px 70px #000;
+}
+
+.character.scared .mouth{
+    width:35px;
+    height:35px;
+    border:5px solid #aaa;
+    border-radius:50%;
+    bottom:35px;
+}
+
+.character.scared .face{
+    transform:scale(1.03);
+}
+
+.character.angry .eye{
+    transform:rotate(-7deg);
+}
+
+.character.sleep .pupil{
+    height:5px;
+    border-radius:10px;
+}
+
+
+/* ==============================
+   TEXT
+============================== */
+
+.message{
+    margin-top:35px;
+
+    text-align:center;
+
+    min-height:70px;
+}
+
+.message h1{
+    font-size:clamp(25px,4vw,42px);
+
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.message p{
+    margin-top:10px;
+
+    color:#858590;
+
+    font-size:14px;
+}
+
+
+/* ==============================
+   BUTTON
+============================== */
+
+.test-btn{
+    margin-top:25px;
+
+    border:1px solid #ffffff20;
+
+    background:#ffffff0b;
+
+    color:white;
+
+    padding:14px 25px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    cursor:none;
+
+    transition:.3s;
+}
+
+.test-btn:hover{
+    background:#ffffff15;
+    transform:translateY(-4px);
+}
+
+
+/* ==============================
+   STATUS CARDS
+============================== */
+
+.cards{
+    position:absolute;
+
+    bottom:30px;
+
+    left:40px;
+    right:40px;
+
+    display:flex;
+    justify-content:space-between;
+}
+
+.card{
+    padding:12px 18px;
+
+    background:#ffffff06;
+
+    border:1px solid #ffffff0e;
+
+    border-radius:14px;
+
+    font-size:11px;
+
+    color:#777;
+
+    letter-spacing:1px;
+}
+
+.card span{
+    color:#ddd;
+}
+
+
+/* ==============================
+   THOUGHT BUBBLE
+============================== */
+
+.thought{
+    position:absolute;
+
+    top:50px;
+    right:60px;
+
+    padding:12px 18px;
+
+    border-radius:20px 20px 5px 20px;
+
+    background:#fff;
+
+    color:#111;
+
+    font-size:12px;
+
+    opacity:0;
+
+    transform:translateY(10px) scale(.8);
+
+    transition:.4s;
+
+    pointer-events:none;
+}
+
+.thought.show{
+    opacity:1;
+    transform:translateY(0) scale(1);
+}
+
+
+/* ==============================
+   PARTICLES
+============================== */
+
+.particle{
+    position:fixed;
+
+    width:5px;
+    height:5px;
+
+    border-radius:50%;
+
+    background:#ff62a8;
+
+    pointer-events:none;
+
+    z-index:10;
+
+    animation:particle .8s forwards;
+}
+
+@keyframes particle{
+
+    to{
+        opacity:0;
+        transform:
+            translate(
+                var(--x),
+                var(--y)
+            )
+            scale(0);
+    }
+}
+
+
+/* ==============================
+   SCAN LINES
+============================== */
+
+.scan{
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 5px,
+            #ffffff02 6px
+        );
+
+    border-radius:40px;
+}
+
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media(max-width:600px){
+
+    body{
+        cursor:auto;
+    }
+
+    .cursor,
+    .cursor-dot{
+        display:none;
+    }
+
+    .character{
+        min-height:520px;
+        border-radius:28px;
+    }
+
+    .face{
+        width:240px;
+        height:210px;
+    }
+
+    .eye{
+        width:62px;
+        height:82px;
+        top:55px;
+    }
+
+    .eye.left{
+        left:38px;
+    }
+
+    .eye.right{
+        right:38px;
+    }
+
+    .pupil{
+        width:28px;
+        height:40px;
+    }
+
+    .mouth{
+        bottom:35px;
+    }
+
+    .thought{
+        top:25px;
+        right:20px;
+    }
+
+    .cards{
+        left:15px;
+        right:15px;
+        bottom:20px;
+    }
+
+    .card{
+        padding:8px 10px;
+        font-size:9px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- CUSTOM CURSOR -->
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+
+<div class="app">
+
+
+    <!-- HEADER -->
+
+    <div class="top">
+
+        <div class="logo">
+            ALIVE.
+        </div>
+
+        <div class="status">
+
+            <div class="status-dot"></div>
+
+            ONLINE
+
+        </div>
+
+    </div>
+
+
+    <!-- CHARACTER -->
+
+    <div class="character" id="character">
+
+
+        <div class="scan"></div>
+
+
+        <!-- THOUGHT -->
+
+        <div class="thought" id="thought">
+            Why are you staring? 👀
+        </div>
+
+
+        <!-- FACE -->
+
+        <div class="face" id="face">
+
+
+            <div class="eye left">
+
+                <div class="pupil"></div>
+
+            </div>
+
+
+            <div class="eye right">
+
+                <div class="pupil"></div>
+
+            </div>
+
+
+            <div class="mouth"></div>
+
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div class="message">
+
+            <h1 id="title">
+                Hello... 👀
+            </h1>
+
+            <p id="subtitle">
+                Move your cursor. I'm watching.
+            </p>
+
+            <button class="test-btn" id="button">
+                DON'T CLICK ME
+            </button>
+
+        </div>
+
+
+        <!-- CARDS -->
+
+        <div class="cards">
+
+            <div class="card">
+                CURSOR:
+                <span id="cursorState">DETECTED</span>
+            </div>
+
+            <div class="card">
+                MOOD:
+                <span id="mood">CURIOUS</span>
+            </div>
+
+            <div class="card">
+                BRAIN:
+                <span>ONLINE</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const character =
+document.getElementById("character");
+
+const face =
+document.getElementById("face");
+
+const title =
+document.getElementById("title");
+
+const subtitle =
+document.getElementById("subtitle");
+
+const button =
+document.getElementById("button");
+
+const thought =
+document.getElementById("thought");
+
+const mood =
+document.getElementById("mood");
+
+const cursor =
+document.getElementById("cursor");
+
+const cursorDot =
+document.getElementById("cursorDot");
+
+const pupils =
+document.querySelectorAll(".pupil");
+
+
+/* =====================================================
+   CURSOR TRACKING
+===================================================== */
+
+let mouseX =
+window.innerWidth / 2;
+
+let mouseY =
+window.innerHeight / 2;
+
+
+document.addEventListener("mousemove",(e)=>{
+
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+
+    /* CUSTOM CURSOR */
+
+    cursor.style.left =
+        mouseX + "px";
+
+    cursor.style.top =
+        mouseY + "px";
+
+    cursorDot.style.left =
+        mouseX + "px";
+
+    cursorDot.style.top =
+        mouseY + "px";
+
+
+    /* EYES FOLLOW CURSOR */
+
+    pupils.forEach(pupil=>{
+
+        const rect =
+            pupil.parentElement.getBoundingClientRect();
+
+        const eyeX =
+            rect.left + rect.width / 2;
+
+        const eyeY =
+            rect.top + rect.height / 2;
+
+        const angle =
+            Math.atan2(
+                mouseY - eyeY,
+                mouseX - eyeX
+            );
+
+        const distance =
+            Math.min(
+                18,
+                Math.hypot(
+                    mouseX-eyeX,
+                    mouseY-eyeY
+                ) / 15
+            );
+
+        const x =
+            Math.cos(angle) * distance;
+
+        const y =
+            Math.sin(angle) * distance;
+
+        pupil.style.transform =
+            `translate(calc(-50% + ${x}px),
+                       calc(-50% + ${y}px))`;
+
+    });
+
+
+    /* CHARACTER REACTION */
+
+    const centerX =
+        window.innerWidth / 2;
+
+    const centerY =
+        window.innerHeight / 2;
+
+    const distance =
+        Math.hypot(
+            mouseX-centerX,
+            mouseY-centerY
+        );
+
+
+    if(distance < 180){
+
+        character.classList.add("happy");
+
+        mood.innerText =
+            "HAPPY";
+
+    }else{
+
+        character.classList.remove("happy");
+
+        mood.innerText =
+            "CURIOUS";
+
+    }
+
+});
+
+
+/* =====================================================
+   RANDOM THOUGHTS
+===================================================== */
+
+const thoughts = [
+
+    "Why are you staring? 👀",
+
+    "I can see your cursor.",
+
+    "Don't move so fast 😳",
+
+    "Are you testing me?",
+
+    "I know you're there.",
+
+    "You're still watching me.",
+
+    "Click something...",
+
+    "I feel observed 👁️"
+
+];
+
+
+let thoughtIndex = 0;
+
+
+function showThought(){
+
+    thought.innerText =
+        thoughts[thoughtIndex];
+
+    thought.classList.add("show");
+
+    setTimeout(()=>{
+
+        thought.classList.remove("show");
+
+    },2200);
+
+    thoughtIndex++;
+
+    if(thoughtIndex >= thoughts.length){
+        thoughtIndex = 0;
+    }
+
+}
+
+
+/* Show thoughts automatically */
+
+setInterval(showThought,4500);
+
+
+/* =====================================================
+   CLICK SURPRISE
+===================================================== */
+
+document.addEventListener("click",(e)=>{
+
+    /* Don't click button twice */
+
+    createExplosion(
+        e.clientX,
+        e.clientY
+    );
+
+
+    character.classList.remove(
+        "happy",
+        "scared"
+    );
+
+    character.classList.add("scared");
+
+
+    title.innerText =
+        "HEY! 😳";
+
+    subtitle.innerText =
+        "I felt that click!";
+
+    mood.innerText =
+        "SURPRISED";
+
+
+    setTimeout(()=>{
+
+        character.classList.remove("scared");
+
+        character.classList.add("happy");
+
+        title.innerText =
+            "Okay... 😌";
+
+        subtitle.innerText =
+            "You found my secret.";
+
+        mood.innerText =
+            "HAPPY";
+
+    },1800);
+
+});
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+button.addEventListener("click",(e)=>{
+
+    e.stopPropagation();
+
+    createExplosion(
+        e.clientX,
+        e.clientY
+    );
+
+    button.innerText =
+        "I TOLD YOU NOT TO 😭";
+
+    title.innerText =
+        "You clicked it!";
+
+    subtitle.innerText =
+        "Now we're friends. 🤝";
+
+    character.classList.add("happy");
+
+});
+
+
+/* =====================================================
+   PARTICLE EXPLOSION
+===================================================== */
+
+function createExplosion(x,y){
+
+    for(let i=0;i<35;i++){
+
+        const particle =
+            document.createElement("div");
+
+        particle.className =
+            "particle";
+
+        particle.style.left =
+            x + "px";
+
+        particle.style.top =
+            y + "px";
+
+
+        const angle =
+            Math.random() *
+            Math.PI *
+            2;
+
+        const distance =
+            40 + Math.random()*140;
+
+        particle.style.setProperty(
+            "--x",
+            Math.cos(angle)*distance + "px"
+        );
+
+        particle.style.setProperty(
+            "--y",
+            Math.sin(angle)*distance + "px"
+        );
+
+
+        document.body.appendChild(
+            particle
+        );
+
+
+        setTimeout(()=>{
+            particle.remove();
+        },800);
+
+    }
+
+}
+
+
+/* =====================================================
+   IDLE DETECTION
+===================================================== */
+
+let idleTimer;
+
+function resetIdle(){
+
+    clearTimeout(idleTimer);
+
+    idleTimer =
+        setTimeout(()=>{
+
+            title.innerText =
+                "Are you still there? 👀";
+
+            subtitle.innerText =
+                "Move your cursor...";
+
+            mood.innerText =
+                "BORED";
+
+            character.classList.add(
+                "sleep"
+            );
+
+        },5000);
+
+}
+
+
+document.addEventListener(
+    "mousemove",
+    resetIdle
+);
+
+resetIdle();
+
+
+/* =====================================================
+   RANDOM CHARACTER MOVEMENT
+===================================================== */
+
+setInterval(()=>{
+
+    if(
+        Math.random() > .5
+    ){
+
+        character.style.transform =
+            "translateY(-5px) rotate(-.3deg)";
+
+        setTimeout(()=>{
+
+            character.style.transform =
+                "translateY(0) rotate(0)";
+
+        },500);
+
+    }
+
+},3000);
+
+
+setTimeout(()=>{
+
+    thought.classList.add("show");
+
+    setTimeout(()=>{
+
+        thought.classList.remove("show");
+
+    },2200);
+
+},1000);
+
+</script>
+
+</body>
+</html>
+```
