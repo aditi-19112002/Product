@@ -1,0 +1,1122 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>Phone Coding Cinematic</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+    radial-gradient(circle at center,#29213e,#08080c 60%,#000);
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+}
+
+/* PHONE */
+
+.phone{
+    width:390px;
+    height:820px;
+    padding:7px;
+    border-radius:48px;
+    background:#151515;
+    border:5px solid #292929;
+    box-shadow:
+    0 40px 100px #000,
+    0 0 60px rgba(124,58,237,.15);
+    position:relative;
+}
+
+.screen{
+    width:100%;
+    height:100%;
+    border-radius:39px;
+    overflow:hidden;
+    background:#08090c;
+    position:relative;
+}
+
+/* DYNAMIC ISLAND */
+
+.island{
+    position:absolute;
+    z-index:100;
+    top:8px;
+    left:50%;
+    transform:translateX(-50%);
+    width:110px;
+    height:28px;
+    background:#000;
+    border-radius:20px;
+}
+
+/* STATUS */
+
+.status{
+    height:38px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 18px;
+    color:white;
+    font-size:12px;
+}
+
+/* LOCK */
+
+.lock{
+    position:absolute;
+    inset:0;
+    z-index:50;
+    color:white;
+    display:flex;
+    align-items:center;
+    flex-direction:column;
+    padding-top:120px;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.2),
+        rgba(0,0,0,.8)
+    ),
+    radial-gradient(
+        circle at 50% 35%,
+        #514075,
+        #08070c 65%
+    );
+
+    transition:1s;
+}
+
+.lock-time{
+    font-size:70px;
+    font-weight:300;
+}
+
+.lock-date{
+    margin-top:5px;
+    opacity:.8;
+    font-size:14px;
+}
+
+.unlock{
+    position:absolute;
+    bottom:90px;
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    border:1px solid #777;
+    background:rgba(255,255,255,.1);
+    color:white;
+    font-size:23px;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        transform:scale(1.08);
+        box-shadow:0 0 30px rgba(255,255,255,.25);
+    }
+}
+
+/* APP */
+
+.app{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    transform:scale(.96);
+    transition:1s;
+}
+
+.app.show{
+    opacity:1;
+    transform:scale(1);
+}
+
+/* HEADER */
+
+.header{
+    height:55px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 15px;
+    color:white;
+    background:#111318;
+    border-bottom:1px solid #252832;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.logo{
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background:linear-gradient(135deg,#7c3aed,#06b6d4);
+}
+
+.file{
+    color:#777;
+    font-size:10px;
+}
+
+/* EDITOR */
+
+.editor{
+    height:340px;
+    display:flex;
+    background:#080a0e;
+    font-family:Consolas,monospace;
+    overflow:hidden;
+}
+
+.numbers{
+    width:42px;
+    padding-top:15px;
+    padding-right:9px;
+    text-align:right;
+    color:#353b47;
+    font-size:10px;
+    line-height:18px;
+}
+
+.code{
+    flex:1;
+    padding:15px 5px;
+    color:#ddd;
+    font-size:10px;
+    line-height:18px;
+    overflow:hidden;
+}
+
+.cursor{
+    display:inline-block;
+    width:2px;
+    height:13px;
+    background:#a78bfa;
+    animation:blink .7s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:0;
+    }
+}
+
+/* TOOLBAR */
+
+.toolbar{
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 12px;
+    border-top:1px solid #242730;
+    border-bottom:1px solid #242730;
+}
+
+.language{
+    color:#a78bfa;
+    font-size:9px;
+}
+
+.run{
+    border:0;
+    background:#7c3aed;
+    color:white;
+    border-radius:8px;
+    padding:8px 16px;
+    font-size:10px;
+    font-weight:bold;
+}
+
+/* PREVIEW */
+
+.preview-label{
+    height:28px;
+    display:flex;
+    align-items:center;
+    padding-left:13px;
+    color:#666;
+    font-size:9px;
+}
+
+.preview{
+    margin:0 10px;
+    height:205px;
+    border-radius:15px;
+    overflow:hidden;
+    background:white;
+}
+
+.preview-page{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:11px;
+    transition:1s;
+}
+
+.preview-page h1{
+    color:#111;
+    font-size:24px;
+}
+
+.preview-page p{
+    color:#777;
+    font-size:10px;
+}
+
+.preview-page button{
+    padding:9px 22px;
+    border:0;
+    border-radius:30px;
+    background:#111;
+    color:white;
+}
+
+/* KEYBOARD */
+
+.keyboard{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:178px;
+    padding:8px 5px;
+    background:#1b1c20;
+    z-index:20;
+
+    transition:
+        transform .9s cubic-bezier(.7,0,.2,1),
+        opacity .5s;
+}
+
+.keyboard.hide{
+    transform:translateY(100%);
+    opacity:0;
+}
+
+/* KEYBOARD ROW */
+
+.row{
+    display:flex;
+    gap:4px;
+    margin-bottom:6px;
+}
+
+.key{
+    flex:1;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:5px;
+    background:#303136;
+    color:white;
+    font-size:9px;
+    box-shadow:0 2px #111;
+    transition:.05s;
+}
+
+.key.active{
+    transform:scale(.88);
+    background:#777;
+}
+
+.wide{
+    flex:1.6;
+}
+
+.space{
+    flex:4;
+}
+
+/* ERROR */
+
+.error{
+    position:absolute;
+    z-index:40;
+    left:10px;
+    right:10px;
+    bottom:190px;
+    padding:10px;
+    background:#260d12;
+    border:1px solid #8f1d2c;
+    border-radius:9px;
+    color:#ff7182;
+    font:9px monospace;
+    opacity:0;
+    transition:.4s;
+}
+
+.error.show{
+    opacity:1;
+}
+
+/* SUCCESS */
+
+.success{
+    position:absolute;
+    z-index:90;
+    top:65px;
+    left:50%;
+    transform:translateX(-50%) translateY(-80px);
+    padding:10px 16px;
+    border-radius:15px;
+    background:#17191e;
+    border:1px solid #333;
+    color:white;
+    font-size:10px;
+    opacity:0;
+    transition:.6s;
+    white-space:nowrap;
+}
+
+.success.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+/* FINAL OUTPUT */
+
+.final-output{
+    position:absolute;
+    inset:0;
+    z-index:70;
+    background:#050507;
+    opacity:0;
+    pointer-events:none;
+    transform:scale(.92);
+    transition:
+        opacity 1s,
+        transform 1s;
+}
+
+.final-output.show{
+    opacity:1;
+    pointer-events:auto;
+    transform:scale(1);
+}
+
+/* FINAL WEBSITE */
+
+.final-site{
+    width:100%;
+    height:100%;
+    position:relative;
+    overflow:hidden;
+
+    background:
+    radial-gradient(
+        circle at 20% 20%,
+        #a855f7 0,
+        transparent 30%
+    ),
+    radial-gradient(
+        circle at 80% 70%,
+        #06b6d4 0,
+        transparent 30%
+    ),
+    linear-gradient(
+        135deg,
+        #111827,
+        #030712
+    );
+
+    color:white;
+}
+
+.final-nav{
+    height:75px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+}
+
+.final-logo{
+    font-size:16px;
+    font-weight:bold;
+}
+
+.final-menu{
+    font-size:20px;
+}
+
+.final-content{
+    height:calc(100% - 75px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    padding:30px;
+}
+
+.final-content .small{
+    color:#c4b5fd;
+    font-size:10px;
+    letter-spacing:3px;
+    margin-bottom:14px;
+}
+
+.final-content h1{
+    font-size:42px;
+    line-height:1;
+    margin-bottom:15px;
+}
+
+.final-content h1 span{
+    background:linear-gradient(
+        90deg,
+        #c084fc,
+        #67e8f9
+    );
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.final-content p{
+    color:#cbd5e1;
+    font-size:11px;
+    line-height:1.7;
+    max-width:270px;
+}
+
+.final-btn{
+    margin-top:25px;
+    padding:13px 25px;
+    border-radius:30px;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.1);
+    color:white;
+    backdrop-filter:blur(10px);
+    font-size:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+
+/* GLOW ORBS */
+
+.orb{
+    position:absolute;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    filter:blur(30px);
+    opacity:.25;
+    animation:float 5s infinite alternate;
+}
+
+.orb1{
+    background:#a855f7;
+    top:25%;
+    left:-40px;
+}
+
+.orb2{
+    background:#06b6d4;
+    bottom:15%;
+    right:-40px;
+    animation-delay:1s;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(-30px);
+    }
+}
+
+/* HOME */
+
+.home{
+    position:absolute;
+    z-index:200;
+    bottom:5px;
+    left:50%;
+    transform:translateX(-50%);
+    width:100px;
+    height:4px;
+    border-radius:5px;
+    background:white;
+}
+
+/* MOBILE */
+
+@media(max-width:450px){
+
+    .phone{
+        width:100vw;
+        height:100vh;
+        padding:0;
+        border:0;
+        border-radius:0;
+    }
+
+    .screen{
+        border-radius:0;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="phone">
+
+<div class="screen">
+
+<div class="island"></div>
+
+
+<!-- STATUS -->
+
+<div class="status">
+
+<span id="clock">
+9:41
+</span>
+
+<span>
+▮▮▮　WiFi　100%
+</span>
+
+</div>
+
+
+<!-- LOCK SCREEN -->
+
+<div class="lock" id="lock">
+
+<div class="lock-time" id="lockTime">
+9:41
+</div>
+
+<div class="lock-date">
+Monday, September 21
+</div>
+
+<button class="unlock" id="unlock">
+🔓
+</button>
+
+</div>
+
+
+<!-- CODING APP -->
+
+<div class="app" id="app">
+
+
+<div class="header">
+
+<div class="brand">
+
+<div class="logo">
+&lt;/&gt;
+</div>
+
+CodeFlow
+
+</div>
+
+<div class="file">
+index.html
+</div>
+
+</div>
+
+
+<!-- CODE -->
+
+<div class="editor">
+
+<div class="numbers">
+
+1<br>2<br>3<br>4<br>5<br>
+6<br>7<br>8<br>9<br>10<br>
+11<br>12<br>13<br>14<br>15
+
+</div>
+
+<div class="code" id="code"></div>
+
+</div>
+
+
+<div class="toolbar">
+
+<div class="language">
+● HTML / CSS / JS
+</div>
+
+<button class="run" id="run">
+▶ RUN
+</button>
+
+</div>
+
+
+<!-- MINI PREVIEW -->
+
+<div class="preview-label">
+LIVE PREVIEW
+</div>
+
+<div class="preview">
+
+<div class="preview-page" id="preview">
+
+<h1 id="title">
+Hello World
+</h1>
+
+<p id="description">
+Built directly on my phone
+</p>
+
+<button id="button">
+Explore
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ERROR -->
+
+<div class="error" id="error">
+
+ERROR: Unexpected token ';'
+<br>
+
+Line 7: Fix required...
+
+</div>
+
+
+<!-- SUCCESS -->
+
+<div class="success" id="success">
+
+✓ Website built successfully
+
+</div>
+
+
+<!-- KEYBOARD -->
+
+<div class="keyboard" id="keyboard">
+
+<div class="row">
+
+<div class="key">Q</div>
+<div class="key">W</div>
+<div class="key">E</div>
+<div class="key">R</div>
+<div class="key">T</div>
+<div class="key">Y</div>
+<div class="key">U</div>
+<div class="key">I</div>
+<div class="key">O</div>
+<div class="key">P</div>
+
+</div>
+
+
+<div class="row">
+
+<div class="key">A</div>
+<div class="key">S</div>
+<div class="key">D</div>
+<div class="key">F</div>
+<div class="key">G</div>
+<div class="key">H</div>
+<div class="key">J</div>
+<div class="key">K</div>
+<div class="key">L</div>
+
+</div>
+
+
+<div class="row">
+
+<div class="key wide">⇧</div>
+<div class="key">Z</div>
+<div class="key">X</div>
+<div class="key">C</div>
+<div class="key">V</div>
+<div class="key">B</div>
+<div class="key">N</div>
+<div class="key">M</div>
+<div class="key wide">⌫</div>
+
+</div>
+
+
+<div class="row">
+
+<div class="key wide">123</div>
+<div class="key">@</div>
+<div class="key space"></div>
+<div class="key">.</div>
+<div class="key wide">↵</div>
+
+</div>
+
+</div>
+
+
+<!-- FINAL FULL WEBSITE -->
+
+<div class="final-output" id="finalOutput">
+
+<div class="final-site">
+
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+
+<div class="final-nav">
+
+<div class="final-logo">
+AK.DEV
+</div>
+
+<div class="final-menu">
+☰
+</div>
+
+</div>
+
+
+<div class="final-content">
+
+<div class="small">
+CODE • CREATE • BUILD
+</div>
+
+<h1>
+Built by<br>
+<span>Aditi</span>
+</h1>
+
+<p>
+A premium website created
+completely from a smartphone.
+No laptop. No desktop.
+Just code.
+</p>
+
+<div class="final-btn">
+EXPLORE PROJECT
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<div class="home"></div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* CLOCK */
+
+function updateClock(){
+
+    const now=new Date();
+
+    let h=now.getHours();
+    let m=now.getMinutes();
+
+    h=h<10?"0"+h:h;
+    m=m<10?"0"+m:m;
+
+    document.getElementById("clock").innerText=
+        h+":"+m;
+
+    document.getElementById("lockTime").innerText=
+        h+":"+m;
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+
+/* UNLOCK */
+
+document.getElementById("unlock").onclick=function(){
+
+    document.getElementById("lock").style.transform=
+        "translateY(-100%)";
+
+    document.getElementById("lock").style.opacity="0";
+
+    setTimeout(()=>{
+
+        document.getElementById("app")
+        .classList.add("show");
+
+        startCoding();
+
+    },700);
+
+};
+
+
+/* CODE */
+
+const code=`<div class="hero">
+  <h1>Aditi Keshri</h1>
+  <p>Building from my phone</p>
+  <button>Explore</button>
+</div>
+
+<style>
+.hero {
+  text-align:center;
+  padding:40px;
+  background:linear-gradient(
+    135deg,
+    #7c3aed,
+    #06b6d4
+  );
+}
+</style>`;
+
+let index=0;
+
+function startCoding(){
+
+    setTimeout(typeCode,900);
+
+}
+
+
+function typeCode(){
+
+    if(index<code.length){
+
+        const current=
+            code.substring(0,index);
+
+        document.getElementById("code")
+        .innerHTML=
+            syntax(current)+
+            '<span class="cursor"></span>';
+
+        pressKey();
+
+        index++;
+
+        setTimeout(typeCode,24);
+
+    }else{
+
+        setTimeout(showError,800);
+
+    }
+
+}
+
+
+/* SYNTAX */
+
+function syntax(text){
+
+    return text
+
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+
+    .replace(
+        /(div|h1|p|button|style)/g,
+        '<span style="color:#67e8f9">$1</span>'
+    )
+
+    .replace(
+        /(class)/g,
+        '<span style="color:#c084fc">$1</span>'
+    )
+
+    .replace(
+        /(#7c3aed|#06b6d4)/g,
+        '<span style="color:#f472b6">$1</span>'
+    )
+
+    .replace(/\n/g,"<br>");
+
+}
+
+
+/* KEYBOARD PRESS */
+
+const keys=
+document.querySelectorAll(".key");
+
+function pressKey(){
+
+    const key=
+        keys[Math.floor(Math.random()*keys.length)];
+
+    key.classList.add("active");
+
+    setTimeout(()=>{
+
+        key.classList.remove("active");
+
+    },70);
+
+}
+
+
+/* ERROR */
+
+function showError(){
+
+    document.getElementById("error")
+    .classList.add("show");
+
+    setTimeout(fixCode,1800);
+
+}
+
+
+/* FIX */
+
+function fixCode(){
+
+    document.getElementById("error")
+    .classList.remove("show");
+
+    setTimeout(()=>{
+
+        document.getElementById("code")
+        .innerHTML=
+            syntax(code)+
+            '<span class="cursor"></span>';
+
+        setTimeout(runWebsite,1000);
+
+    },500);
+
+}
+
+
+/* RUN */
+
+document.getElementById("run").onclick=
+runWebsite;
+
+
+function runWebsite(){
+
+    /* MINI PREVIEW */
+
+    const preview=
+        document.getElementById("preview");
+
+    preview.style.background=
+        "linear-gradient(135deg,#7c3aed,#06b6d4)";
+
+    document.getElementById("title")
+        .innerText="Aditi Keshri";
+
+    document.getElementById("title")
+        .style.color="white";
+
+    document.getElementById("description")
+        .innerText=
+        "Website built completely on a phone";
+
+    document.getElementById("description")
+        .style.color="#eee";
+
+    document.getElementById("button")
+        .innerText="Explore";
+
+
+    /* SUCCESS */
+
+    setTimeout(()=>{
+
+        document.getElementById("success")
+        .classList.add("show");
+
+    },300);
+
+
+    
+
+    setTimeout(()=>{
+
+        document.getElementById("keyboard")
+        .classList.add("hide");
+
+    },900);
+
+
+   
+
+    setTimeout(()=>{
+
+        document.getElementById("finalOutput")
+        .classList.add("show");
+
+    },1700);
+
+}
+
+</script>
+
+</body>
+</html>
+```

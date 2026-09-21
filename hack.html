@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Hologram Text</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    background:#03030a;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+.ui{
+    position:fixed;
+    inset:0;
+    z-index:5;
+    pointer-events:none;
+}
+
+.header{
+    text-align:center;
+    padding-top:35px;
+}
+
+.header p{
+    font-size:11px;
+    letter-spacing:5px;
+    color:#77718b;
+    margin-bottom:12px;
+}
+
+.header h1{
+    font-size:clamp(30px,6vw,65px);
+    letter-spacing:-3px;
+}
+
+.header h1 span{
+    color:#a875ff;
+    text-shadow:0 0 30px rgba(168,117,255,.7);
+}
+
+.controls{
+    position:absolute;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(700px,92%);
+    pointer-events:auto;
+}
+
+.input-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+input{
+    flex:1;
+    min-width:0;
+    padding:17px 20px;
+    border-radius:14px;
+    border:1px solid #34264f;
+    outline:none;
+    background:rgba(12,9,23,.85);
+    color:white;
+    font-size:16px;
+    backdrop-filter:blur(15px);
+}
+
+input:focus{
+    border-color:#a875ff;
+    box-shadow:0 0 25px rgba(168,117,255,.15);
+}
+
+.generate{
+    padding:0 22px;
+    border:0;
+    border-radius:14px;
+    background:#a875ff;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.buttons{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+button.action{
+    padding:11px 16px;
+    border-radius:10px;
+    border:1px solid #34264f;
+    background:rgba(12,9,23,.8);
+    color:#b9b0ca;
+    cursor:pointer;
+    backdrop-filter:blur(10px);
+    transition:.2s;
+}
+
+button.action:hover{
+    color:white;
+    border-color:#a875ff;
+    transform:translateY(-2px);
+}
+
+.hint{
+    text-align:center;
+    margin-top:10px;
+    font-size:10px;
+    color:#555064;
+    letter-spacing:1px;
+}
+
+.status{
+    position:absolute;
+    top:25px;
+    left:25px;
+    padding:9px 13px;
+    border:1px solid #292039;
+    border-radius:20px;
+    background:rgba(10,7,18,.65);
+    color:#716b7e;
+    font-size:10px;
+    letter-spacing:1px;
+}
+
+.flash{
+    position:fixed;
+    inset:0;
+    background:white;
+    opacity:0;
+    pointer-events:none;
+    z-index:20;
+}
+
+.flash.active{
+    animation:flash .35s;
+}
+
+@keyframes flash{
+    0%{opacity:.35}
+    100%{opacity:0}
+}
+
+@media(max-width:600px){
+
+    .header{
+        padding-top:25px;
+    }
+
+    .header h1{
+        font-size:38px;
+    }
+
+    .controls{
+        bottom:15px;
+    }
+
+    .input-row{
+        gap:7px;
+    }
+
+    input{
+        padding:14px;
+    }
+
+    .generate{
+        padding:0 16px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="ui">
+
+    <div class="status" id="status">
+        ● HOLOGRAM READY
+    </div>
+
+    <div class="header">
+        <p>JAVASCRIPT • PARTICLE ENGINE</p>
+        <h1>
+            TURN TEXT INTO<br>
+            <span>3D.</span>
+        </h1>
+    </div>
+
+    <div class="controls">
+
+        <div class="input-row">
+
+            <input
+                id="textInput"
+                value="ADITI"
+                maxlength="12"
+                placeholder="Type anything..."
+            >
+
+            <button class="generate" id="generate">
+                CREATE
+            </button>
+
+        </div>
+
+        <div class="buttons">
+
+            <button class="action" id="explode">
+                💥 EXPLODE
+            </button>
+
+            <button class="action" id="rebuild">
+                🔄 REBUILD
+            </button>
+
+            <button class="action" id="color">
+                🎨 COLOR
+            </button>
+
+            <button class="action" id="random">
+                ✨ RANDOM
+            </button>
+
+        </div>
+
+        <div class="hint">
+            DRAG TO ROTATE • MOVE MOUSE TO DISTORT • TYPE YOUR OWN TEXT
+        </div>
+
+    </div>
+
+</div>
+
+<div class="flash" id="flash"></div>
+
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const input = document.getElementById("textInput");
+const statusText = document.getElementById("status");
+const flash = document.getElementById("flash");
+
+let W = innerWidth;
+let H = innerHeight;
+
+canvas.width = W * devicePixelRatio;
+canvas.height = H * devicePixelRatio;
+
+ctx.scale(devicePixelRatio,devicePixelRatio);
+
+let particles = [];
+
+let targetParticles = [];
+
+let angleX = -0.15;
+let angleY = 0.2;
+
+let mouseX = W/2;
+let mouseY = H/2;
+
+let downX = 0;
+let downY = 0;
+
+let dragging = false;
+
+let colorHue = 270;
+
+let exploding = false;
+
+let explosionPower = 0;
+
+
+/* RESIZE */
+
+function resize(){
+
+    W = innerWidth;
+    H = innerHeight;
+
+    canvas.width = W * devicePixelRatio;
+    canvas.height = H * devicePixelRatio;
+
+    ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+
+    createText(input.value);
+
+}
+
+window.addEventListener("resize",resize);
+
+
+/* MOUSE */
+
+window.addEventListener("mousemove",e=>{
+
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    if(dragging){
+
+        angleY += (e.clientX-downX)*0.005;
+        angleX += (e.clientY-downY)*0.005;
+
+        downX = e.clientX;
+        downY = e.clientY;
+
+    }
+
+});
+
+window.addEventListener("mousedown",e=>{
+
+    dragging = true;
+
+    downX = e.clientX;
+    downY = e.clientY;
+
+});
+
+window.addEventListener("mouseup",()=>{
+    dragging = false;
+});
+
+
+/* TOUCH */
+
+window.addEventListener("touchstart",e=>{
+
+    const t = e.touches[0];
+
+    dragging = true;
+
+    downX = t.clientX;
+    downY = t.clientY;
+
+},{passive:true});
+
+
+window.addEventListener("touchmove",e=>{
+
+    const t = e.touches[0];
+
+    mouseX = t.clientX;
+    mouseY = t.clientY;
+
+    angleY += (t.clientX-downX)*0.005;
+    angleX += (t.clientY-downY)*0.005;
+
+    downX = t.clientX;
+    downY = t.clientY;
+
+},{passive:true});
+
+
+window.addEventListener("touchend",()=>{
+    dragging=false;
+});
+
+
+/* CREATE TEXT PARTICLES */
+
+function createText(text){
+
+    text = text.trim() || "ADITI";
+
+    targetParticles = [];
+
+    const off = document.createElement("canvas");
+
+    const octx = off.getContext("2d");
+
+    off.width = 900;
+    off.height = 300;
+
+    octx.fillStyle="white";
+
+    octx.textAlign="center";
+    octx.textBaseline="middle";
+
+    let fontSize = 180;
+
+    if(text.length > 7) fontSize = 125;
+    if(text.length > 10) fontSize = 90;
+
+    octx.font =
+        `900 ${fontSize}px Arial`;
+
+    octx.fillText(
+        text,
+        450,
+        150
+    );
+
+    const data =
+        octx.getImageData(
+            0,
+            0,
+            off.width,
+            off.height
+        ).data;
+
+    for(let y=0;y<300;y+=6){
+
+        for(let x=0;x<900;x+=6){
+
+            const index =
+                (y*900+x)*4;
+
+            if(data[index+3] > 100){
+
+                targetParticles.push({
+
+                    x:(x-450)*0.72,
+                    y:(y-150)*0.72,
+                    z:(Math.random()-.5)*100
+
+                });
+
+            }
+
+        }
+
+    }
+
+    /* LIMIT PARTICLES */
+
+    if(targetParticles.length > 4200){
+
+        targetParticles =
+            targetParticles.filter(
+                (_,i)=>i%2===0
+            );
+
+    }
+
+    particles = targetParticles.map(p=>({
+
+        x:(Math.random()-.5)*W,
+        y:(Math.random()-.5)*H,
+        z:(Math.random()-.5)*700,
+
+        tx:p.x,
+        ty:p.y,
+        tz:p.z,
+
+        vx:0,
+        vy:0,
+        vz:0,
+
+        size:Math.random()*1.8+0.5
+
+    }));
+
+    exploding = false;
+
+    explosionPower = 0;
+
+    statusText.textContent =
+        "● HOLOGRAM: "+text.toUpperCase();
+
+}
+
+
+/* 3D ROTATION */
+
+function rotate3D(p){
+
+    let x=p.x;
+    let y=p.y;
+    let z=p.z;
+
+    /* X rotation */
+
+    let cy=Math.cos(angleX);
+    let sy=Math.sin(angleX);
+
+    let y1=y*cy-z*sy;
+    let z1=y*sy+z*cy;
+
+    /* Y rotation */
+
+    let cx=Math.cos(angleY);
+    let sx=Math.sin(angleY);
+
+    let x1=x*cx-z1*sx;
+    let z2=x*sx+z1*cx;
+
+    return {
+        x:x1,
+        y:y1,
+        z:z2
+    };
+
+}
+
+
+/* EXPLODE */
+
+function explode(){
+
+    exploding = true;
+
+    statusText.textContent =
+        "● PARTICLES UNLOCKED";
+
+    particles.forEach(p=>{
+
+        const dx=p.x;
+        const dy=p.y;
+        const dz=p.z;
+
+        const length =
+            Math.sqrt(
+                dx*dx+
+                dy*dy+
+                dz*dz
+            ) || 1;
+
+        p.vx =
+            dx/length *
+            (Math.random()*8+5);
+
+        p.vy =
+            dy/length *
+            (Math.random()*8+5);
+
+        p.vz =
+            dz/length *
+            (Math.random()*8+5);
+
+    });
+
+}
+
+
+/* REBUILD */
+
+function rebuild(){
+
+    exploding=false;
+
+    statusText.textContent =
+        "● REBUILDING HOLOGRAM";
+
+    particles.forEach(p=>{
+
+        p.vx=0;
+        p.vy=0;
+        p.vz=0;
+
+    });
+
+}
+
+
+/* CHANGE COLOR */
+
+function changeColor(){
+
+    colorHue =
+        Math.floor(
+            Math.random()*360
+        );
+
+    statusText.textContent =
+        "● COLOR MATRIX CHANGED";
+
+    flash.classList.remove("active");
+
+    void flash.offsetWidth;
+
+    flash.classList.add("active");
+
+}
+
+
+/* RANDOM TEXT */
+
+const words = [
+    "CODE",
+    "MAGIC",
+    "AI",
+    "WOW",
+    "VIRAL",
+    "HELLO",
+    "ADITI",
+    "3D",
+    "FUTURE",
+    "WEB"
+];
+
+function randomText(){
+
+    input.value =
+        words[
+            Math.floor(
+                Math.random()*words.length
+            )
+        ];
+
+    createText(input.value);
+
+}
+
+
+/* DRAW */
+
+function draw(){
+
+    ctx.clearRect(0,0,W,H);
+
+    /*
+      Background glow
+    */
+
+    const gradient =
+        ctx.createRadialGradient(
+            W/2,
+            H/2,
+            0,
+            W/2,
+            H/2,
+            Math.max(W,H)*.65
+        );
+
+    gradient.addColorStop(
+        0,
+        `hsla(${colorHue},80%,35%,.10)`
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle=gradient;
+
+    ctx.fillRect(0,0,W,H);
+
+
+    /* PARTICLES */
+
+    const rendered=[];
+
+    particles.forEach(p=>{
+
+        if(exploding){
+
+            p.x += p.vx;
+            p.y += p.vy;
+            p.z += p.vz;
+
+            p.vx *= .985;
+            p.vy *= .985;
+            p.vz *= .985;
+
+        }else{
+
+            /*
+              Smoothly return to text
+            */
+
+            p.x +=
+                (p.tx-p.x)*0.055;
+
+            p.y +=
+                (p.ty-p.y)*0.055;
+
+            p.z +=
+                (p.tz-p.z)*0.055;
+
+            /*
+              Mouse distortion
+            */
+
+            const mx =
+                (mouseX-W/2)*0.12;
+
+            const my =
+                (mouseY-H/2)*0.12;
+
+            p.x +=
+                (mx-p.x)*0.0008;
+
+            p.y +=
+                (my-p.y)*0.0008;
+
+        }
+
+
+        const r =
+            rotate3D(p);
+
+
+        /*
+          Perspective
+        */
+
+        const distance = 650;
+
+        const scale =
+            distance/
+            (distance+r.z);
+
+
+        const sx =
+            W/2+r.x*scale;
+
+        const sy =
+            H/2+r.y*scale;
+
+        const size =
+            Math.max(
+                .4,
+                p.size*scale*2
+            );
+
+        rendered.push({
+
+            x:sx,
+            y:sy,
+            z:r.z,
+            size:size
+
+        });
+
+    });
+
+
+    /*
+      Draw far particles first
+    */
+
+    rendered.sort(
+        (a,b)=>a.z-b.z
+    );
+
+
+    rendered.forEach(p=>{
+
+        const alpha =
+            Math.min(
+                1,
+                .25+
+                (p.z+400)/800
+            );
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle =
+            `hsla(
+                ${colorHue},
+                100%,
+                70%,
+                ${alpha}
+            )`;
+
+        ctx.shadowBlur=12;
+
+        ctx.shadowColor =
+            `hsl(${colorHue},100%,65%)`;
+
+        ctx.fill();
+
+    });
+
+    ctx.shadowBlur=0;
+
+    requestAnimationFrame(draw);
+
+}
+
+
+/* BUTTONS */
+
+document.getElementById("generate")
+.addEventListener("click",()=>{
+
+    createText(input.value);
+
+});
+
+
+document.getElementById("explode")
+.addEventListener("click",()=>{
+
+    explode();
+
+});
+
+
+document.getElementById("rebuild")
+.addEventListener("click",()=>{
+
+    rebuild();
+
+});
+
+
+document.getElementById("color")
+.addEventListener("click",()=>{
+
+    changeColor();
+
+});
+
+
+document.getElementById("random")
+.addEventListener("click",()=>{
+
+    randomText();
+
+});
+
+
+input.addEventListener("keydown",e=>{
+
+    if(e.key==="Enter"){
+
+        createText(input.value);
+
+    }
+
+});
+
+
+
+createText("ADITI");
+
+draw();
+
+</script>
+
+</body>
+</html>

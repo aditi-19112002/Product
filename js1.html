@@ -1,0 +1,673 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hologram Portfolio</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  min-height:100vh;
+  overflow:hidden;
+  font-family:Arial, sans-serif;
+  background:#03030b;
+  color:white;
+}
+
+/* Background */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(0,255,255,.12),transparent 25%),
+    linear-gradient(rgba(0,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,255,.035) 1px,transparent 1px);
+  background-size:auto,40px 40px,40px 40px;
+  pointer-events:none;
+}
+
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
+
+/* Start Screen */
+.start{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  background:#03030b;
+  z-index:10;
+  transition:1s;
+}
+
+.start.hide{
+  opacity:0;
+  pointer-events:none;
+}
+
+.logo{
+  font-size:clamp(35px,7vw,80px);
+  font-weight:900;
+  letter-spacing:8px;
+  text-shadow:
+    0 0 10px cyan,
+    0 0 30px cyan,
+    0 0 70px #0077ff;
+  animation:flicker 2s infinite;
+}
+
+.subtitle{
+  margin:15px 0 35px;
+  color:#8fffff;
+  letter-spacing:4px;
+  font-size:12px;
+}
+
+input{
+  width:min(400px,80vw);
+  padding:18px 20px;
+  border:1px solid cyan;
+  border-radius:12px;
+  background:rgba(0,255,255,.04);
+  color:white;
+  outline:none;
+  text-align:center;
+  font-size:18px;
+  box-shadow:0 0 20px rgba(0,255,255,.2);
+}
+
+button{
+  margin-top:20px;
+  padding:15px 35px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(90deg,#00ffff,#0066ff);
+  color:#001018;
+  font-weight:bold;
+  cursor:pointer;
+  letter-spacing:2px;
+  box-shadow:0 0 25px cyan;
+  transition:.3s;
+}
+
+button:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 50px cyan;
+}
+
+/* Main */
+.main{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1200px;
+  opacity:0;
+  transform:scale(.8);
+  transition:1.5s;
+  padding:20px;
+}
+
+.main.show{
+  opacity:1;
+  transform:scale(1);
+}
+
+.holo{
+  width:min(1050px,95vw);
+  min-height:620px;
+  position:relative;
+  padding:45px;
+  border:1px solid rgba(0,255,255,.4);
+  border-radius:30px;
+  background:rgba(0,15,30,.55);
+  backdrop-filter:blur(15px);
+  box-shadow:
+    0 0 40px rgba(0,255,255,.15),
+    inset 0 0 40px rgba(0,255,255,.04);
+  transform-style:preserve-3d;
+  transition:transform .15s ease;
+}
+
+.holo::before,
+.holo::after{
+  content:"";
+  position:absolute;
+  inset:15px;
+  border:1px solid rgba(0,255,255,.08);
+  border-radius:20px;
+  pointer-events:none;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#72ffff;
+  font-size:12px;
+  letter-spacing:3px;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  background:#00ff9d;
+  border-radius:50%;
+  box-shadow:0 0 15px #00ff9d;
+  animation:pulse 1s infinite;
+}
+
+.hero{
+  margin-top:55px;
+}
+
+.small{
+  color:#00ffff;
+  letter-spacing:5px;
+  font-size:13px;
+}
+
+h1{
+  margin-top:10px;
+  font-size:clamp(45px,8vw,90px);
+  line-height:.95;
+  text-transform:uppercase;
+  text-shadow:
+    0 0 10px cyan,
+    0 0 30px #0077ff;
+}
+
+h1 span{
+  color:#00ffff;
+}
+
+.description{
+  margin-top:20px;
+  max-width:600px;
+  color:#9baabd;
+  line-height:1.7;
+}
+
+.skills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:25px;
+}
+
+.skill{
+  padding:10px 17px;
+  border:1px solid rgba(0,255,255,.35);
+  border-radius:30px;
+  color:#7fffff;
+  background:rgba(0,255,255,.04);
+  animation:float 3s ease-in-out infinite;
+}
+
+.skill:nth-child(2){animation-delay:.3s}
+.skill:nth-child(3){animation-delay:.6s}
+.skill:nth-child(4){animation-delay:.9s}
+.skill:nth-child(5){animation-delay:1.2s}
+
+/* Stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:45px;
+}
+
+.stat{
+  padding:20px;
+  border:1px solid rgba(0,255,255,.15);
+  border-radius:15px;
+  background:rgba(255,255,255,.02);
+}
+
+.number{
+  font-size:32px;
+  font-weight:bold;
+  color:#00ffff;
+  text-shadow:0 0 15px cyan;
+}
+
+.label{
+  margin-top:5px;
+  font-size:11px;
+  color:#748394;
+  letter-spacing:2px;
+}
+
+/* Orb */
+.orb{
+  position:absolute;
+  right:8%;
+  top:28%;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  border:1px solid cyan;
+  box-shadow:
+    0 0 30px cyan,
+    inset 0 0 40px rgba(0,255,255,.5);
+  animation:spin 8s linear infinite;
+}
+
+.orb::before,
+.orb::after{
+  content:"";
+  position:absolute;
+  inset:20px;
+  border:1px dashed #00ffff;
+  border-radius:50%;
+}
+
+.orb::after{
+  transform:rotateX(70deg);
+}
+
+/* Scan */
+.scan{
+  position:absolute;
+  left:0;
+  right:0;
+  height:2px;
+  background:cyan;
+  box-shadow:0 0 15px cyan;
+  opacity:.4;
+  animation:scan 4s linear infinite;
+}
+
+/* Animations */
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes scan{
+  0%{top:0}
+  100%{top:100%}
+}
+
+@keyframes pulse{
+  50%{opacity:.3;transform:scale(.6)}
+}
+
+@keyframes float{
+  50%{transform:translateY(-6px)}
+}
+
+@keyframes flicker{
+  0%,19%,21%,63%,64%,100%{opacity:1}
+  20%,62%{opacity:.6}
+}
+
+@media(max-width:750px){
+
+  body{
+    overflow:auto;
+  }
+
+  .holo{
+    min-height:auto;
+    padding:30px 22px;
+  }
+
+  .orb{
+    position:relative;
+    right:auto;
+    top:auto;
+    margin:40px auto 0;
+    width:130px;
+    height:130px;
+  }
+
+  .hero{
+    margin-top:40px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+    margin-top:30px;
+  }
+
+  h1{
+    font-size:48px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- START -->
+<section class="start" id="start">
+
+  <div class="logo">HOLO<span style="color:#00ffff">X</span></div>
+
+  <div class="subtitle">
+    CREATE YOUR DIGITAL IDENTITY
+  </div>
+
+  <input
+    id="nameInput"
+    type="text"
+    placeholder="ENTER YOUR NAME..."
+    maxlength="20"
+  >
+
+  <button onclick="createHologram()">
+    INITIALIZE →
+  </button>
+
+</section>
+
+
+<!-- MAIN -->
+<main class="main" id="main">
+
+  <div class="holo" id="holo">
+
+    <div class="scan"></div>
+
+    <div class="top">
+
+      <div>HOLOX // SYSTEM 01</div>
+
+      <div class="status">
+        <div class="dot"></div>
+        ONLINE
+      </div>
+
+    </div>
+
+
+    <div class="hero">
+
+      <div class="small">
+        DIGITAL CREATOR
+      </div>
+
+      <h1>
+        HELLO<br>
+        <span id="userName">ADITI</span>
+      </h1>
+
+      <p class="description">
+        Welcome to your futuristic digital identity.
+        This interface is powered completely by
+        HTML, CSS and JavaScript.
+      </p>
+
+
+      <div class="skills">
+
+        <div class="skill">JavaScript</div>
+        <div class="skill">Frontend</div>
+        <div class="skill">UI / UX</div>
+        <div class="skill">Animation</div>
+        <div class="skill">Creative Code</div>
+
+      </div>
+
+
+      <div class="stats">
+
+        <div class="stat">
+          <div class="number" data-target="98">0</div>
+          <div class="label">PROJECTS</div>
+        </div>
+
+        <div class="stat">
+          <div class="number" data-target="15">0</div>
+          <div class="label">SKILLS</div>
+        </div>
+
+        <div class="stat">
+          <div class="number" data-target="100">0</div>
+          <div class="label">CREATIVITY</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="orb"></div>
+
+  </div>
+
+</main>
+
+
+<script>
+
+/* =========================
+   PARTICLE BACKGROUND
+========================= */
+
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+
+function resizeCanvas(){
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener("resize",resizeCanvas);
+
+
+for(let i=0;i<100;i++){
+
+  particles.push({
+
+    x:Math.random()*innerWidth,
+    y:Math.random()*innerHeight,
+
+    size:Math.random()*2+1,
+
+    speedX:(Math.random()-.5)*.5,
+    speedY:(Math.random()-.5)*.5
+
+  });
+
+}
+
+
+function animateParticles(){
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach(p=>{
+
+    p.x += p.speedX;
+    p.y += p.speedY;
+
+    if(p.x<0 || p.x>canvas.width)
+      p.speedX *= -1;
+
+    if(p.y<0 || p.y>canvas.height)
+      p.speedY *= -1;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      p.x,
+      p.y,
+      p.size,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fillStyle="#00ffff";
+
+    ctx.globalAlpha=.5;
+
+    ctx.fill();
+
+  });
+
+  requestAnimationFrame(animateParticles);
+
+}
+
+animateParticles();
+
+
+/* =========================
+   CREATE HOLOGRAM
+========================= */
+
+function createHologram(){
+
+  const input =
+    document.getElementById("nameInput");
+
+  let name =
+    input.value.trim();
+
+  if(!name){
+
+    input.style.borderColor="red";
+
+    input.placeholder="ENTER YOUR NAME FIRST!";
+
+    return;
+
+  }
+
+  document.getElementById("userName")
+    .textContent=name.toUpperCase();
+
+  document.getElementById("start")
+    .classList.add("hide");
+
+  setTimeout(()=>{
+
+    document.getElementById("main")
+      .classList.add("show");
+
+    startCounters();
+
+  },500);
+
+}
+
+
+/* =========================
+   ENTER KEY
+========================= */
+
+document.getElementById("nameInput")
+.addEventListener("keydown",e=>{
+
+  if(e.key==="Enter"){
+    createHologram();
+  }
+
+});
+
+
+/* =========================
+   COUNTER ANIMATION
+========================= */
+
+function startCounters(){
+
+  const numbers =
+    document.querySelectorAll(".number");
+
+  numbers.forEach(number=>{
+
+    const target =
+      Number(number.dataset.target);
+
+    let current=0;
+
+    const increment =
+      Math.ceil(target/50);
+
+    const timer=setInterval(()=>{
+
+      current += increment;
+
+      if(current>=target){
+
+        current=target;
+
+        clearInterval(timer);
+
+      }
+
+      number.textContent=current;
+
+    },30);
+
+  });
+
+}
+
+
+/* =========================
+   3D MOUSE EFFECT
+========================= */
+
+const holo =
+  document.getElementById("holo");
+
+document.addEventListener("mousemove",e=>{
+
+  if(!document
+    .getElementById("main")
+    .classList.contains("show")) return;
+
+  const x =
+    (e.clientX / innerWidth - .5) * 12;
+
+  const y =
+    (e.clientY / innerHeight - .5) * -12;
+
+  holo.style.transform =
+    `rotateY(${x}deg) rotateX(${y}deg)`;
+
+});
+
+
+/* Reset 3D effect */
+document.addEventListener("mouseleave",()=>{
+
+  holo.style.transform=
+    "rotateY(0deg) rotateX(0deg)";
+
+});
+
+</script>
+
+</body>
+</html>
+```

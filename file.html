@@ -1,0 +1,938 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Digital Alchemist</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --gold:#ffd45a;
+  --gold2:#ff9d00;
+  --bg:#070706;
+}
+
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  font-family:Arial,sans-serif;
+  color:white;
+  background:
+    radial-gradient(circle at 50% 40%,#27200b 0%,#0d0c08 30%,#030303 75%);
+}
+
+/* ================= BACKGROUND ================= */
+
+#stars{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+
+.container{
+  position:relative;
+  z-index:2;
+  width:min(1100px,92%);
+  margin:auto;
+  padding:35px 0 60px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:35px;
+}
+
+.brand{
+  font-weight:900;
+  letter-spacing:3px;
+  color:var(--gold);
+}
+
+.live{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#8e8a78;
+  font-size:11px;
+  letter-spacing:2px;
+}
+
+.live i{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#ffb300;
+  box-shadow:0 0 15px #ffb300;
+  animation:pulse 1s infinite;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  text-align:center;
+}
+
+.badge{
+  display:inline-block;
+  border:1px solid rgba(255,205,70,.25);
+  padding:8px 15px;
+  border-radius:50px;
+  color:#c7a950;
+  font-size:10px;
+  letter-spacing:3px;
+  margin-bottom:20px;
+}
+
+h1{
+  font-size:clamp(48px,8vw,92px);
+  line-height:.9;
+  letter-spacing:-6px;
+  font-weight:900;
+}
+
+h1 span{
+  background:linear-gradient(90deg,#fff1a8,#ffd447,#ff8d00);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.subtitle{
+  max-width:550px;
+  margin:25px auto 0;
+  color:#777466;
+  line-height:1.7;
+  font-size:14px;
+}
+
+/* ================= LAB ================= */
+
+.lab{
+  margin:45px auto 0;
+  max-width:950px;
+  min-height:540px;
+  padding:30px;
+  border:1px solid rgba(255,215,90,.14);
+  border-radius:30px;
+  background:
+    linear-gradient(145deg,rgba(255,210,80,.045),rgba(255,255,255,.015));
+  box-shadow:
+    0 40px 100px rgba(0,0,0,.6),
+    inset 0 1px rgba(255,255,255,.04);
+  position:relative;
+  overflow:hidden;
+}
+
+.lab::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,215,80,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,215,80,.03) 1px,transparent 1px);
+  background-size:45px 45px;
+  pointer-events:none;
+}
+
+/* ================= OBJECTS ================= */
+
+.objects{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:14px;
+}
+
+.object{
+  min-height:120px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  background:rgba(255,255,255,.025);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:.35s;
+  user-select:none;
+}
+
+.object:hover{
+  transform:translateY(-7px);
+  border-color:rgba(255,210,80,.35);
+  background:rgba(255,210,80,.05);
+}
+
+.object.selected{
+  border-color:var(--gold);
+  box-shadow:
+    0 0 25px rgba(255,190,40,.15),
+    inset 0 0 25px rgba(255,190,40,.05);
+  transform:translateY(-8px) scale(1.03);
+}
+
+.object .emoji{
+  font-size:45px;
+  filter:drop-shadow(0 5px 15px rgba(255,255,255,.1));
+  transition:.5s;
+}
+
+.object-name{
+  margin-top:12px;
+  color:#999485;
+  font-size:11px;
+  letter-spacing:1px;
+}
+
+/* ================= MACHINE ================= */
+
+.machine{
+  min-height:270px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  margin-top:15px;
+}
+
+.core{
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle,#fff6b2 0%,#ffc400 5%,#8d5800 18%,#171205 48%,transparent 50%);
+  box-shadow:
+    0 0 35px rgba(255,200,40,.2),
+    0 0 100px rgba(255,140,0,.12);
+  transition:.8s;
+}
+
+.core::before,
+.core::after{
+  content:"";
+  position:absolute;
+  border:1px solid rgba(255,205,70,.35);
+  border-radius:50%;
+}
+
+.core::before{
+  inset:-25px;
+  animation:spin 5s linear infinite;
+}
+
+.core::after{
+  inset:-48px;
+  border-style:dashed;
+  opacity:.5;
+  animation:spinReverse 8s linear infinite;
+}
+
+.core-symbol{
+  font-size:50px;
+  filter:drop-shadow(0 0 20px #ffbe21);
+  transition:.5s;
+}
+
+/* ================= ENERGY ================= */
+
+.energy{
+  position:absolute;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(500px,80%);
+}
+
+.energy-top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+  color:#716d60;
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+.energy-bar{
+  height:8px;
+  border-radius:20px;
+  background:#19160d;
+  border:1px solid #332b14;
+  overflow:hidden;
+}
+
+.energy-fill{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#ff8c00,#ffd85b,#fff2aa);
+  box-shadow:0 0 20px #ffb300;
+  transition:.15s;
+}
+
+/* ================= BUTTON ================= */
+
+.transmute{
+  position:relative;
+  z-index:5;
+  width:100%;
+  max-width:500px;
+  margin:30px auto 0;
+  display:block;
+  padding:18px;
+  border:1px solid rgba(255,215,80,.3);
+  border-radius:14px;
+  color:#1a1304;
+  font-weight:900;
+  letter-spacing:2px;
+  cursor:pointer;
+  background:linear-gradient(90deg,#ffae00,#ffe26a,#ff9d00);
+  box-shadow:
+    0 10px 40px rgba(255,160,0,.15),
+    inset 0 1px #fff7c2;
+  transition:.3s;
+}
+
+.transmute:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 55px rgba(255,160,0,.3);
+}
+
+.transmute:disabled{
+  cursor:not-allowed;
+  opacity:.5;
+}
+
+/* ================= RESULT ================= */
+
+.result{
+  position:relative;
+  z-index:5;
+  display:none;
+  margin:25px auto 0;
+  max-width:700px;
+  padding:25px;
+  border:1px solid rgba(255,215,80,.2);
+  border-radius:20px;
+  background:rgba(255,205,60,.035);
+  text-align:center;
+}
+
+.result.show{
+  display:block;
+  animation:appear .7s ease;
+}
+
+.result-label{
+  color:#857c62;
+  font-size:10px;
+  letter-spacing:3px;
+}
+
+.result-value{
+  margin:8px 0;
+  font-size:clamp(35px,7vw,65px);
+  font-weight:900;
+  background:linear-gradient(90deg,#fff,#ffd43d,#ff8b00);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.result-text{
+  color:#8e897a;
+  font-size:13px;
+}
+
+.reset{
+  margin-top:18px;
+  padding:11px 18px;
+  border:1px solid #423819;
+  border-radius:10px;
+  background:#100e08;
+  color:#b8aa79;
+  cursor:pointer;
+}
+
+/* ================= GOLD TRANSFORMATION ================= */
+
+.gold-mode .object.selected{
+  animation:goldTransform 1.3s forwards;
+}
+
+.gold-mode .object.selected .emoji{
+  filter:
+    grayscale(1)
+    sepia(1)
+    saturate(8)
+    hue-rotate(350deg)
+    drop-shadow(0 0 25px #ffd000);
+  transform:scale(1.25);
+}
+
+.gold-mode .core{
+  transform:scale(1.35);
+  box-shadow:
+    0 0 60px #ffb300,
+    0 0 180px rgba(255,150,0,.4);
+}
+
+.gold-mode .core-symbol{
+  transform:rotate(180deg) scale(1.2);
+}
+
+.shake{
+  animation:shake .08s infinite;
+}
+
+/* ================= PARTICLES ================= */
+
+.particle{
+  position:fixed;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#ffd84a;
+  box-shadow:0 0 12px #ffb300;
+  pointer-events:none;
+  z-index:100;
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes pulse{
+  50%{opacity:.25;transform:scale(.6)}
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes spinReverse{
+  to{transform:rotate(-360deg)}
+}
+
+@keyframes goldTransform{
+  0%{transform:translateY(-8px) scale(1.03)}
+  30%{transform:translateY(-8px) scale(1.2) rotate(3deg)}
+  60%{transform:translateY(-8px) scale(.9) rotate(-3deg)}
+  100%{transform:translateY(-8px) scale(1.08)}
+}
+
+@keyframes shake{
+  0%{transform:translate(0)}
+  25%{transform:translate(5px,-3px)}
+  50%{transform:translate(-5px,3px)}
+  75%{transform:translate(3px,2px)}
+  100%{transform:translate(0)}
+}
+
+@keyframes appear{
+  from{
+    opacity:0;
+    transform:translateY(20px) scale(.95);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+@media(max-width:800px){
+
+  .objects{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .object{
+    min-height:105px;
+  }
+
+  .object .emoji{
+    font-size:35px;
+  }
+
+  .lab{
+    padding:18px;
+  }
+}
+
+@media(max-width:500px){
+
+  .objects{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  h1{
+    letter-spacing:-4px;
+  }
+
+  .machine{
+    min-height:230px;
+  }
+
+  .core{
+    width:140px;
+    height:140px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="container">
+
+  <header class="header">
+
+    <div class="brand">
+      ALCHEMY//JS
+    </div>
+
+    <div class="live">
+      <i></i>
+      ENGINE ONLINE
+    </div>
+
+  </header>
+
+
+  <section class="hero">
+
+    <div class="badge">
+      JAVASCRIPT EXPERIMENT
+    </div>
+
+    <h1>
+      TURN IT<br>
+      <span>INTO GOLD.</span>
+    </h1>
+
+    <p class="subtitle">
+      Choose an object. Charge the alchemy engine.
+      Then watch JavaScript transform reality.
+    </p>
+
+  </section>
+
+
+  <section class="lab" id="lab">
+
+    <div class="objects">
+
+      <div class="object" data-name="Smartphone" data-value="1299">
+        <div class="emoji">📱</div>
+        <div class="object-name">SMARTPHONE</div>
+      </div>
+
+      <div class="object" data-name="Sports Car" data-value="75000">
+        <div class="emoji">🏎️</div>
+        <div class="object-name">SPORTS CAR</div>
+      </div>
+
+      <div class="object" data-name="Diamond" data-value="25000">
+        <div class="emoji">💎</div>
+        <div class="object-name">DIAMOND</div>
+      </div>
+
+      <div class="object" data-name="Laptop" data-value="2400">
+        <div class="emoji">💻</div>
+        <div class="object-name">LAPTOP</div>
+      </div>
+
+      <div class="object" data-name="House" data-value="250000">
+        <div class="emoji">🏠</div>
+        <div class="object-name">HOUSE</div>
+      </div>
+
+    </div>
+
+
+    <div class="machine">
+
+      <div class="core" id="core">
+        <div class="core-symbol">⚗</div>
+      </div>
+
+      <div class="energy">
+
+        <div class="energy-top">
+          <span>ALCHEMY ENERGY</span>
+          <span id="energyText">0%</span>
+        </div>
+
+        <div class="energy-bar">
+          <div class="energy-fill" id="energyFill"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="transmute"
+      id="transmute"
+      disabled
+      onclick="transmute()">
+      ⚗ SELECT AN OBJECT
+    </button>
+
+
+    <div class="result" id="result">
+
+      <div class="result-label">
+        TRANSMUTATION COMPLETE
+      </div>
+
+      <div class="result-value" id="resultValue">
+        $0
+      </div>
+
+      <div class="result-text" id="resultText"></div>
+
+      <button class="reset" onclick="resetAlchemy()">
+        ↻ TRANSFORM ANOTHER
+      </button>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<script>
+
+/* ==========================
+   STAR BACKGROUND
+========================== */
+
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+
+let stars=[];
+
+function resize(){
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+}
+
+resize();
+
+window.addEventListener("resize",resize);
+
+for(let i=0;i<130;i++){
+
+  stars.push({
+    x:Math.random()*innerWidth,
+    y:Math.random()*innerHeight,
+    r:Math.random()*1.5+.3,
+    a:Math.random()*.7+.2
+  });
+
+}
+
+function drawStars(){
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  stars.forEach(s=>{
+
+    ctx.globalAlpha=s.a;
+    ctx.fillStyle="#d9bd63";
+
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+
+  });
+
+  requestAnimationFrame(drawStars);
+}
+
+drawStars();
+
+
+/* ==========================
+   OBJECT SELECTION
+========================== */
+
+const objects=document.querySelectorAll(".object");
+
+const transmuteButton=
+  document.getElementById("transmute");
+
+let selected=null;
+
+objects.forEach(object=>{
+
+  object.addEventListener("click",()=>{
+
+    if(document.body.classList.contains("busy")){
+      return;
+    }
+
+    objects.forEach(o=>o.classList.remove("selected"));
+
+    object.classList.add("selected");
+
+    selected=object;
+
+    transmuteButton.disabled=false;
+
+    transmuteButton.textContent=
+      "⚗ TRANSMUTE "+object.dataset.name.toUpperCase();
+
+  });
+
+});
+
+
+/* ==========================
+   TRANSMUTE
+========================== */
+
+function transmute(){
+
+  if(!selected)return;
+
+  document.body.classList.add("busy");
+
+  transmuteButton.disabled=true;
+
+  transmuteButton.textContent=
+    "⚡ CHARGING ALCHEMY ENGINE...";
+
+  document.getElementById("result")
+    .classList.remove("show");
+
+  const lab=document.getElementById("lab");
+
+  lab.classList.add("shake");
+
+  let energy=0;
+
+  const interval=setInterval(()=>{
+
+    energy += Math.floor(Math.random()*7)+3;
+
+    if(energy>=100){
+
+      energy=100;
+
+      clearInterval(interval);
+
+      finishTransformation();
+
+    }
+
+    document.getElementById("energyFill")
+      .style.width=energy+"%";
+
+    document.getElementById("energyText")
+      .textContent=energy+"%";
+
+  },90);
+
+}
+
+
+/* ==========================
+   FINISH
+========================== */
+
+function finishTransformation(){
+
+  const lab=document.getElementById("lab");
+
+  lab.classList.remove("shake");
+
+  lab.classList.add("gold-mode");
+
+  createExplosion();
+
+  setTimeout(()=>{
+
+    const baseValue=
+      Number(selected.dataset.value);
+
+    const multiplier=
+      (Math.random()*4+2).toFixed(1);
+
+    const finalValue=
+      Math.floor(baseValue*multiplier);
+
+    animateNumber(finalValue);
+
+    document.getElementById("resultText").textContent=
+      selected.dataset.name+
+      " successfully converted into digital gold ×"+
+      multiplier;
+
+    document.getElementById("result")
+      .classList.add("show");
+
+    transmuteButton.textContent=
+      "✓ TRANSMUTATION COMPLETE";
+
+    document.body.classList.remove("busy");
+
+  },1200);
+
+}
+
+
+/* ==========================
+   NUMBER ANIMATION
+========================== */
+
+function animateNumber(target){
+
+  const el=document.getElementById("resultValue");
+
+  let current=0;
+
+  const step=Math.max(1,Math.floor(target/80));
+
+  const timer=setInterval(()=>{
+
+    current+=step;
+
+    if(current>=target){
+
+      current=target;
+
+      clearInterval(timer);
+
+    }
+
+    el.textContent=
+      "$"+current.toLocaleString();
+
+  },20);
+
+}
+
+
+/* ==========================
+   PARTICLE EXPLOSION
+========================== */
+
+function createExplosion(){
+
+  const rect=selected.getBoundingClientRect();
+
+  const centerX=
+    rect.left+rect.width/2;
+
+  const centerY=
+    rect.top+rect.height/2;
+
+  for(let i=0;i<100;i++){
+
+    const particle=
+      document.createElement("div");
+
+    particle.className="particle";
+
+    particle.style.left=centerX+"px";
+    particle.style.top=centerY+"px";
+
+    document.body.appendChild(particle);
+
+    const angle=
+      Math.random()*Math.PI*2;
+
+    const distance=
+      80+Math.random()*300;
+
+    const x=
+      Math.cos(angle)*distance;
+
+    const y=
+      Math.sin(angle)*distance;
+
+    const duration=
+      500+Math.random()*900;
+
+    particle.animate(
+      [
+        {
+          transform:"translate(-50%,-50%) scale(1)",
+          opacity:1
+        },
+        {
+          transform:
+            `translate(${x}px,${y}px) scale(0)`,
+          opacity:0
+        }
+      ],
+      {
+        duration:duration,
+        easing:"cubic-bezier(.1,.7,.2,1)"
+      }
+    );
+
+    setTimeout(()=>{
+      particle.remove();
+    },duration);
+
+  }
+
+}
+
+
+/* ==========================
+   RESET
+========================== */
+
+function resetAlchemy(){
+
+  selected=null;
+
+  objects.forEach(o=>{
+    o.classList.remove("selected");
+  });
+
+  document
+    .getElementById("lab")
+    .classList.remove("gold-mode");
+
+  document
+    .getElementById("result")
+    .classList.remove("show");
+
+  document
+    .getElementById("energyFill")
+    .style.width="0%";
+
+  document
+    .getElementById("energyText")
+    .textContent="0%";
+
+  transmuteButton.disabled=true;
+
+  transmuteButton.textContent=
+    "⚗ SELECT AN OBJECT";
+
+}
+
+</script>
+
+</body>
+</html>
+```
