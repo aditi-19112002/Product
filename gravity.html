@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destroy & Rebuild UI</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  min-height:100vh;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:#030305;
+  color:white;
+}
+
+body.shake{
+  animation:shake .08s linear infinite;
+}
+
+@keyframes shake{
+  0%{transform:translate(0,0)}
+  25%{transform:translate(5px,-4px)}
+  50%{transform:translate(-5px,4px)}
+  75%{transform:translate(4px,5px)}
+  100%{transform:translate(-4px,-5px)}
+}
+
+.bg{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 45%,#25113a 0%,#09070d 35%,#020203 75%);
+}
+
+.grid{
+  position:fixed;
+  inset:0;
+  opacity:.15;
+  background-image:
+    linear-gradient(#fff 1px,transparent 1px),
+    linear-gradient(90deg,#fff 1px,transparent 1px);
+  background-size:45px 45px;
+}
+
+.top{
+  position:fixed;
+  top:35px;
+  left:0;
+  width:100%;
+  text-align:center;
+  z-index:20;
+}
+
+.top h1{
+  font-size:clamp(30px,6vw,65px);
+  letter-spacing:6px;
+}
+
+.top p{
+  color:#777;
+  margin-top:8px;
+  font-size:10px;
+  letter-spacing:4px;
+}
+
+.status{
+  position:fixed;
+  top:30px;
+  right:30px;
+  z-index:30;
+  padding:12px 18px;
+  border:1px solid #29292f;
+  border-radius:30px;
+  background:#09090dcc;
+  backdrop-filter:blur(15px);
+  font-size:11px;
+}
+
+.status b{
+  color:#ff347d;
+}
+
+#stage{
+  position:fixed;
+  width:min(850px,90vw);
+  height:500px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-45%);
+}
+
+.card{
+  position:absolute;
+  width:180px;
+  height:115px;
+  padding:20px;
+  border-radius:22px;
+  border:1px solid #ffffff22;
+  background:linear-gradient(
+    145deg,
+    #19191fdd,
+    #08080bdd
+  );
+  box-shadow:
+    inset 0 1px #ffffff15,
+    0 20px 50px #0008;
+  transition:
+    transform .9s cubic-bezier(.15,.8,.2,1),
+    opacity .5s;
+  overflow:hidden;
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  width:100px;
+  height:100px;
+  background:var(--c);
+  filter:blur(55px);
+  opacity:.35;
+  top:-50px;
+  right:-30px;
+}
+
+.card .icon{
+  position:relative;
+  width:35px;
+  height:35px;
+  border-radius:10px;
+  background:var(--c);
+  box-shadow:0 0 25px var(--c);
+  margin-bottom:14px;
+}
+
+.card h3{
+  position:relative;
+  font-size:14px;
+  letter-spacing:2px;
+}
+
+.card small{
+  position:relative;
+  display:block;
+  margin-top:7px;
+  color:#777;
+  font-size:9px;
+}
+
+#c1{left:15px;top:90px}
+#c2{left:225px;top:30px}
+#c3{left:435px;top:90px}
+#c4{left:645px;top:30px}
+#c5{left:120px;top:250px}
+#c6{left:330px;top:310px}
+#c7{left:540px;top:250px}
+
+.controls{
+  position:fixed;
+  bottom:35px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:30;
+  display:flex;
+  gap:12px;
+}
+
+button{
+  border:0;
+  padding:16px 25px;
+  border-radius:50px;
+  color:white;
+  font-weight:bold;
+  letter-spacing:2px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  transform:scale(1.06);
+}
+
+#destroy{
+  background:linear-gradient(135deg,#ff176f,#8d00ff);
+  box-shadow:0 0 35px #ff176f66;
+}
+
+#rebuild{
+  background:linear-gradient(135deg,#00cfff,#375cff);
+  box-shadow:0 0 35px #00cfff55;
+  display:none;
+}
+
+.center{
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:25;
+  text-align:center;
+  pointer-events:none;
+  opacity:0;
+  transition:.3s;
+}
+
+.center.show{
+  opacity:1;
+}
+
+.center h2{
+  font-size:clamp(28px,6vw,65px);
+  letter-spacing:5px;
+  text-shadow:0 0 35px #ff2676;
+}
+
+.center p{
+  margin-top:8px;
+  color:#888;
+  letter-spacing:3px;
+  font-size:10px;
+}
+
+/* crack */
+.crack{
+  position:fixed;
+  z-index:50;
+  width:2px;
+  height:180px;
+  background:white;
+  transform-origin:top;
+  opacity:0;
+  box-shadow:0 0 12px white;
+}
+
+.fragment{
+  position:fixed;
+  z-index:100;
+  pointer-events:none;
+  border-radius:3px;
+  box-shadow:0 0 12px currentColor;
+}
+
+/* flash */
+.flash{
+  position:fixed;
+  inset:0;
+  background:white;
+  z-index:200;
+  pointer-events:none;
+  opacity:0;
+}
+
+.flash.go{
+  animation:flash .3s;
+}
+
+@keyframes flash{
+  0%{opacity:.7}
+  100%{opacity:0}
+}
+
+@media(max-width:700px){
+
+  #stage{
+    width:330px;
+    height:500px;
+  }
+
+  .card{
+    width:145px;
+    height:90px;
+    padding:15px;
+  }
+
+  #c1{left:0;top:40px}
+  #c2{left:185px;top:40px}
+  #c3{left:0;top:150px}
+  #c4{left:185px;top:150px}
+  #c5{left:0;top:260px}
+  #c6{left:185px;top:260px}
+  #c7{
+    left:92px;
+    top:370px;
+  }
+
+  .card .icon{
+    width:25px;
+    height:25px;
+    margin-bottom:8px;
+  }
+
+  .card h3{
+    font-size:11px;
+  }
+
+  .controls{
+    bottom:20px;
+  }
+
+  button{
+    padding:13px 17px;
+    font-size:10px;
+  }
+
+  .status{
+    top:85px;
+    right:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<div class="top">
+  <h1>MY WEBSITE</h1>
+  <p>EVERYTHING CAN BREAK</p>
+</div>
+
+<div class="status">
+  DAMAGE: <b id="percent">0%</b>
+</div>
+
+<div id="stage">
+
+  <div class="card" id="c1" style="--c:#ff2779">
+    <div class="icon"></div>
+    <h3>HTML</h3>
+    <small>STRUCTURE</small>
+  </div>
+
+  <div class="card" id="c2" style="--c:#ff9d24">
+    <div class="icon"></div>
+    <h3>CSS</h3>
+    <small>DESIGN SYSTEM</small>
+  </div>
+
+  <div class="card" id="c3" style="--c:#ffe52b">
+    <div class="icon"></div>
+    <h3>JAVASCRIPT</h3>
+    <small>INTERACTION</small>
+  </div>
+
+  <div class="card" id="c4" style="--c:#39a6ff">
+    <div class="icon"></div>
+    <h3>REACT</h3>
+    <small>COMPONENTS</small>
+  </div>
+
+  <div class="card" id="c5" style="--c:#9b55ff">
+    <div class="icon"></div>
+    <h3>TAILWIND</h3>
+    <small>UTILITY CSS</small>
+  </div>
+
+  <div class="card" id="c6" style="--c:#20e39a">
+    <div class="icon"></div>
+    <h3>LARAVEL</h3>
+    <small>BACKEND</small>
+  </div>
+
+  <div class="card" id="c7" style="--c:#ff4c39">
+    <div class="icon"></div>
+    <h3>DATABASE</h3>
+    <small>MYSQL</small>
+  </div>
+
+</div>
+
+<div class="center" id="center">
+  <h2>WEBSITE DESTROYED</h2>
+  <p>EVERYTHING IS BROKEN</p>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<div class="controls">
+  <button id="destroy">💥 DESTROY WEBSITE</button>
+  <button id="rebuild">↻ REBUILD WEBSITE</button>
+</div>
+
+
+<script>
+
+const cards=[...document.querySelectorAll(".card")];
+const destroy=document.getElementById("destroy");
+const rebuild=document.getElementById("rebuild");
+const percent=document.getElementById("percent");
+const center=document.getElementById("center");
+const flash=document.getElementById("flash");
+
+let fragments=[];
+let destroyed=false;
+
+
+/* save original positions */
+
+const original=cards.map(card=>{
+
+  const r=card.getBoundingClientRect();
+
+  return{
+    x:r.left,
+    y:r.top,
+    w:r.width,
+    h:r.height
+  };
+
+});
+
+
+/* create broken pieces */
+
+function makeFragments(card,index){
+
+  const r=card.getBoundingClientRect();
+
+  const rows=4;
+  const cols=5;
+
+  for(let y=0;y<rows;y++){
+
+    for(let x=0;x<cols;x++){
+
+      const piece=document.createElement("div");
+
+      piece.className="fragment";
+
+      const w=r.width/cols;
+      const h=r.height/rows;
+
+      piece.style.width=w+"px";
+      piece.style.height=h+"px";
+
+      piece.style.left=(r.left+x*w)+"px";
+      piece.style.top=(r.top+y*h)+"px";
+
+      piece.style.background=
+        card.querySelector(".icon")
+        ? getComputedStyle(
+          card.querySelector(".icon")
+        ).background
+        : "#fff";
+
+      piece.style.opacity=Math.random()*.7+.3;
+
+      document.body.appendChild(piece);
+
+      fragments.push({
+
+        el:piece,
+
+        homeX:r.left+x*w,
+        homeY:r.top+y*h,
+
+        x:r.left+x*w,
+        y:r.top+y*h,
+
+        vx:(Math.random()-.5)*22,
+        vy:-Math.random()*18-3,
+
+        rot:(Math.random()-.5)*30,
+
+        vr:(Math.random()-.5)*18
+
+      });
+
+    }
+
+  }
+
+}
+
+
+/* particles */
+
+function particles(x,y,color){
+
+  for(let i=0;i<35;i++){
+
+    const p=document.createElement("div");
+
+    p.className="fragment";
+
+    const s=2+Math.random()*7;
+
+    p.style.width=s+"px";
+    p.style.height=s+"px";
+    p.style.background=color;
+    p.style.left=x+"px";
+    p.style.top=y+"px";
+
+    document.body.appendChild(p);
+
+    fragments.push({
+
+      el:p,
+
+      x,
+      y,
+
+      homeX:x,
+      homeY:y,
+
+      vx:(Math.random()-.5)*25,
+      vy:(Math.random()-.5)*25,
+
+      rot:0,
+      vr:(Math.random()-.5)*20,
+
+      particle:true
+
+    });
+
+  }
+
+}
+
+
+/* crack effect */
+
+function crack(){
+
+  for(let i=0;i<18;i++){
+
+    const c=document.createElement("div");
+
+    c.className="crack";
+
+    c.style.left=
+      (Math.random()*100)+"vw";
+
+    c.style.top=
+      (Math.random()*100)+"vh";
+
+    c.style.height=
+      (50+Math.random()*180)+"px";
+
+    c.style.transform=
+      `rotate(${Math.random()*360}deg)`;
+
+    c.style.opacity=.8;
+
+    document.body.appendChild(c);
+
+    setTimeout(()=>{
+
+      c.animate(
+        [
+          {opacity:0},
+          {opacity:.9},
+          {opacity:0}
+        ],
+        {
+          duration:1000,
+          fill:"forwards"
+        }
+      );
+
+    },Math.random()*500);
+
+    setTimeout(()=>c.remove(),1600);
+
+  }
+
+}
+
+
+/* DESTROY */
+
+destroy.onclick=()=>{
+
+  if(destroyed)return;
+
+  destroyed=true;
+
+  flash.classList.add("go");
+
+  document.body.classList.add("shake");
+
+  crack();
+
+  cards.forEach((card,i)=>{
+
+    const r=card.getBoundingClientRect();
+
+    setTimeout(()=>{
+
+      makeFragments(card,i);
+
+      particles(
+        r.left+r.width/2,
+        r.top+r.height/2,
+        getComputedStyle(card)
+          .getPropertyValue("--c")
+      );
+
+      card.style.opacity="0";
+
+      card.style.transform=
+        `scale(.3) rotate(${Math.random()*80-40}deg)`;
+
+    },i*120);
+
+  });
+
+
+  /* damage counter */
+
+  let n=0;
+
+  const timer=setInterval(()=>{
+
+    n+=5;
+
+    if(n>=100){
+
+      n=100;
+
+      clearInterval(timer);
+
+      setTimeout(()=>{
+
+        center.classList.add("show");
+
+        rebuild.style.display="block";
+        destroy.style.display="none";
+
+      },300);
+
+    }
+
+    percent.textContent=n+"%";
+
+  },55);
+
+
+  setTimeout(()=>{
+
+    document.body.classList.remove("shake");
+
+  },1500);
+
+};
+
+
+/* ANIMATION LOOP */
+
+function animate(){
+
+  fragments.forEach(p=>{
+
+    if(!p.particle && !destroyed)return;
+
+    if(p.returning){
+
+      p.x+=(p.homeX-p.x)*.12;
+      p.y+=(p.homeY-p.y)*.12;
+
+      p.rot*=.85;
+
+    }else{
+
+      p.vy+=.55;
+
+      p.x+=p.vx;
+      p.y+=p.vy;
+
+      p.vx*=.985;
+      p.vy*=.985;
+
+      p.rot+=p.vr;
+
+    }
+
+    p.el.style.left=p.x+"px";
+    p.el.style.top=p.y+"px";
+    p.el.style.transform=
+      `rotate(${p.rot}deg)`;
+
+  });
+
+  requestAnimationFrame(animate);
+
+}
+
+animate();
+
+
+/* REBUILD */
+
+rebuild.onclick=()=>{
+
+  center.classList.remove("show");
+
+  fragments.forEach(p=>{
+
+    if(!p.particle){
+
+      p.returning=true;
+
+    }
+
+  });
+
+
+  /* wait for pieces to return */
+
+  setTimeout(()=>{
+
+    cards.forEach((card,i)=>{
+
+      card.style.opacity="1";
+
+      card.style.transform=
+        "scale(1) rotate(0deg)";
+
+    });
+
+    fragments.forEach(p=>{
+
+      p.el.remove();
+
+    });
+
+    fragments=[];
+
+    percent.textContent="0%";
+
+    destroyed=false;
+
+    rebuild.style.display="none";
+    destroy.style.display="block";
+
+  },1100);
+
+};
+
+</script>
+
+</body>
+</html>

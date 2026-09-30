@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algebra Solver</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+      radial-gradient(circle at 20% 20%, #243b80 0, transparent 30%),
+      radial-gradient(circle at 80% 80%, #6d1b7b 0, transparent 30%),
+      #070914;
+    color:white;
+    overflow:hidden;
+}
+
+.container{
+    width:min(92%,620px);
+    padding:32px;
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:28px;
+    background:rgba(255,255,255,.07);
+    backdrop-filter:blur(20px);
+    box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+
+.badge{
+    display:inline-block;
+    padding:7px 13px;
+    border-radius:30px;
+    background:rgba(120,90,255,.18);
+    border:1px solid rgba(150,120,255,.3);
+    color:#bcb0ff;
+    font-size:12px;
+    letter-spacing:1px;
+    margin-bottom:15px;
+}
+
+h1{
+    font-size:clamp(30px,7vw,48px);
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:#9ca3b8;
+    margin-bottom:25px;
+}
+
+.input-area{
+    display:flex;
+    gap:10px;
+}
+
+input{
+    flex:1;
+    min-width:0;
+    padding:17px;
+    border:none;
+    outline:none;
+    border-radius:15px;
+    background:#101426;
+    color:white;
+    font-size:18px;
+    border:1px solid #272d45;
+}
+
+input:focus{
+    border-color:#8b6cff;
+    box-shadow:0 0 20px rgba(139,108,255,.18);
+}
+
+button{
+    padding:0 22px;
+    border:0;
+    border-radius:15px;
+    cursor:pointer;
+    color:white;
+    font-weight:bold;
+    background:linear-gradient(135deg,#7657ff,#b44cff);
+    transition:.25s;
+}
+
+button:hover{
+    transform:translateY(-2px) scale(1.03);
+    box-shadow:0 10px 30px rgba(145,80,255,.35);
+}
+
+.examples{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:13px;
+}
+
+.example{
+    padding:8px 12px;
+    border-radius:20px;
+    background:#11172a;
+    border:1px solid #292f49;
+    color:#aaaec1;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.example:hover{
+    color:white;
+    border-color:#8065ff;
+}
+
+.result{
+    margin-top:25px;
+    min-height:170px;
+}
+
+.status{
+    color:#858ba1;
+    font-size:13px;
+    margin-bottom:14px;
+}
+
+.steps{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.step{
+    opacity:0;
+    transform:translateY(15px) scale(.98);
+    animation:show .5s forwards;
+    padding:15px 18px;
+    border-radius:15px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    font-size:21px;
+    text-align:center;
+}
+
+.step small{
+    display:block;
+    font-size:11px;
+    color:#7e849a;
+    margin-bottom:5px;
+}
+
+.answer{
+    margin-top:15px;
+    padding:20px;
+    text-align:center;
+    border-radius:18px;
+    background:linear-gradient(
+      135deg,
+      rgba(90,70,255,.18),
+      rgba(200,70,255,.15)
+    );
+    border:1px solid rgba(150,110,255,.35);
+    animation:answerIn .7s ease;
+}
+
+.answer span{
+    display:block;
+    font-size:12px;
+    color:#999fb5;
+    margin-bottom:5px;
+}
+
+.answer strong{
+    font-size:32px;
+}
+
+.error{
+    color:#ff8d9b;
+    padding:15px;
+    border-radius:15px;
+    background:rgba(255,50,80,.08);
+    border:1px solid rgba(255,50,80,.2);
+}
+
+@keyframes show{
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+@keyframes answerIn{
+    0%{
+        opacity:0;
+        transform:scale(.8);
+    }
+    70%{
+        transform:scale(1.05);
+    }
+    100%{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+@media(max-width:500px){
+    .container{
+        padding:22px;
+    }
+
+    .input-area{
+        flex-direction:column;
+    }
+
+    button{
+        height:50px;
+    }
+
+    .step{
+        font-size:18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="badge">JAVASCRIPT × ALGEBRA</div>
+
+    <h1>Algebra Solver</h1>
+
+    <p class="subtitle">
+        Type an equation and watch JavaScript solve it.
+    </p>
+
+    <div class="input-area">
+        <input
+            id="equation"
+            placeholder="Example: 2x + 5 = 15"
+            autocomplete="off"
+        >
+
+        <button onclick="solve()">SOLVE</button>
+    </div>
+
+    <div class="examples">
+        <div class="example" onclick="useExample('2x + 5 = 15')">
+            2x + 5 = 15
+        </div>
+
+        <div class="example" onclick="useExample('7x - 4 = 24')">
+            7x - 4 = 24
+        </div>
+
+        <div class="example" onclick="useExample('3x + 2 = 20')">
+            3x + 2 = 20
+        </div>
+
+        <div class="example" onclick="useExample('5x - 10 = 15')">
+            5x - 10 = 15
+        </div>
+    </div>
+
+    <div class="result" id="result">
+        <div class="status">Waiting for equation...</div>
+    </div>
+
+</div>
+
+
+<script>
+
+const input = document.getElementById("equation");
+const result = document.getElementById("result");
+
+
+function useExample(value){
+
+    input.value = value;
+
+    solve();
+}
+
+
+function solve(){
+
+    let equation = input.value.trim();
+
+    if(!equation){
+
+        result.innerHTML = `
+            <div class="error">
+                Please enter an equation first.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    equation = equation
+        .replace(/\s+/g,"")
+        .toLowerCase();
+
+
+    if(!equation.includes("=")){
+
+        result.innerHTML = `
+            <div class="error">
+                Please use an equation like 2x + 5 = 15
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /*
+       This demo focuses on linear equations.
+
+       Supported examples:
+
+       2x + 5 = 15
+       7x - 4 = 24
+       3x + 2 = 20
+       5x - 10 = 15
+    */
+
+
+    let parts = equation.split("=");
+
+    if(parts.length !== 2){
+
+        result.innerHTML = `
+            <div class="error">
+                Invalid equation.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    let left = parts[0];
+    let right = parts[1];
+
+
+    let leftMatch = left.match(/^([+-]?\d*\.?\d*)x([+-]\d*\.?\d+)?$/);
+
+
+    if(!leftMatch){
+
+        result.innerHTML = `
+            <div class="error">
+                Try a linear equation such as
+                <b>2x + 5 = 15</b>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    let coefficient = leftMatch[1];
+
+    if(coefficient === "" || coefficient === "+"){
+        coefficient = 1;
+    }
+    else if(coefficient === "-"){
+        coefficient = -1;
+    }
+    else{
+        coefficient = Number(coefficient);
+    }
+
+
+    let constant = leftMatch[2];
+
+    if(!constant){
+        constant = 0;
+    }
+    else{
+        constant = Number(constant);
+    }
+
+
+    let rightNumber = Number(right);
+
+
+    if(isNaN(rightNumber)){
+
+        result.innerHTML = `
+            <div class="error">
+                Right side must be a number.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if(coefficient === 0){
+
+        result.innerHTML = `
+            <div class="error">
+                This equation cannot be solved for x.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    let x = (rightNumber - constant) / coefficient;
+
+
+    let steps = [];
+
+
+    // STEP 1
+
+    steps.push({
+        label:"START",
+        equation:formatNumber(coefficient) + "x " +
+        formatSigned(constant) +
+        " = " +
+        formatNumber(rightNumber)
+    });
+
+
+    // STEP 2
+
+    let newRight = rightNumber - constant;
+
+    steps.push({
+        label:"MOVE CONSTANT",
+        equation:
+        formatNumber(coefficient) +
+        "x = " +
+        formatNumber(newRight)
+    });
+
+
+    // STEP 3
+
+    steps.push({
+        label:"DIVIDE BOTH SIDES BY " + formatNumber(coefficient),
+        equation:
+        "x = " +
+        formatNumber(x)
+    });
+
+
+    showSteps(steps,x);
+}
+
+
+function formatNumber(number){
+
+    if(Number.isInteger(number)){
+        return number.toString();
+    }
+
+    return Number(number.toFixed(4)).toString();
+}
+
+
+function formatSigned(number){
+
+    if(number === 0){
+        return "";
+    }
+
+    if(number > 0){
+        return "+ " + formatNumber(number);
+    }
+
+    return "- " + formatNumber(Math.abs(number));
+}
+
+
+function showSteps(steps,x){
+
+    result.innerHTML = `
+        <div class="status">
+            Solving equation...
+        </div>
+
+        <div class="steps" id="steps"></div>
+    `;
+
+
+    const stepBox = document.getElementById("steps");
+
+
+    steps.forEach((step,index)=>{
+
+        setTimeout(()=>{
+
+            const div = document.createElement("div");
+
+            div.className = "step";
+
+            div.innerHTML = `
+                <small>${step.label}</small>
+                ${step.equation}
+            `;
+
+            stepBox.appendChild(div);
+
+
+            if(index === steps.length - 1){
+
+                setTimeout(()=>{
+
+                    const answer = document.createElement("div");
+
+                    answer.className = "answer";
+
+                    answer.innerHTML = `
+                        <span>FINAL ANSWER</span>
+                        <strong>x = ${formatNumber(x)} ✓</strong>
+                    `;
+
+                    result.appendChild(answer);
+
+                },600);
+            }
+
+        },index * 900);
+
+    });
+}
+
+
+input.addEventListener("keydown",(e)=>{
+
+    if(e.key === "Enter"){
+        solve();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
