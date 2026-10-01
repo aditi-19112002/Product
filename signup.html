@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Live Signup Coding</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% 20%,#242029 0%,#09090b 45%,#050506 100%);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+}
+
+/* ================= PHONE ================= */
+
+.phone{
+  width:360px;
+  height:720px;
+  background:#101012;
+  border:7px solid #29292d;
+  border-radius:42px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:
+    0 0 0 2px #000,
+    0 30px 90px rgba(0,0,0,.75);
+}
+
+/* Dynamic Island */
+
+.island{
+  position:absolute;
+  z-index:50;
+  top:9px;
+  left:50%;
+  transform:translateX(-50%);
+  width:105px;
+  height:27px;
+  background:#000;
+  border-radius:20px;
+}
+
+/* ================= PREVIEW ================= */
+
+.preview{
+  height:350px;
+  background:
+    radial-gradient(circle at 50% 20%,#ffffff 0%,#f5f1ff 55%,#ebe5ff 100%);
+  position:relative;
+  overflow:hidden;
+  padding:50px 18px 12px;
+}
+
+.preview-title{
+  text-align:center;
+  color:#8b5cf6;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:2.5px;
+  margin-bottom:8px;
+}
+
+/* ================= SIGNUP ================= */
+
+.signup{
+  width:265px;
+  min-height:270px;
+  margin:auto;
+
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:17px;
+
+  padding:13px 15px;
+
+  box-shadow:
+    0 12px 35px rgba(76,29,149,.16),
+    0 3px 8px rgba(0,0,0,.05);
+
+  opacity:0;
+  transform:translateY(12px) scale(.96);
+
+  transition:
+    opacity .5s ease,
+    transform .5s ease;
+}
+
+.signup.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+
+/* logo */
+
+.logo{
+  width:28px;
+  height:28px;
+
+  border-radius:9px;
+
+  background:
+    linear-gradient(135deg,#7c3aed,#ec4899);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:white;
+  font-size:13px;
+
+  margin-bottom:7px;
+
+  box-shadow:0 5px 12px rgba(124,58,237,.25);
+}
+
+/* heading */
+
+.signup h1{
+  font-size:17px;
+  color:#18181b;
+  margin-bottom:2px;
+}
+
+.signup p{
+  font-size:8px;
+  color:#71717a;
+  margin-bottom:9px;
+}
+
+/* fields */
+
+.field{
+  margin-bottom:6px;
+
+  opacity:0;
+  transform:translateX(-8px);
+
+  transition:
+    opacity .35s ease,
+    transform .35s ease;
+}
+
+.field.show{
+  opacity:1;
+  transform:translateX(0);
+}
+
+.field label{
+  display:block;
+
+  font-size:7px;
+  font-weight:800;
+
+  color:#52525b;
+
+  margin-bottom:3px;
+  letter-spacing:.3px;
+}
+
+.field input{
+  width:100%;
+  height:27px;
+
+  border:1px solid #e4e4e7;
+  border-radius:7px;
+
+  padding:0 8px;
+
+  outline:none;
+
+  font-size:8px;
+
+  background:#fafafa;
+
+  color:#27272a;
+}
+
+.field input:focus{
+  border-color:#8b5cf6;
+  box-shadow:0 0 0 2px rgba(139,92,246,.1);
+}
+
+/* button */
+
+.signup-btn{
+  width:100%;
+  height:29px;
+
+  border:none;
+  border-radius:7px;
+
+  background:
+    linear-gradient(90deg,#7c3aed,#ec4899);
+
+  color:white;
+
+  font-size:8px;
+  font-weight:800;
+
+  margin-top:2px;
+
+  opacity:0;
+  transform:translateY(7px);
+
+  transition:
+    opacity .4s ease,
+    transform .4s ease;
+
+  cursor:pointer;
+}
+
+.signup-btn.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.signup-btn:active{
+  transform:scale(.97);
+}
+
+/* login */
+
+.login{
+  text-align:center;
+
+  margin-top:6px;
+
+  font-size:7px;
+  color:#71717a;
+
+  opacity:0;
+
+  transition:.5s;
+}
+
+.login.show{
+  opacity:1;
+}
+
+/* ================= CODE EDITOR ================= */
+
+.editor{
+  height:360px;
+  background:#0c0c0e;
+
+  border-top:1px solid #29292d;
+
+  position:relative;
+}
+
+.editor-top{
+  height:32px;
+
+  display:flex;
+  align-items:center;
+
+  padding:0 12px;
+
+  border-bottom:1px solid #242428;
+
+  gap:5px;
+}
+
+.dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:#555;
+}
+
+.filename{
+  color:#a1a1aa;
+
+  font-size:8px;
+
+  margin-left:7px;
+}
+
+.code{
+  height:328px;
+
+  padding:11px 12px;
+
+  overflow:hidden;
+
+  color:#d4d4d8;
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  font-size:8px;
+
+  line-height:1.65;
+
+  white-space:pre-wrap;
+}
+
+.cursor{
+  display:inline-block;
+
+  width:4px;
+  height:10px;
+
+  background:#a78bfa;
+
+  vertical-align:middle;
+
+  animation:blink .7s infinite;
+}
+
+@keyframes blink{
+  50%{
+    opacity:0;
+  }
+}
+
+/* status */
+
+.status{
+  position:absolute;
+
+  bottom:7px;
+  right:9px;
+
+  color:#71717a;
+
+  font-size:6px;
+}
+
+/* restart */
+
+.restart{
+  position:absolute;
+
+  bottom:15px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  padding:6px 13px;
+
+  border:1px solid #333;
+
+  border-radius:20px;
+
+  background:#18181b;
+
+  color:#aaa;
+
+  font-size:8px;
+
+  cursor:pointer;
+
+  transition:.25s;
+}
+
+.restart:hover{
+  background:#27272a;
+  color:white;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="phone">
+
+  <!-- Dynamic Island -->
+
+  <div class="island"></div>
+
+
+  <!-- ================= LIVE OUTPUT ================= -->
+
+  <div class="preview">
+
+    <div class="preview-title">
+      LIVE PREVIEW
+    </div>
+
+
+    <div class="signup" id="signup">
+
+      <div class="logo">
+        ✦
+      </div>
+
+
+      <h1>
+        Create Account
+      </h1>
+
+      <p>
+        Join us and start your journey.
+      </p>
+
+
+      <!-- NAME -->
+
+      <div class="field" id="nameField">
+
+        <label>
+          FULL NAME
+        </label>
+
+        <input
+          type="text"
+          placeholder="Enter your name"
+        >
+
+      </div>
+
+
+      <!-- EMAIL -->
+
+      <div class="field" id="emailField">
+
+        <label>
+          EMAIL
+        </label>
+
+        <input
+          type="email"
+          placeholder="you@example.com"
+        >
+
+      </div>
+
+
+      <!-- PASSWORD -->
+
+      <div class="field" id="passwordField">
+
+        <label>
+          PASSWORD
+        </label>
+
+        <input
+          type="password"
+          placeholder="••••••••"
+        >
+
+      </div>
+
+
+      <!-- BUTTON -->
+
+      <button
+        class="signup-btn"
+        id="signupBtn"
+      >
+        Create Account
+      </button>
+
+
+      <div
+        class="login"
+        id="login"
+      >
+        Already have an account? Sign in
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= CODE ================= -->
+
+  <div class="editor">
+
+    <div class="editor-top">
+
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+
+      <span class="filename">
+        signup.html
+      </span>
+
+    </div>
+
+
+    <div class="code">
+
+      <span id="codeText"></span><span class="cursor"></span>
+
+    </div>
+
+
+    <div
+      class="status"
+      id="status"
+    >
+      typing...
+    </div>
+
+  </div>
+
+
+  <!-- RESTART -->
+
+  <button
+    class="restart"
+    onclick="startCoding()"
+  >
+    ↻ Restart
+  </button>
+
+</div>
+
+
+<script>
+
+/* ================= CODE ================= */
+
+const code = `<div class="signup">
+
+  <div class="logo">✦</div>
+
+  <h1>Create Account</h1>
+
+  <p>
+    Join us and start your journey.
+  </p>
+
+  <label>FULL NAME</label>
+
+  <input
+    type="text"
+    placeholder="Enter your name"
+  >
+
+  <label>EMAIL</label>
+
+  <input
+    type="email"
+    placeholder="you@example.com"
+  >
+
+  <label>PASSWORD</label>
+
+  <input
+    type="password"
+    placeholder="••••••••"
+  >
+
+  <button>
+    Create Account
+  </button>
+
+  <p>
+    Already have an account?
+  </p>
+
+</div>`;
+
+
+/* ================= ELEMENTS ================= */
+
+let i = 0;
+let timer;
+
+const codeText =
+  document.getElementById("codeText");
+
+const signup =
+  document.getElementById("signup");
+
+const nameField =
+  document.getElementById("nameField");
+
+const emailField =
+  document.getElementById("emailField");
+
+const passwordField =
+  document.getElementById("passwordField");
+
+const signupBtn =
+  document.getElementById("signupBtn");
+
+const login =
+  document.getElementById("login");
+
+const status =
+  document.getElementById("status");
+
+
+/* ================= START ================= */
+
+function startCoding(){
+
+  clearInterval(timer);
+
+  i = 0;
+
+  codeText.textContent = "";
+
+  signup.classList.remove("show");
+
+  nameField.classList.remove("show");
+
+  emailField.classList.remove("show");
+
+  passwordField.classList.remove("show");
+
+  signupBtn.classList.remove("show");
+
+  login.classList.remove("show");
+
+  status.textContent = "typing...";
+
+
+  setTimeout(()=>{
+
+    signup.classList.add("show");
+
+
+    timer = setInterval(()=>{
+
+      if(i < code.length){
+
+        codeText.textContent += code[i];
+
+        i++;
+
+        updatePreview();
+
+      }
+
+      else{
+
+        clearInterval(timer);
+
+        status.textContent = "● LIVE";
+
+      }
+
+    },28);
+
+  },400);
+
+}
+
+
+/* ================= BUILD EFFECT ================= */
+
+function updatePreview(){
+
+  /*
+    HTML code ke different stages
+    ke according live form build hoga.
+  */
+
+
+  if(i > 125){
+
+    nameField.classList.add("show");
+
+  }
+
+
+  if(i > 215){
+
+    emailField.classList.add("show");
+
+  }
+
+
+  if(i > 300){
+
+    passwordField.classList.add("show");
+
+  }
+
+
+  if(i > 390){
+
+    signupBtn.classList.add("show");
+
+  }
+
+
+  if(i > 470){
+
+    login.classList.add("show");
+
+  }
+
+}
+
+
+/* START */
+
+startCoding();
+
+</script>
+
+</body>
+</html>
