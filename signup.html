@@ -1,718 +1,924 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Live Signup Coding</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Realistic ATM</title>
 
 <style>
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
 }
 
 body{
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 50% 20%,#242029 0%,#09090b 45%,#050506 100%);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:Arial,sans-serif;
-  overflow:hidden;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at top,#343434,#101010 55%,#050505);
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
-/* ================= PHONE ================= */
+/* ATM */
 
-.phone{
-  width:360px;
-  height:720px;
-  background:#101012;
-  border:7px solid #29292d;
-  border-radius:42px;
-  overflow:hidden;
-  position:relative;
-  box-shadow:
-    0 0 0 2px #000,
-    0 30px 90px rgba(0,0,0,.75);
+.atm{
+    width:430px;
+    min-height:780px;
+    background:linear-gradient(145deg,#3b3b3b,#181818 45%,#080808);
+    border:3px solid #4c4c4c;
+    border-radius:25px;
+    padding:24px;
+    position:relative;
+    box-shadow:
+        0 35px 80px #000,
+        inset 0 0 25px #555,
+        inset 0 0 60px #000;
 }
 
-/* Dynamic Island */
-
-.island{
-  position:absolute;
-  z-index:50;
-  top:9px;
-  left:50%;
-  transform:translateX(-50%);
-  width:105px;
-  height:27px;
-  background:#000;
-  border-radius:20px;
-}
-
-/* ================= PREVIEW ================= */
-
-.preview{
-  height:350px;
-  background:
-    radial-gradient(circle at 50% 20%,#ffffff 0%,#f5f1ff 55%,#ebe5ff 100%);
-  position:relative;
-  overflow:hidden;
-  padding:50px 18px 12px;
-}
-
-.preview-title{
-  text-align:center;
-  color:#8b5cf6;
-  font-size:8px;
-  font-weight:800;
-  letter-spacing:2.5px;
-  margin-bottom:8px;
-}
-
-/* ================= SIGNUP ================= */
-
-.signup{
-  width:265px;
-  min-height:270px;
-  margin:auto;
-
-  background:rgba(255,255,255,.96);
-  border:1px solid rgba(255,255,255,.9);
-  border-radius:17px;
-
-  padding:13px 15px;
-
-  box-shadow:
-    0 12px 35px rgba(76,29,149,.16),
-    0 3px 8px rgba(0,0,0,.05);
-
-  opacity:0;
-  transform:translateY(12px) scale(.96);
-
-  transition:
-    opacity .5s ease,
-    transform .5s ease;
-}
-
-.signup.show{
-  opacity:1;
-  transform:translateY(0) scale(1);
-}
-
-/* logo */
+/* LOGO */
 
 .logo{
-  width:28px;
-  height:28px;
-
-  border-radius:9px;
-
-  background:
-    linear-gradient(135deg,#7c3aed,#ec4899);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  color:white;
-  font-size:13px;
-
-  margin-bottom:7px;
-
-  box-shadow:0 5px 12px rgba(124,58,237,.25);
+    text-align:center;
+    color:#00eaff;
+    font-size:25px;
+    font-weight:bold;
+    letter-spacing:5px;
+    margin-bottom:18px;
+    text-shadow:0 0 15px #00eaff;
 }
 
-/* heading */
+/* SCREEN */
 
-.signup h1{
-  font-size:17px;
-  color:#18181b;
-  margin-bottom:2px;
+.screen-frame{
+    background:#050505;
+    padding:8px;
+    border:7px solid #111;
+    border-radius:15px;
 }
 
-.signup p{
-  font-size:8px;
-  color:#71717a;
-  margin-bottom:9px;
+.screen{
+    height:320px;
+    border:2px solid #00cddd;
+    border-radius:8px;
+    padding:22px;
+    text-align:center;
+    color:white;
+    background:
+      radial-gradient(circle,#07464d,#02181b 70%);
+    box-shadow:0 0 25px #00eaff33;
+    overflow:hidden;
 }
 
-/* fields */
-
-.field{
-  margin-bottom:6px;
-
-  opacity:0;
-  transform:translateX(-8px);
-
-  transition:
-    opacity .35s ease,
-    transform .35s ease;
+.screen h2{
+    color:#00eaff;
+    margin-bottom:20px;
 }
 
-.field.show{
-  opacity:1;
-  transform:translateX(0);
+.screen p{
+    margin:12px 0;
+    color:#c5fbff;
 }
 
-.field label{
-  display:block;
+/* PROGRESS */
 
-  font-size:7px;
-  font-weight:800;
-
-  color:#52525b;
-
-  margin-bottom:3px;
-  letter-spacing:.3px;
-}
-
-.field input{
-  width:100%;
-  height:27px;
-
-  border:1px solid #e4e4e7;
-  border-radius:7px;
-
-  padding:0 8px;
-
-  outline:none;
-
-  font-size:8px;
-
-  background:#fafafa;
-
-  color:#27272a;
-}
-
-.field input:focus{
-  border-color:#8b5cf6;
-  box-shadow:0 0 0 2px rgba(139,92,246,.1);
-}
-
-/* button */
-
-.signup-btn{
-  width:100%;
-  height:29px;
-
-  border:none;
-  border-radius:7px;
-
-  background:
-    linear-gradient(90deg,#7c3aed,#ec4899);
-
-  color:white;
-
-  font-size:8px;
-  font-weight:800;
-
-  margin-top:2px;
-
-  opacity:0;
-  transform:translateY(7px);
-
-  transition:
-    opacity .4s ease,
-    transform .4s ease;
-
-  cursor:pointer;
-}
-
-.signup-btn.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.signup-btn:active{
-  transform:scale(.97);
-}
-
-/* login */
-
-.login{
-  text-align:center;
-
-  margin-top:6px;
-
-  font-size:7px;
-  color:#71717a;
-
-  opacity:0;
-
-  transition:.5s;
-}
-
-.login.show{
-  opacity:1;
-}
-
-/* ================= CODE EDITOR ================= */
-
-.editor{
-  height:360px;
-  background:#0c0c0e;
-
-  border-top:1px solid #29292d;
-
-  position:relative;
-}
-
-.editor-top{
-  height:32px;
-
-  display:flex;
-  align-items:center;
-
-  padding:0 12px;
-
-  border-bottom:1px solid #242428;
-
-  gap:5px;
+.progress{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin-bottom:18px;
 }
 
 .dot{
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:#555;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#16454a;
 }
 
-.filename{
-  color:#a1a1aa;
-
-  font-size:8px;
-
-  margin-left:7px;
+.dot.active{
+    background:#00eaff;
+    box-shadow:0 0 10px #00eaff;
 }
 
-.code{
-  height:328px;
+/* BIG BUTTON */
 
-  padding:11px 12px;
-
-  overflow:hidden;
-
-  color:#d4d4d8;
-
-  font-family:
-    "Courier New",
-    monospace;
-
-  font-size:8px;
-
-  line-height:1.65;
-
-  white-space:pre-wrap;
+.main-btn{
+    margin-top:22px;
+    padding:13px 28px;
+    border:1px solid #00eaff;
+    background:#06363b;
+    color:white;
+    border-radius:6px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
 }
 
-.cursor{
-  display:inline-block;
-
-  width:4px;
-  height:10px;
-
-  background:#a78bfa;
-
-  vertical-align:middle;
-
-  animation:blink .7s infinite;
+.main-btn:hover{
+    background:#00aebb;
+    box-shadow:0 0 15px #00eaff;
 }
 
-@keyframes blink{
-  50%{
-    opacity:0;
-  }
+/* PIN */
+
+.pin-display{
+    height:35px;
+    font-size:24px;
+    letter-spacing:8px;
+    color:#57ff9a !important;
 }
 
-/* status */
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+    margin-top:10px;
+}
+
+.keypad button{
+    height:34px;
+    background:#07373c;
+    border:1px solid #078d99;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.keypad button:hover{
+    background:#00aebb;
+}
+
+/* AMOUNTS */
+
+.amounts{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:25px;
+}
+
+.amounts button{
+    height:55px;
+    border:1px solid #00dbea;
+    background:#07383d;
+    color:white;
+    border-radius:7px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.amounts button:hover{
+    background:#00aebb;
+}
+
+/* CARD SLOT */
+
+.card-section{
+    position:absolute;
+    left:25px;
+    bottom:110px;
+}
+
+.card-slot{
+    width:150px;
+    height:23px;
+    background:#020202;
+    border:2px solid #555;
+    border-radius:15px;
+    box-shadow:inset 0 4px 8px #000;
+}
+
+.slot-light{
+    position:absolute;
+    right:12px;
+    top:6px;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#00eaff;
+    box-shadow:0 0 12px #00eaff;
+}
+
+.card{
+    display:none;
+    position:absolute;
+    left:18px;
+    top:-2px;
+    width:115px;
+    height:70px;
+    border-radius:8px;
+    padding:10px;
+    color:white;
+    background:linear-gradient(135deg,#192b55,#5074c5);
+    font-size:9px;
+    box-shadow:0 10px 20px #000;
+    transition:1s;
+}
+
+.card.visible{
+    display:block;
+}
+
+.card.in{
+    transform:translateY(-100px);
+}
+
+/* CASH SLOT */
+
+.cash-section{
+    position:absolute;
+    right:25px;
+    bottom:108px;
+}
+
+.cash-slot{
+    width:185px;
+    height:32px;
+    background:#020202;
+    border:2px solid #555;
+    border-radius:7px;
+    overflow:hidden;
+}
+
+.cash-door{
+    width:100%;
+    height:100%;
+    background:linear-gradient(#222,#050505);
+    transition:.5s;
+}
+
+.cash-door.open{
+    transform:translateY(-30px);
+}
+
+/* CASH */
+
+.cash-stack{
+    position:absolute;
+    right:35px;
+    bottom:118px;
+    z-index:10;
+}
+
+.note{
+    width:150px;
+    height:58px;
+    margin-top:-2px;
+    border:2px solid #486b1e;
+    border-radius:4px;
+    background:linear-gradient(135deg,#d8f18c,#75a63c);
+    color:#183000;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px;
+    font-weight:bold;
+    box-shadow:0 5px 12px #000;
+    animation:cashOut .8s ease forwards;
+}
+
+@keyframes cashOut{
+    from{
+        transform:translateY(-50px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+}
+
+/* RECEIPT */
+
+.receipt-slot{
+    position:absolute;
+    left:145px;
+    bottom:50px;
+    width:140px;
+    height:17px;
+    background:#020202;
+    border:2px solid #555;
+    border-radius:8px;
+}
+
+.receipt{
+    position:absolute;
+    width:120px;
+    left:155px;
+    bottom:47px;
+    background:#fff;
+    color:#111;
+    padding:12px;
+    font-size:9px;
+    text-align:center;
+    box-shadow:0 10px 20px #000;
+    animation:receiptPrint 1.2s ease forwards;
+    z-index:15;
+}
+
+@keyframes receiptPrint{
+    from{
+        transform:translateY(-90px);
+    }
+    to{
+        transform:translateY(0);
+    }
+}
+
+/* STATUS */
 
 .status{
-  position:absolute;
-
-  bottom:7px;
-  right:9px;
-
-  color:#71717a;
-
-  font-size:6px;
+    position:absolute;
+    bottom:15px;
+    left:0;
+    width:100%;
+    text-align:center;
+    color:#777;
+    font-size:9px;
+    letter-spacing:2px;
 }
 
-/* restart */
+/* MOBILE */
 
-.restart{
-  position:absolute;
+@media(max-width:500px){
 
-  bottom:15px;
-  left:50%;
+    body{
+        padding:10px;
+    }
 
-  transform:translateX(-50%);
-
-  padding:6px 13px;
-
-  border:1px solid #333;
-
-  border-radius:20px;
-
-  background:#18181b;
-
-  color:#aaa;
-
-  font-size:8px;
-
-  cursor:pointer;
-
-  transition:.25s;
+    .atm{
+        width:100%;
+        max-width:400px;
+        transform:scale(.9);
+    }
 }
-
-.restart:hover{
-  background:#27272a;
-  color:white;
-}
-
 </style>
 </head>
 
-
 <body>
 
-<div class="phone">
+<div class="atm">
 
-  <!-- Dynamic Island -->
+    <div class="logo">NOVA BANK</div>
 
-  <div class="island"></div>
-
-
-  <!-- ================= LIVE OUTPUT ================= -->
-
-  <div class="preview">
-
-    <div class="preview-title">
-      LIVE PREVIEW
+    <div class="screen-frame">
+        <div class="screen" id="screen"></div>
     </div>
 
+    <!-- CARD -->
 
-    <div class="signup" id="signup">
+    <div class="card-section">
 
-      <div class="logo">
-        ✦
-      </div>
+        <div class="card-slot">
+            <div class="slot-light"></div>
+        </div>
 
-
-      <h1>
-        Create Account
-      </h1>
-
-      <p>
-        Join us and start your journey.
-      </p>
-
-
-      <!-- NAME -->
-
-      <div class="field" id="nameField">
-
-        <label>
-          FULL NAME
-        </label>
-
-        <input
-          type="text"
-          placeholder="Enter your name"
-        >
-
-      </div>
-
-
-      <!-- EMAIL -->
-
-      <div class="field" id="emailField">
-
-        <label>
-          EMAIL
-        </label>
-
-        <input
-          type="email"
-          placeholder="you@example.com"
-        >
-
-      </div>
-
-
-      <!-- PASSWORD -->
-
-      <div class="field" id="passwordField">
-
-        <label>
-          PASSWORD
-        </label>
-
-        <input
-          type="password"
-          placeholder="••••••••"
-        >
-
-      </div>
-
-
-      <!-- BUTTON -->
-
-      <button
-        class="signup-btn"
-        id="signupBtn"
-      >
-        Create Account
-      </button>
-
-
-      <div
-        class="login"
-        id="login"
-      >
-        Already have an account? Sign in
-      </div>
+        <div class="card" id="card">
+            <b>NOVA BANK</b><br><br>
+            💳 •••• 4921
+        </div>
 
     </div>
 
-  </div>
+    <!-- CASH -->
 
-
-  <!-- ================= CODE ================= -->
-
-  <div class="editor">
-
-    <div class="editor-top">
-
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-
-      <span class="filename">
-        signup.html
-      </span>
-
+    <div class="cash-section">
+        <div class="cash-slot">
+            <div class="cash-door" id="cashDoor"></div>
+        </div>
     </div>
 
+    <!-- RECEIPT -->
 
-    <div class="code">
+    <div class="receipt-slot"></div>
 
-      <span id="codeText"></span><span class="cursor"></span>
-
+    <div class="status">
+        SECURE ATM • 24 HOURS BANKING
     </div>
-
-
-    <div
-      class="status"
-      id="status"
-    >
-      typing...
-    </div>
-
-  </div>
-
-
-  <!-- RESTART -->
-
-  <button
-    class="restart"
-    onclick="startCoding()"
-  >
-    ↻ Restart
-  </button>
 
 </div>
 
 
 <script>
 
-/* ================= CODE ================= */
+let balance = 25000;
+let enteredPin = "";
+let selectedAmount = 0;
 
-const code = `<div class="signup">
+const correctPin = "1234";
 
-  <div class="logo">✦</div>
-
-  <h1>Create Account</h1>
-
-  <p>
-    Join us and start your journey.
-  </p>
-
-  <label>FULL NAME</label>
-
-  <input
-    type="text"
-    placeholder="Enter your name"
-  >
-
-  <label>EMAIL</label>
-
-  <input
-    type="email"
-    placeholder="you@example.com"
-  >
-
-  <label>PASSWORD</label>
-
-  <input
-    type="password"
-    placeholder="••••••••"
-  >
-
-  <button>
-    Create Account
-  </button>
-
-  <p>
-    Already have an account?
-  </p>
-
-</div>`;
+const screen = document.getElementById("screen");
+const card = document.getElementById("card");
+const cashDoor = document.getElementById("cashDoor");
 
 
-/* ================= ELEMENTS ================= */
+/* -------------------------
+   STEP 1
+------------------------- */
 
-let i = 0;
-let timer;
+function step1(){
 
-const codeText =
-  document.getElementById("codeText");
+    screen.innerHTML = `
 
-const signup =
-  document.getElementById("signup");
+        <div class="progress">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
 
-const nameField =
-  document.getElementById("nameField");
+        <h2>WELCOME</h2>
 
-const emailField =
-  document.getElementById("emailField");
+        <p>Please insert your</p>
+        <p>ATM card</p>
 
-const passwordField =
-  document.getElementById("passwordField");
-
-const signupBtn =
-  document.getElementById("signupBtn");
-
-const login =
-  document.getElementById("login");
-
-const status =
-  document.getElementById("status");
-
-
-/* ================= START ================= */
-
-function startCoding(){
-
-  clearInterval(timer);
-
-  i = 0;
-
-  codeText.textContent = "";
-
-  signup.classList.remove("show");
-
-  nameField.classList.remove("show");
-
-  emailField.classList.remove("show");
-
-  passwordField.classList.remove("show");
-
-  signupBtn.classList.remove("show");
-
-  login.classList.remove("show");
-
-  status.textContent = "typing...";
-
-
-  setTimeout(()=>{
-
-    signup.classList.add("show");
-
-
-    timer = setInterval(()=>{
-
-      if(i < code.length){
-
-        codeText.textContent += code[i];
-
-        i++;
-
-        updatePreview();
-
-      }
-
-      else{
-
-        clearInterval(timer);
-
-        status.textContent = "● LIVE";
-
-      }
-
-    },28);
-
-  },400);
-
+        <button class="main-btn" onclick="insertCard()">
+            INSERT CARD
+        </button>
+    `;
 }
 
 
-/* ================= BUILD EFFECT ================= */
+/* -------------------------
+   STEP 2
+   CARD INSERT
+------------------------- */
 
-function updatePreview(){
+function insertCard(){
 
-  /*
-    HTML code ke different stages
-    ke according live form build hoga.
-  */
+    card.classList.add("visible");
 
+    setTimeout(()=>{
 
-  if(i > 125){
+        card.classList.add("in");
 
-    nameField.classList.add("show");
+        setTimeout(()=>{
 
-  }
+            step2();
 
+        },900);
 
-  if(i > 215){
-
-    emailField.classList.add("show");
-
-  }
-
-
-  if(i > 300){
-
-    passwordField.classList.add("show");
-
-  }
-
-
-  if(i > 390){
-
-    signupBtn.classList.add("show");
-
-  }
-
-
-  if(i > 470){
-
-    login.classList.add("show");
-
-  }
-
+    },300);
 }
 
 
-/* START */
+/* -------------------------
+   STEP 3
+   PIN
+------------------------- */
 
-startCoding();
+function step2(){
+
+    screen.innerHTML = `
+
+        <div class="progress">
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <h2>ENTER YOUR PIN</h2>
+
+        <p class="pin-display" id="pinDisplay">
+            ____
+        </p>
+
+        <div class="keypad">
+
+            <button onclick="key('1')">1</button>
+            <button onclick="key('2')">2</button>
+            <button onclick="key('3')">3</button>
+
+            <button onclick="key('4')">4</button>
+            <button onclick="key('5')">5</button>
+            <button onclick="key('6')">6</button>
+
+            <button onclick="key('7')">7</button>
+            <button onclick="key('8')">8</button>
+            <button onclick="key('9')">9</button>
+
+            <button onclick="clearPin()">CLEAR</button>
+            <button onclick="key('0')">0</button>
+            <button onclick="verifyPin()">ENTER</button>
+
+        </div>
+    `;
+}
+
+
+/* PIN */
+
+function key(num){
+
+    if(enteredPin.length < 4){
+
+        enteredPin += num;
+
+        updatePin();
+    }
+}
+
+
+function updatePin(){
+
+    let dots = "";
+
+    for(let i=0;i<enteredPin.length;i++){
+        dots += "●";
+    }
+
+    while(dots.length < 4){
+        dots += "_";
+    }
+
+    document.getElementById("pinDisplay").innerText = dots;
+}
+
+
+function clearPin(){
+
+    enteredPin = "";
+    updatePin();
+}
+
+
+/* VERIFY */
+
+function verifyPin(){
+
+    if(enteredPin === correctPin){
+
+        enteredPin = "";
+
+        screen.innerHTML = `
+
+            <div class="progress">
+                <span class="dot active"></span>
+                <span class="dot active"></span>
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+            <h2>PIN VERIFIED ✓</h2>
+
+            <p>Please wait...</p>
+
+        `;
+
+        setTimeout(selectAmount,1200);
+
+    }else{
+
+        screen.innerHTML +=
+            `<p style="color:#ff5555">❌ INCORRECT PIN</p>`;
+
+        enteredPin = "";
+
+        setTimeout(step2,1200);
+    }
+}
+
+
+/* -------------------------
+   STEP 4
+   AMOUNT
+------------------------- */
+
+function selectAmount(){
+
+    screen.innerHTML = `
+
+        <div class="progress">
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <h2>SELECT AMOUNT</h2>
+
+        <p>Available Balance</p>
+
+        <p style="font-size:22px;color:#57ff9a">
+            ₹${balance.toLocaleString("en-IN")}
+        </p>
+
+        <div class="amounts">
+
+            <button onclick="withdraw(500)">
+                ₹500
+            </button>
+
+            <button onclick="withdraw(1000)">
+                ₹1,000
+            </button>
+
+            <button onclick="withdraw(2000)">
+                ₹2,000
+            </button>
+
+            <button onclick="withdraw(5000)">
+                ₹5,000
+            </button>
+
+        </div>
+
+    `;
+}
+
+
+/* -------------------------
+   STEP 5
+   PROCESSING
+------------------------- */
+
+function withdraw(amount){
+
+    selectedAmount = amount;
+
+    if(amount > balance){
+
+        screen.innerHTML = `
+
+            <h2 style="color:#ff5555">
+                TRANSACTION FAILED
+            </h2>
+
+            <p>Insufficient Balance</p>
+
+            <button class="main-btn"
+                    onclick="selectAmount()">
+                TRY AGAIN
+            </button>
+        `;
+
+        return;
+    }
+
+    balance -= amount;
+
+    screen.innerHTML = `
+
+        <div class="progress">
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <h2>PROCESSING...</h2>
+
+        <p>Checking account</p>
+        <p>Counting cash...</p>
+
+        <p style="color:#57ff9a">
+            ₹${amount.toLocaleString("en-IN")}
+        </p>
+    `;
+
+    setTimeout(showCash,1800);
+}
+
+
+/* -------------------------
+   STEP 6
+   CASH
+------------------------- */
+
+function showCash(){
+
+    screen.innerHTML = `
+
+        <div class="progress">
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+        </div>
+
+        <h2 style="color:#57ff9a">
+            CASH READY
+        </h2>
+
+        <p>Please collect your cash</p>
+
+        <p>
+            ₹${selectedAmount.toLocaleString("en-IN")}
+        </p>
+
+    `;
+
+    cashDoor.classList.add("open");
+
+    let stack = document.createElement("div");
+
+    stack.className = "cash-stack";
+
+    let count = selectedAmount / 500;
+
+    /*
+      Maximum 6 notes visual ke liye.
+    */
+
+    count = Math.min(count,6);
+
+    for(let i=0;i<count;i++){
+
+        stack.innerHTML += `
+            <div class="note">
+                <span>NOVA BANK</span>
+                <strong>₹500</strong>
+            </div>
+        `;
+    }
+
+    document.querySelector(".atm").appendChild(stack);
+
+    setTimeout(()=>{
+
+        stack.remove();
+        cashDoor.classList.remove("open");
+
+        receiptStep();
+
+    },4000);
+}
+
+
+/* -------------------------
+   STEP 7
+   RECEIPT
+------------------------- */
+
+function receiptStep(){
+
+    screen.innerHTML = `
+
+        <div class="progress">
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+        </div>
+
+        <h2>PRINT RECEIPT?</h2>
+
+        <p>Transaction successful</p>
+
+        <button class="main-btn"
+                onclick="printReceipt()">
+            YES, PRINT RECEIPT
+        </button>
+
+        <br>
+
+        <button class="main-btn"
+                onclick="thankYou()">
+            NO RECEIPT
+        </button>
+    `;
+}
+
+
+/* PRINT */
+
+function printReceipt(){
+
+    const receipt = document.createElement("div");
+
+    receipt.className = "receipt";
+
+    receipt.innerHTML = `
+        <b>NOVA BANK</b>
+        <br>
+        ATM TRANSACTION
+        <hr>
+
+        WITHDRAWAL<br>
+        ₹${selectedAmount.toLocaleString("en-IN")}
+
+        <br><br>
+
+        BALANCE<br>
+        ₹${balance.toLocaleString("en-IN")}
+
+        <br><br>
+
+        ${new Date().toLocaleDateString()}
+        <br>
+        ${new Date().toLocaleTimeString()}
+
+        <hr>
+        THANK YOU
+    `;
+
+    document.querySelector(".atm").appendChild(receipt);
+
+    setTimeout(()=>{
+
+        receipt.remove();
+
+        thankYou();
+
+    },3500);
+}
+
+
+/* -------------------------
+   STEP 8
+   THANK YOU
+------------------------- */
+
+function thankYou(){
+
+    screen.innerHTML = `
+
+        <div style="font-size:45px;margin:15px">
+            ✓
+        </div>
+
+        <h2>TRANSACTION COMPLETE</h2>
+
+        <p class="success">
+            Please take your card
+        </p>
+
+        <p>
+            Thank you for banking with us.
+        </p>
+
+        <button class="main-btn"
+                onclick="ejectCard()">
+            EJECT CARD
+        </button>
+    `;
+}
+
+
+
+
+function ejectCard(){
+
+    card.classList.remove("in");
+
+    screen.innerHTML = `
+
+        <h2>TAKE YOUR CARD</h2>
+
+        <p>💳 Your card is ready</p>
+
+    `;
+
+    setTimeout(()=>{
+
+        card.classList.remove("visible");
+
+        screen.innerHTML = `
+
+            <div style="font-size:45px">
+                👋
+            </div>
+
+            <h2>THANK YOU</h2>
+
+            <p>Have a nice day!</p>
+
+            <button class="main-btn"
+                    onclick="location.reload()">
+                NEW TRANSACTION
+            </button>
+
+        `;
+
+    },2500);
+}
+
+
+  
+
+step1();
 
 </script>
 
 </body>
 </html>
+```
