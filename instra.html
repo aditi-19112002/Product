@@ -717,7 +717,7 @@ const observer = new IntersectionObserver(entries => {
 }, {threshold:.12});
 
 document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
-
+ 
 const sections = document.querySelectorAll("main section[id]");
 const navItems = document.querySelectorAll('.links a[href^="#"]');
 

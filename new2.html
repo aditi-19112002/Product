@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f0c29;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Soft glowing circles in background */
+    body::before,
+    body::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+    }
+
+    body::before {
+      background: #7c3aed;
+      top: -100px;
+      left: -100px;
+      opacity: 0.4;
+    }
+
+    body::after {
+      background: #06b6d4;
+      bottom: -100px;
+      right: -100px;
+      opacity: 0.3;
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 380px;
+      padding: 40px 32px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .logo {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #a855f7, #06b6d4);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      color: #c4b5fd;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      color: white;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input::placeholder {
+      color: #64748b;
+    }
+
+    input:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #94a3b8;
+      font-weight: 400;
+      letter-spacing: 0;
+      margin: 0;
+    }
+
+    .options input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #a855f7;
+    }
+
+    .options a {
+      color: #c4b5fd;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .options a:hover {
+      color: #e9d5ff;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #a855f7, #6366f1, #06b6d4);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(168, 85, 247, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .success {
+      display: none;
+      margin-top: 20px;
+      padding: 14px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      border-radius: 12px;
+      color: #6ee7b7;
+      text-align: center;
+      font-size: 14px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .success.show {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 28px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .footer-text a {
+      color: #c4b5fd;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">⚡</div>
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Please enter your details</p>
+
+    <form id="loginForm">
+      <div class="input-group">
+        <label>EMAIL</label>
+        <input type="email" id="email" placeholder="name@example.com" required>
+      </div>
+
+      <div class="input-group">
+        <label>PASSWORD</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+      </div>
+
+      <div class="options">
+        <label>
+          <input type="checkbox"> Remember me
+        </label>
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <button type="submit">Sign In</button>
+    </form>
+
+    <div class="success" id="successMsg">
+      🎉 Login successful! Welcome back.
+    </div>
+
+    <p class="footer-text">
+      Don't have an account? <a href="#">Sign up</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const name = email.split('@')[0] || 'User';
+      const msg = document.getElementById('successMsg');
+
+      msg.innerHTML = `🎉 Welcome back, <strong>${name}</strong>!`;
+      msg.classList.add('show');
+
+      // Button animation
+      const btn = this.querySelector('button');
+      btn.textContent = 'Success ✓';
+      btn.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+    });
+  </script>
+
+</body>
+</html>

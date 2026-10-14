@@ -1,0 +1,644 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panda Pocket Login 🐼</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at 20% 20%, #e4ffe9, transparent 35%),
+    radial-gradient(circle at 80% 80%, #e5e5ff, transparent 35%),
+    #f8fbf8;
+  padding: 15px;
+}
+
+.scene {
+  width: 100%;
+  max-width: 850px;
+  min-height: 640px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+}
+
+.heading {
+  position: absolute;
+  top: 24px;
+  width: 100%;
+  text-align: center;
+  color: #242b32;
+  z-index: 10;
+}
+
+.heading h1 {
+  font-size: clamp(25px, 5vw, 38px);
+  letter-spacing: -1.5px;
+}
+
+.heading p {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #78858a;
+}
+
+/* Panda body */
+.panda {
+  position: relative;
+  flex: 0 0 280px;
+  width: 280px;
+  height: 365px;
+  margin-top: 45px;
+  z-index: 2;
+}
+
+.body-shape {
+  position: absolute;
+  width: 224px;
+  height: 225px;
+  left: 28px;
+  top: 126px;
+  border-radius: 48% 48% 43% 43%;
+  background: linear-gradient(145deg, #fff, #f0f1f2);
+  border: 2px solid #e3e5e8;
+  box-shadow: 0 20px 35px #2e343b12;
+}
+
+.belly {
+  position: absolute;
+  left: 46px;
+  top: 24px;
+  width: 128px;
+  height: 164px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Head and ears */
+.head {
+  position: absolute;
+  width: 190px;
+  height: 166px;
+  left: 45px;
+  top: 24px;
+  background: #fff;
+  border-radius: 47% 47% 45% 45%;
+  border: 2px solid #e2e5e7;
+  z-index: 4;
+  box-shadow: 0 8px 16px #242b3210;
+}
+
+.ear {
+  position: absolute;
+  top: 8px;
+  width: 66px;
+  height: 68px;
+  background: #252a30;
+  border-radius: 50%;
+  z-index: 3;
+}
+
+.ear.left { left: 37px; }
+.ear.right { right: 37px; }
+
+.ear::after {
+  content: '';
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  background: #444950;
+}
+
+.eye-patch {
+  position: absolute;
+  top: 50px;
+  width: 46px;
+  height: 57px;
+  border-radius: 50%;
+  background: #262a30;
+}
+
+.eye-patch.left {
+  left: 32px;
+  transform: rotate(17deg);
+}
+
+.eye-patch.right {
+  right: 32px;
+  transform: rotate(-17deg);
+}
+
+.eye {
+  position: absolute;
+  width: 18px;
+  height: 21px;
+  background: white;
+  top: 13px;
+  left: 14px;
+  border-radius: 50%;
+}
+
+.eye::after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 12px;
+  background: #20252a;
+  top: 5px;
+  left: 5px;
+  border-radius: 50%;
+}
+
+.eye::before {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: white;
+  z-index: 2;
+  top: 5px;
+  left: 5px;
+  border-radius: 50%;
+}
+
+.blush {
+  position: absolute;
+  width: 24px;
+  height: 13px;
+  background: #ffb8c4;
+  opacity: .8;
+  border-radius: 50%;
+  top: 113px;
+}
+
+.blush.left { left: 17px; }
+.blush.right { right: 17px; }
+
+.nose {
+  position: absolute;
+  top: 111px;
+  left: 86px;
+  width: 17px;
+  height: 12px;
+  background: #24282e;
+  border-radius: 50%;
+}
+
+.mouth {
+  position: absolute;
+  top: 121px;
+  left: 91px;
+  width: 8px;
+  height: 11px;
+  border-right: 2px solid #24282e;
+  border-bottom: 2px solid #24282e;
+  border-radius: 0 0 7px 0;
+}
+
+.mouth::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 11px;
+  left: -7px;
+  top: 0;
+  border-left: 2px solid #24282e;
+  border-bottom: 2px solid #24282e;
+  border-radius: 0 0 0 7px;
+}
+
+/* Arms */
+.arm {
+  position: absolute;
+  top: 167px;
+  width: 64px;
+  height: 95px;
+  background: #282d33;
+  border-radius: 38px;
+  z-index: 5;
+}
+
+.arm.left {
+  left: 5px;
+  transform: rotate(27deg);
+}
+
+.arm.right {
+  right: 5px;
+  transform: rotate(-27deg);
+}
+
+.paw-button {
+  position: absolute;
+  top: 205px;
+  right: 5px;
+  width: 62px;
+  height: 62px;
+  border: 4px solid #fff;
+  background: linear-gradient(145deg, #ffcb80, #ff9f69);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 9;
+  box-shadow: 0 7px 18px #e18c5350;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  transition: transform .3s;
+  animation: pawPulse 2s infinite;
+}
+
+.paw-button:hover {
+  transform: scale(1.12) rotate(-12deg);
+}
+
+@keyframes pawPulse {
+  50% { box-shadow: 0 0 0 10px #ffb36a22, 0 7px 18px #e18c5350; }
+}
+
+/* Stomach pocket */
+.pocket {
+  position: absolute;
+  z-index: 6;
+  top: 207px;
+  left: 83px;
+  width: 114px;
+  height: 91px;
+  border-radius: 12px 12px 35px 35px;
+  background: linear-gradient(145deg, #8bdcb0, #4ab886);
+  border: 4px solid #fff;
+  box-shadow: 0 8px 18px #2b9d6b2a;
+  overflow: hidden;
+}
+
+.pocket::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 19px;
+  background: #b4f0cd;
+  border-bottom: 3px solid #3fa978;
+}
+
+.pocket-label {
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  top: 34px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #155d41;
+  letter-spacing: 1px;
+}
+
+.pocket.open {
+  animation: pocketOpen .5s forwards;
+}
+
+@keyframes pocketOpen {
+  50% { transform: rotateX(22deg) scale(1.08); }
+  100% { transform: rotateX(0) scale(1); }
+}
+
+/* Login card comes out of the pocket */
+.login-card {
+  width: 300px;
+  padding: 25px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.96);
+  border: 1px solid white;
+  border-radius: 23px;
+  box-shadow: 0 22px 55px #263b3220;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-100px, 70px) scale(.45);
+  transform-origin: left center;
+  transition:
+    transform .85s cubic-bezier(.18,.85,.25,1.15),
+    opacity .45s ease;
+}
+
+.login-card.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, 0) scale(1);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 19px;
+}
+
+.mini-panda {
+  font-size: 26px;
+}
+
+.status {
+  background: #e4f9ed;
+  color: #238c5b;
+  padding: 6px 10px;
+  border-radius: 30px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.login-card h2 {
+  font-size: 25px;
+  color: #252b30;
+  letter-spacing: -1px;
+}
+
+.description {
+  font-size: 12px;
+  color: #899098;
+  margin: 7px 0 22px;
+}
+
+.field {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: #596168;
+  margin-bottom: 7px;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 11px;
+  border: 1px solid #e2e8e4;
+  outline: none;
+  background: #f8faf9;
+  font-size: 12px;
+  transition: .25s;
+}
+
+.field input:focus {
+  border-color: #55bd8a;
+  box-shadow: 0 0 0 3px #55bd8a20;
+  background: white;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  align-items: center;
+  font-size: 10px;
+  color: #777f86;
+  margin: 4px 0 19px;
+}
+
+.form-options a,
+.signup a {
+  color: #249765;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.remember input { accent-color: #36af78; }
+
+.submit-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(100deg, #38b97c, #23976c);
+  color: white;
+  border: none;
+  border-radius: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 18px #38b97c30;
+  transition: .25s;
+}
+
+.submit-btn:hover { transform: translateY(-2px); }
+
+.signup {
+  font-size: 11px;
+  color: #8b9298;
+  text-align: center;
+  margin-top: 17px;
+}
+
+#message {
+  font-size: 11px;
+  color: #238c5b;
+  line-height: 1.5;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.hint {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #84918a;
+}
+
+@media (max-width: 700px) {
+  body {
+    overflow-y: auto;
+    min-height: 100vh;
+  }
+
+  .scene {
+    min-height: 800px;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+
+  .panda {
+    transform: scale(.82);
+    margin-top: -10px;
+    margin-bottom: -25px;
+    flex-basis: 300px;
+  }
+
+  .login-card {
+    width: min(320px, 94vw);
+    transform: translateY(-70px) scale(.6);
+    margin-top: -90px;
+  }
+
+  .login-card.show {
+    transform: translateY(0) scale(1);
+    margin-top: -5px;
+  }
+
+  .hint { bottom: 12px; }
+}
+</style>
+</head>
+
+<body>
+<main class="scene">
+
+  <header class="heading">
+    <h1>Panda's Secret Pocket 🐼</h1>
+    <p>A little panda is hiding something special for you...</p>
+  </header>
+
+  <section class="panda" id="panda">
+
+    <div class="ear left"></div>
+    <div class="ear right"></div>
+
+    <div class="body-shape">
+      <div class="belly"></div>
+    </div>
+
+    <div class="arm left"></div>
+    <div class="arm right"></div>
+
+    <div class="head">
+      <div class="eye-patch left"><div class="eye"></div></div>
+      <div class="eye-patch right"><div class="eye"></div></div>
+      <div class="blush left"></div>
+      <div class="blush right"></div>
+      <div class="nose"></div>
+      <div class="mouth"></div>
+    </div>
+
+    <div class="pocket" id="pocket">
+      <div class="pocket-label">MY POCKET ♡</div>
+    </div>
+
+    <button class="paw-button" id="paw" aria-label="Open panda pocket">
+      🐾
+    </button>
+  </section>
+
+  <section class="login-card" id="loginCard">
+    <div class="card-top">
+      <span class="mini-panda">🐼</span>
+      <span class="status">● SAFE & CUTE</span>
+    </div>
+
+    <h2>Welcome Back!</h2>
+    <p class="description">Your bamboo world is waiting 🌿</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">EMAIL ADDRESS</label>
+        <input type="email" id="email"
+          placeholder="you@example.com" required>
+      </div>
+
+      <div class="field">
+        <label for="password">PASSWORD</label>
+        <input type="password" id="password"
+          placeholder="Enter your password" required minlength="4">
+      </div>
+
+      <div class="form-options">
+        <label class="remember">
+          <input type="checkbox"> Remember me
+        </label>
+        <a href="#" id="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="submit-btn">Unlock My World →</button>
+      <p id="message" aria-live="polite"></p>
+    </form>
+
+    <p class="signup">
+      New here? <a href="#" id="signup">Join Panda World</a>
+    </p>
+  </section>
+
+  <p class="hint" id="hint">👆 Tap the panda's paw to reveal its secret!</p>
+</main>
+
+<script>
+const paw = document.getElementById('paw');
+const pocket = document.getElementById('pocket');
+const card = document.getElementById('loginCard');
+const hint = document.getElementById('hint');
+const panda = document.getElementById('panda');
+const form = document.getElementById('loginForm');
+const message = document.getElementById('message');
+
+let isOpen = false;
+
+paw.addEventListener('click', () => {
+  isOpen = !isOpen;
+
+  pocket.classList.toggle('open', isOpen);
+  card.classList.toggle('show', isOpen);
+
+  if (isOpen) {
+    paw.textContent = '💚';
+    paw.style.animation = 'none';
+    hint.textContent = '✨ Surprise! Your login form is here!';
+    setTimeout(() => {
+      document.getElementById('email').focus({
+        preventScroll: true
+      });
+    }, 850);
+  } else {
+    paw.textContent = '🐾';
+    paw.style.animation = '';
+    hint.textContent = "👆 Tap the panda's paw to reveal its secret!";
+    message.textContent = '';
+  }
+});
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  if (!form.reportValidity()) return;
+
+  message.textContent =
+    '🎉 Demo login successful! Welcome to Panda World!';
+});
+
+document.getElementById('forgot').addEventListener('click', (event) => {
+  event.preventDefault();
+  message.textContent = '🌱 Password reset is a demo feature.';
+});
+
+document.getElementById('signup').addEventListener('click', (event) => {
+  event.preventDefault();
+  message.textContent = '🐼 Account creation is coming soon!';
+});
+</script>
+</body>
+</html>
