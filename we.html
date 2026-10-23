@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Junior vs Senior Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-panel: #f8fafc;
+      --bg-editor: #f1f5f9;
+      --border: #e2e8f0;
+      --purple: #7c3aed;
+      --purple-glow: rgba(124, 58, 237, 0.25);
+      --cyan: #0891b2;
+      --cyan-glow: rgba(8, 145, 178, 0.25);
+      --text: #0f172a;
+      --text-dim: #64748b;
+      --success: #16a34a;
+      --radius: 16px;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Orbitron', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 20% -20%, rgba(124, 58, 237, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(8, 145, 178, 0.06), transparent);
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1.5rem 1.25rem;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.35rem;
+    }
+
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+    }
+
+    .progress-wrap {
+      max-width: 720px;
+      margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-bottom: 0.4rem;
+      font-family: var(--font-mono);
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      border-radius: 99px;
+      transition: width 0.15s ease;
+      box-shadow: 0 0 12px var(--purple-glow);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 0.85rem;
+      margin: 1.5rem 0 1.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple), #6d28d9);
+      color: white;
+      box-shadow: 0 4px 14px var(--purple-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--purple-glow);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--cyan);
+      border: 1.5px solid var(--cyan);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(8, 145, 178, 0.08);
+      box-shadow: 0 0 18px var(--cyan-glow);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .arena {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    @media (max-width: 900px) {
+      .arena { grid-template-columns: 1fr; }
+    }
+
+    .dev-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+
+    .dev-card.junior.active {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px var(--purple-glow), 0 8px 30px rgba(0,0,0,0.06);
+    }
+
+    .dev-card.senior.active {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px var(--cyan-glow), 0 8px 30px rgba(0,0,0,0.06);
+    }
+
+    .dev-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .junior .avatar {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      box-shadow: 0 4px 12px var(--purple-glow);
+    }
+
+    .senior .avatar {
+      background: linear-gradient(135deg, #0891b2, #22d3ee);
+      box-shadow: 0 4px 12px var(--cyan-glow);
+    }
+
+    .dev-info h2 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .dev-info span {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      display: block;
+      margin-top: 0.15rem;
+    }
+
+    .status-badge {
+      margin-left: auto;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      padding: 0.3rem 0.65rem;
+      border-radius: 99px;
+      background: #f1f5f9;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    .status-badge.typing {
+      color: var(--purple);
+      border-color: var(--purple);
+      background: rgba(124, 58, 237, 0.08);
+      animation: pulse 1.2s infinite;
+    }
+
+    .senior .status-badge.typing {
+      color: var(--cyan);
+      border-color: var(--cyan);
+      background: rgba(8, 145, 178, 0.08);
+    }
+
+    .status-badge.done {
+      color: var(--success);
+      border-color: var(--success);
+      background: rgba(22, 163, 74, 0.08);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .editor-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+    }
+
+    .editor-tabs {
+      display: flex;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 0.75rem;
+    }
+
+    .tab {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.6rem 1rem;
+      color: var(--text-dim);
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab.active {
+      color: var(--text);
+      border-bottom-color: var(--purple);
+    }
+
+    .senior .tab.active {
+      border-bottom-color: var(--cyan);
+    }
+
+    .code-area {
+      flex: 1;
+      background: var(--bg-editor);
+      padding: 1.1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      min-height: 200px;
+      max-height: 280px;
+      color: #1e293b;
+    }
+
+    .code-area::-webkit-scrollbar { width: 6px; }
+    .code-area::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 99px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--purple);
+      vertical-align: text-bottom;
+      animation: blink 0.9s step-end infinite;
+      margin-left: 1px;
+    }
+
+    .senior .cursor { background: var(--cyan); }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .kw { color: #7c3aed; }
+    .str { color: #16a34a; }
+    .num { color: #d97706; }
+    .cmt { color: #94a3b8; font-style: italic; }
+    .fn { color: #0891b2; }
+    .op { color: #db2777; }
+
+    .console {
+      border-top: 1px solid var(--border);
+      background: white;
+    }
+
+    .console-header {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      padding: 0.5rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .console-header::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 6px rgba(22, 163, 74, 0.4);
+    }
+
+    .console-body {
+      padding: 0.85rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      min-height: 60px;
+      color: var(--text-dim);
+    }
+
+    .console-body .output { color: var(--success); font-weight: 500; }
+    .console-body .prompt { color: var(--cyan); }
+
+    .footer-note {
+      text-align: center;
+      padding: 0 1.5rem 2.5rem;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    .footer-note strong { color: var(--cyan); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">JUNIOR  vs  SENIOR</div>
+    <p class="subtitle">Same simple task — two different ways</p>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progressText">Ready</span>
+      <span id="progressPercent">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" id="playBtn">
+      <span id="playIcon">▶</span>
+      <span id="playLabel">Start Demo</span>
+    </button>
+    <button class="btn btn-secondary" id="replayBtn" disabled>
+      ↻ Replay
+    </button>
+  </div>
+
+  <div class="arena">
+    <!-- Junior -->
+    <div class="dev-card junior" id="juniorCard">
+      <div class="dev-header">
+        <div class="avatar">🧑‍💻</div>
+        <div class="dev-info">
+          <h2>Junior Developer</h2>
+          <span>Long & Basic</span>
+        </div>
+        <div class="status-badge" id="juniorStatus">Idle</div>
+      </div>
+      <div class="editor-wrap">
+        <div class="editor-tabs">
+          <div class="tab active">script.js</div>
+        </div>
+        <div class="code-area" id="juniorCode"><span class="cursor"></span></div>
+      </div>
+      <div class="console">
+        <div class="console-header">Console</div>
+        <div class="console-body" id="juniorConsole">
+          <span class="prompt">› </span>Waiting for code...
+        </div>
+      </div>
+    </div>
+
+    <!-- Senior -->
+    <div class="dev-card senior" id="seniorCard">
+      <div class="dev-header">
+        <div class="avatar">🧙‍♂️</div>
+        <div class="dev-info">
+          <h2>Senior Developer</h2>
+          <span>Clean & Short</span>
+        </div>
+        <div class="status-badge" id="seniorStatus">Idle</div>
+      </div>
+      <div class="editor-wrap">
+        <div class="editor-tabs">
+          <div class="tab active">script.js</div>
+        </div>
+        <div class="code-area" id="seniorCode"><span class="cursor"></span></div>
+      </div>
+      <div class="console">
+        <div class="console-header">Console</div>
+        <div class="console-body" id="seniorConsole">
+          <span class="prompt">› </span>Waiting for code...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Both print the same result: <strong>Hello, World!</strong>
+  </p>
+
+  <script>
+    // ========== SIMPLE JS CODE ==========
+    const juniorRaw = `// Junior way - long and basic
+let name = "World";
+let message = "Hello, " + name + "!";
+console.log(message);`;
+
+    const seniorRaw = `// Senior way - clean and short
+console.log(\`Hello, World!\`);`;
+
+    function highlight(code) {
+      return code
+        .replace(/(&)/g, '&amp;')
+        .replace(/(<)/g, '&lt;')
+        .replace(/(>)/g, '&gt;')
+        .replace(/(\/\/.*$)/gm, '<span class="cmt">$1</span>')
+        .replace(/\b(const|let|var|function|return|if|else|console)\b/g, '<span class="kw">$1</span>')
+        .replace(/\b(log)\b/g, '<span class="fn">$1</span>')
+        .replace(/(".*?"|`.*?`)/g, '<span class="str">$1</span>')
+        .replace(/([=+\-*/%<>!&|]+)/g, '<span class="op">$1</span>');
+    }
+
+    let state = 'idle';
+    let juniorIndex = 0;
+    let seniorIndex = 0;
+    let typingTimer = null;
+    let isPaused = false;
+    const SPEED = 35;
+
+    const juniorCodeEl = document.getElementById('juniorCode');
+    const seniorCodeEl = document.getElementById('seniorCode');
+    const juniorConsole = document.getElementById('juniorConsole');
+    const seniorConsole = document.getElementById('seniorConsole');
+    const juniorStatus = document.getElementById('juniorStatus');
+    const seniorStatus = document.getElementById('seniorStatus');
+    const juniorCard = document.getElementById('juniorCard');
+    const seniorCard = document.getElementById('seniorCard');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const playLabel = document.getElementById('playLabel');
+    const replayBtn = document.getElementById('replayBtn');
+
+    function updateProgress() {
+      const total = juniorRaw.length + seniorRaw.length;
+      const current = juniorIndex + seniorIndex;
+      const pct = Math.min(100, Math.round((current / total) * 100));
+      progressFill.style.width = pct + '%';
+      progressPercent.textContent = pct + '%';
+
+      if (state === 'junior') progressText.textContent = 'Junior is coding...';
+      else if (state === 'senior') progressText.textContent = 'Senior is coding...';
+      else if (state === 'done') progressText.textContent = 'Done! Same result';
+      else if (state === 'paused') progressText.textContent = 'Paused';
+      else progressText.textContent = 'Ready';
+    }
+
+    function setStatus(who, text, cls = '') {
+      const el = who === 'junior' ? juniorStatus : seniorStatus;
+      el.textContent = text;
+      el.className = 'status-badge ' + cls;
+    }
+
+    function typeJunior() {
+      if (isPaused || state !== 'junior') return;
+
+      if (juniorIndex < juniorRaw.length) {
+        juniorIndex++;
+        const visible = juniorRaw.slice(0, juniorIndex);
+        juniorCodeEl.innerHTML = highlight(visible) + '<span class="cursor"></span>';
+        juniorCodeEl.scrollTop = juniorCodeEl.scrollHeight;
+        updateProgress();
+        typingTimer = setTimeout(typeJunior, SPEED);
+      } else {
+        juniorCodeEl.innerHTML = highlight(juniorRaw);
+        setStatus('junior', 'Done', 'done');
+        juniorCard.classList.remove('active');
+        juniorConsole.innerHTML = `<span class="prompt">› </span><span class="output">Hello, World!</span>`;
+
+        state = 'senior';
+        seniorCard.classList.add('active');
+        setStatus('senior', 'Typing...', 'typing');
+        typeSenior();
+      }
+    }
+
+    function typeSenior() {
+      if (isPaused || state !== 'senior') return;
+
+      if (seniorIndex < seniorRaw.length) {
+        seniorIndex++;
+        const visible = seniorRaw.slice(0, seniorIndex);
+        seniorCodeEl.innerHTML = highlight(visible) + '<span class="cursor"></span>';
+        seniorCodeEl.scrollTop = seniorCodeEl.scrollHeight;
+        updateProgress();
+        typingTimer = setTimeout(typeSenior, SPEED);
+      } else {
+        seniorCodeEl.innerHTML = highlight(seniorRaw);
+        setStatus('senior', 'Done', 'done');
+        seniorCard.classList.remove('active');
+        seniorConsole.innerHTML = `<span class="prompt">› </span><span class="output">Hello, World!</span>`;
+
+        state = 'done';
+        updateProgress();
+        playIcon.textContent = '▶';
+        playLabel.textContent = 'Finished';
+        playBtn.disabled = true;
+        replayBtn.disabled = false;
+      }
+    }
+
+    function startDemo() {
+      if (state === 'idle' || state === 'done') {
+        resetAll();
+        state = 'junior';
+        isPaused = false;
+        juniorCard.classList.add('active');
+        setStatus('junior', 'Typing...', 'typing');
+        playIcon.textContent = '⏸';
+        playLabel.textContent = 'Pause';
+        replayBtn.disabled = false;
+        typeJunior();
+      } else if (state === 'paused') {
+        isPaused = false;
+        state = juniorIndex < juniorRaw.length ? 'junior' : 'senior';
+        playIcon.textContent = '⏸';
+        playLabel.textContent = 'Pause';
+
+        if (state === 'junior') {
+          juniorCard.classList.add('active');
+          setStatus('junior', 'Typing...', 'typing');
+          typeJunior();
+        } else {
+          seniorCard.classList.add('active');
+          setStatus('senior', 'Typing...', 'typing');
+          typeSenior();
+        }
+      } else {
+        isPaused = true;
+        state = 'paused';
+        clearTimeout(typingTimer);
+        playIcon.textContent = '▶';
+        playLabel.textContent = 'Resume';
+        juniorCard.classList.remove('active');
+        seniorCard.classList.remove('active');
+        updateProgress();
+      }
+    }
+
+    function resetAll() {
+      clearTimeout(typingTimer);
+      juniorIndex = 0;
+      seniorIndex = 0;
+      isPaused = false;
+      state = 'idle';
+
+      juniorCodeEl.innerHTML = '<span class="cursor"></span>';
+      seniorCodeEl.innerHTML = '<span class="cursor"></span>';
+      juniorConsole.innerHTML = '<span class="prompt">› </span>Waiting for code...';
+      seniorConsole.innerHTML = '<span class="prompt">› </span>Waiting for code...';
+
+      setStatus('junior', 'Idle');
+      setStatus('senior', 'Idle');
+      juniorCard.classList.remove('active');
+      seniorCard.classList.remove('active');
+
+      playIcon.textContent = '▶';
+      playLabel.textContent = 'Start Demo';
+      playBtn.disabled = false;
+      replayBtn.disabled = true;
+      updateProgress();
+    }
+
+    function replay() {
+      resetAll();
+      startDemo();
+    }
+
+    playBtn.addEventListener('click', startDemo);
+    replayBtn.addEventListener('click', replay);
+    updateProgress();
+  </script>
+</body>
+</html>
