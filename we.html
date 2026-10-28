@@ -1,642 +1,770 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Junior vs Senior Developer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Premium Signup Form Animation</title>
   <style>
-    :root {
-      --bg: #ffffff;
-      --bg-panel: #f8fafc;
-      --bg-editor: #f1f5f9;
-      --border: #e2e8f0;
-      --purple: #7c3aed;
-      --purple-glow: rgba(124, 58, 237, 0.25);
-      --cyan: #0891b2;
-      --cyan-glow: rgba(8, 145, 178, 0.25);
-      --text: #0f172a;
-      --text-dim: #64748b;
-      --success: #16a34a;
-      --radius: 16px;
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-display: 'Orbitron', sans-serif;
-      --font-body: 'Inter', sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --purple-1: #7c3aed;
+      --purple-2: #a855f7;
+      --purple-3: #c084fc;
+      --purple-4: #e9d5ff;
+      --neon: 0 0 20px rgba(168, 85, 247, 0.6), 0 0 40px rgba(168, 85, 247, 0.3);
+      --glass: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.18);
+    }
 
     body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
       min-height: 100vh;
-      background-image:
-        radial-gradient(ellipse 80% 50% at 20% -20%, rgba(124, 58, 237, 0.08), transparent),
-        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(8, 145, 178, 0.06), transparent);
-    }
-
-    header {
-      text-align: center;
-      padding: 2rem 1.5rem 1.25rem;
-    }
-
-    .logo {
-      font-family: var(--font-display);
-      font-size: clamp(1.4rem, 4vw, 2rem);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      background: linear-gradient(135deg, var(--purple), var(--cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.35rem;
-    }
-
-    .subtitle {
-      color: var(--text-dim);
-      font-size: 0.95rem;
-    }
-
-    .progress-wrap {
-      max-width: 720px;
-      margin: 1.5rem auto 0;
-      padding: 0 1.5rem;
-    }
-
-    .progress-label {
+      background: #0a0614;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #fff;
+      overflow-x: hidden;
       display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      margin-bottom: 0.4rem;
-      font-family: var(--font-mono);
+      flex-direction: column;
     }
 
-    .progress-bar {
-      height: 6px;
-      background: var(--border);
-      border-radius: 99px;
-      overflow: hidden;
+    /* Animated background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(124, 58, 237, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(192, 132, 252, 0.1) 0%, transparent 70%),
+        #0a0614;
     }
 
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--purple), var(--cyan));
-      border-radius: 99px;
-      transition: width 0.15s ease;
-      box-shadow: 0 0 12px var(--purple-glow);
+    .bg::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.15), transparent 70%);
+      top: -200px;
+      left: -200px;
+      animation: float 12s ease-in-out infinite;
     }
 
+    .bg::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.12), transparent 70%);
+      bottom: -150px;
+      right: -150px;
+      animation: float 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(40px, 30px); }
+    }
+
+    /* Controls */
     .controls {
+      position: relative;
+      z-index: 20;
       display: flex;
       justify-content: center;
-      gap: 0.85rem;
-      margin: 1.5rem 0 1.75rem;
-      flex-wrap: wrap;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(10, 6, 20, 0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
     }
 
     .btn {
-      font-family: var(--font-body);
+      padding: 10px 22px;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      background: var(--glass);
+      color: #fff;
+      font-size: 14px;
       font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.7rem 1.5rem;
-      border: none;
-      border-radius: 12px;
       cursor: pointer;
-      display: inline-flex;
+      transition: all 0.3s ease;
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
-      transition: all 0.25s ease;
+      gap: 8px;
+      backdrop-filter: blur(8px);
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--purple), #6d28d9);
-      color: white;
-      box-shadow: 0 4px 14px var(--purple-glow);
+    .btn:hover {
+      background: rgba(168, 85, 247, 0.25);
+      border-color: var(--purple-2);
+      box-shadow: var(--neon);
+      transform: translateY(-1px);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px var(--purple-glow);
+    .btn:active {
+      transform: translateY(0);
     }
 
-    .btn-secondary {
-      background: white;
-      color: var(--cyan);
-      border: 1.5px solid var(--cyan);
+    .btn svg {
+      width: 16px;
+      height: 16px;
     }
 
-    .btn-secondary:hover {
-      background: rgba(8, 145, 178, 0.08);
-      box-shadow: 0 0 18px var(--cyan-glow);
-    }
-
-    .btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    .arena {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      max-width: 1400px;
+    /* Main layout */
+    .main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1200px;
+      width: 100%;
       margin: 0 auto;
-      padding: 0 1.5rem 3rem;
+      padding: 12px;
+      gap: 12px;
     }
 
-    @media (max-width: 900px) {
-      .arena { grid-template-columns: 1fr; }
+    @media (min-width: 900px) {
+      .main {
+        flex-direction: row;
+        padding: 20px;
+        gap: 20px;
+      }
     }
 
-    .dev-card {
-      background: var(--bg-panel);
+    /* Code Editor Panel */
+    .code-panel {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: rgba(15, 10, 30, 0.85);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 16px;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: border-color 0.3s, box-shadow 0.3s;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
     }
 
-    .dev-card.junior.active {
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px var(--purple-glow), 0 8px 30px rgba(0,0,0,0.06);
-    }
-
-    .dev-card.senior.active {
-      border-color: var(--cyan);
-      box-shadow: 0 0 0 3px var(--cyan-glow), 0 8px 30px rgba(0,0,0,0.06);
-    }
-
-    .dev-header {
+    .code-header {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      padding: 1.1rem 1.25rem;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.3);
       border-bottom: 1px solid var(--border);
-      background: white;
     }
 
-    .avatar {
-      width: 48px;
-      height: 48px;
+    .dot {
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
+    }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+
+    .code-title {
+      margin-left: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      font-family: monospace;
     }
 
-    .junior .avatar {
-      background: linear-gradient(135deg, #7c3aed, #a855f7);
-      box-shadow: 0 4px 12px var(--purple-glow);
-    }
-
-    .senior .avatar {
-      background: linear-gradient(135deg, #0891b2, #22d3ee);
-      box-shadow: 0 4px 12px var(--cyan-glow);
-    }
-
-    .dev-info h2 {
-      font-family: var(--font-display);
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .dev-info span {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      display: block;
-      margin-top: 0.15rem;
-    }
-
-    .status-badge {
-      margin-left: auto;
-      font-size: 0.7rem;
-      font-family: var(--font-mono);
-      padding: 0.3rem 0.65rem;
-      border-radius: 99px;
-      background: #f1f5f9;
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-    }
-
-    .status-badge.typing {
-      color: var(--purple);
-      border-color: var(--purple);
-      background: rgba(124, 58, 237, 0.08);
-      animation: pulse 1.2s infinite;
-    }
-
-    .senior .status-badge.typing {
-      color: var(--cyan);
-      border-color: var(--cyan);
-      background: rgba(8, 145, 178, 0.08);
-    }
-
-    .status-badge.done {
-      color: var(--success);
-      border-color: var(--success);
-      background: rgba(22, 163, 74, 0.08);
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    .editor-wrap {
+    .code-body {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 220px;
-    }
-
-    .editor-tabs {
-      display: flex;
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 0 0.75rem;
-    }
-
-    .tab {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      padding: 0.6rem 1rem;
-      color: var(--text-dim);
-      border-bottom: 2px solid transparent;
-    }
-
-    .tab.active {
-      color: var(--text);
-      border-bottom-color: var(--purple);
-    }
-
-    .senior .tab.active {
-      border-bottom-color: var(--cyan);
-    }
-
-    .code-area {
-      flex: 1;
-      background: var(--bg-editor);
-      padding: 1.1rem 1.25rem;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      line-height: 1.7;
-      overflow-y: auto;
+      overflow: auto;
+      padding: 16px;
+      font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
       white-space: pre-wrap;
-      min-height: 200px;
-      max-height: 280px;
-      color: #1e293b;
+      word-break: break-word;
     }
 
-    .code-area::-webkit-scrollbar { width: 6px; }
-    .code-area::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 99px;
+    @media (min-width: 900px) {
+      .code-body {
+        font-size: 13.5px;
+      }
     }
 
-    .cursor {
+    .code-body .keyword { color: #c084fc; }
+    .code-body .string { color: #86efac; }
+    .code-body .comment { color: #64748b; }
+    .code-body .tag { color: #f472b6; }
+    .code-body .attr { color: #67e8f9; }
+    .code-body .cursor {
       display: inline-block;
-      width: 2px;
+      width: 8px;
       height: 1.1em;
-      background: var(--purple);
-      vertical-align: text-bottom;
-      animation: blink 0.9s step-end infinite;
+      background: var(--purple-2);
       margin-left: 1px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+      box-shadow: 0 0 8px var(--purple-2);
     }
-
-    .senior .cursor { background: var(--cyan); }
 
     @keyframes blink {
       50% { opacity: 0; }
     }
 
-    .kw { color: #7c3aed; }
-    .str { color: #16a34a; }
-    .num { color: #d97706; }
-    .cmt { color: #94a3b8; font-style: italic; }
-    .fn { color: #0891b2; }
-    .op { color: #db2777; }
-
-    .console {
-      border-top: 1px solid var(--border);
-      background: white;
-    }
-
-    .console-header {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      padding: 0.5rem 1.1rem;
-      border-bottom: 1px solid var(--border);
+    /* Form Preview Panel */
+    .preview-panel {
+      flex: 1;
+      min-height: 0;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      justify-content: center;
+      padding: 16px;
+      position: relative;
     }
 
-    .console-header::before {
+    .form-wrapper {
+      width: 100%;
+      max-width: 380px;
+      opacity: 0;
+      transform: scale(0.92) translateY(20px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .form-wrapper.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .glass-card {
+      background: var(--glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 28px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255,255,255,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
       content: '';
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 6px rgba(22, 163, 74, 0.4);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.5), transparent);
     }
 
-    .console-body {
-      padding: 0.85rem 1.1rem;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      min-height: 60px;
-      color: var(--text-dim);
+    .form-logo {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--neon);
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .console-body .output { color: var(--success); font-weight: 500; }
-    .console-body .prompt { color: var(--cyan); }
+    .form-logo.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
 
-    .footer-note {
+    .form-logo svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    .form-title {
       text-align: center;
-      padding: 0 1.5rem 2.5rem;
-      color: var(--text-dim);
-      font-size: 0.8rem;
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff, var(--purple-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.5s ease;
     }
 
-    .footer-note strong { color: var(--cyan); }
+    .form-title.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .form-subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease 0.1s;
+    }
+
+    .form-subtitle.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .field {
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .field.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .field input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+
+    .field input:focus {
+      border-color: var(--purple-2);
+      background: rgba(168, 85, 247, 0.1);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2), var(--neon);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .submit-btn.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(124, 58, 237, 0.55);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+
+    .submit-btn:hover::after {
+      transform: translateX(100%);
+    }
+
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 24px 0 8px;
+    }
+
+    .success-msg.show {
+      display: block;
+      animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes successPop {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, #10b981, #34d399);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+    }
+
+    .success-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: white;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .footer-text.visible {
+      opacity: 1;
+    }
+
+    .footer-text a {
+      color: var(--purple-3);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Progress indicator */
+    .progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple-1), var(--purple-3));
+      width: 0%;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 10px var(--purple-2);
+    }
+
+    /* Mobile tweaks for Shorts/Reels */
+    @media (max-width: 600px) {
+      .main {
+        padding: 8px;
+        gap: 10px;
+      }
+      .code-body {
+        font-size: 11.5px;
+        padding: 12px;
+      }
+      .glass-card {
+        padding: 28px 20px;
+      }
+      .form-title {
+        font-size: 22px;
+      }
+      .controls {
+        padding: 10px;
+      }
+      .btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">JUNIOR  vs  SENIOR</div>
-    <p class="subtitle">Same simple task — two different ways</p>
-  </header>
-
-  <div class="progress-wrap">
-    <div class="progress-label">
-      <span id="progressText">Ready</span>
-      <span id="progressPercent">0%</span>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-  </div>
+  <div class="bg"></div>
 
   <div class="controls">
-    <button class="btn btn-primary" id="playBtn">
-      <span id="playIcon">▶</span>
-      <span id="playLabel">Start Demo</span>
+    <button class="btn" id="playPauseBtn">
+      <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      <span id="playPauseText">Pause</span>
     </button>
-    <button class="btn btn-secondary" id="replayBtn" disabled>
-      ↻ Replay
+    <button class="btn" id="replayBtn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+      Replay
     </button>
   </div>
 
-  <div class="arena">
-    <!-- Junior -->
-    <div class="dev-card junior" id="juniorCard">
-      <div class="dev-header">
-        <div class="avatar">🧑‍💻</div>
-        <div class="dev-info">
-          <h2>Junior Developer</h2>
-          <span>Long & Basic</span>
-        </div>
-        <div class="status-badge" id="juniorStatus">Idle</div>
+  <div class="main">
+    <!-- Code Editor -->
+    <div class="code-panel">
+      <div class="code-header">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+        <span class="code-title">signup-form.jsx</span>
       </div>
-      <div class="editor-wrap">
-        <div class="editor-tabs">
-          <div class="tab active">script.js</div>
-        </div>
-        <div class="code-area" id="juniorCode"><span class="cursor"></span></div>
-      </div>
-      <div class="console">
-        <div class="console-header">Console</div>
-        <div class="console-body" id="juniorConsole">
-          <span class="prompt">› </span>Waiting for code...
-        </div>
-      </div>
+      <div class="code-body" id="codeBody"></div>
+      <div class="progress" id="progress"></div>
     </div>
 
-    <!-- Senior -->
-    <div class="dev-card senior" id="seniorCard">
-      <div class="dev-header">
-        <div class="avatar">🧙‍♂️</div>
-        <div class="dev-info">
-          <h2>Senior Developer</h2>
-          <span>Clean & Short</span>
-        </div>
-        <div class="status-badge" id="seniorStatus">Idle</div>
-      </div>
-      <div class="editor-wrap">
-        <div class="editor-tabs">
-          <div class="tab active">script.js</div>
-        </div>
-        <div class="code-area" id="seniorCode"><span class="cursor"></span></div>
-      </div>
-      <div class="console">
-        <div class="console-header">Console</div>
-        <div class="console-body" id="seniorConsole">
-          <span class="prompt">› </span>Waiting for code...
+    <!-- Live Form Preview -->
+    <div class="preview-panel">
+      <div class="form-wrapper" id="formWrapper">
+        <div class="glass-card" id="glassCard">
+          <div class="form-logo" id="formLogo">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <h1 class="form-title" id="formTitle">Create Account</h1>
+          <p class="form-subtitle" id="formSubtitle">Join the future. It only takes a minute.</p>
+
+          <form id="signupForm" autocomplete="off">
+            <div class="field" id="fieldName">
+              <label>Full Name</label>
+              <input type="text" placeholder="Aditi Keshri" required />
+            </div>
+            <div class="field" id="fieldEmail">
+              <label>Email</label>
+              <input type="email" placeholder="aditi   @studio.com" required />
+            </div>
+            <div class="field" id="fieldPass">
+              <label>Password</label>
+              <input type="password" placeholder="••••••••" required />
+            </div>
+            <button type="submit" class="submit-btn" id="submitBtn">Get Started →</button>
+          </form>
+
+          <div class="success-msg" id="successMsg">
+            <div class="success-icon">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h2 style="font-size:20px;margin-bottom:6px;">Welcome aboard!</h2>
+            <p style="color:rgba(255,255,255,0.6);font-size:14px;">Your account is ready.</p>
+          </div>
+
+          <p class="footer-text" id="footerText">
+            Already have an account? <a href="#">Sign in</a>
+          </p>
         </div>
       </div>
     </div>
   </div>
-
-  <p class="footer-note">
-    Both print the same result: <strong>Hello, World!</strong>
-  </p>
 
   <script>
-    // ========== SIMPLE JS CODE ==========
-    const juniorRaw = `// Junior way - long and basic
-let name = "World";
-let message = "Hello, " + name + "!";
-console.log(message);`;
+    // The code that will be typed out (syntax-highlighted via spans)
+    const codeLines = [
+      { text: '// Premium Glassmorphism Signup', class: 'comment' },
+      { text: '', class: '' },
+      { text: 'const SignupForm = () => {', class: '' },
+      { text: '  return (', class: '' },
+      { text: '    <div className="glass-card">', class: 'tag' },
+      { text: '      <div className="logo" />', class: 'tag' },
+      { text: '      <h1>Create Account</h1>', class: 'tag' },
+      { text: '      <p>Join the future...</p>', class: 'tag' },
+      { text: '', class: '' },
+      { text: '      <input type="text" placeholder="Full Name" />', class: 'tag' },
+      { text: '      <input type="email" placeholder="Email" />', class: 'tag' },
+      { text: '      <input type="password" placeholder="Password" />', class: 'tag' },
+      { text: '', class: '' },
+      { text: '      <button className="neon-btn">', class: 'tag' },
+      { text: '        Get Started →', class: '' },
+      { text: '      </button>', class: 'tag' },
+      { text: '    </div>', class: 'tag' },
+      { text: '  );', class: '' },
+      { text: '};', class: '' },
+      { text: '', class: '' },
+      { text: '// Glass + Neon styles', class: 'comment' },
+      { text: '.glass-card {', class: '' },
+      { text: '  backdrop-filter: blur(24px);', class: '' },
+      { text: '  background: rgba(255,255,255,0.08);', class: '' },
+      { text: '  border: 1px solid rgba(255,255,255,0.18);', class: '' },
+      { text: '  box-shadow: 0 0 40px rgba(168,85,247,0.4);', class: '' },
+      { text: '}', class: '' },
+    ];
 
-    const seniorRaw = `// Senior way - clean and short
-console.log(\`Hello, World!\`);`;
+    // Convert to a single string with highlighting markers
+    let fullCode = '';
+    codeLines.forEach((line, i) => {
+      fullCode += line.text + (i < codeLines.length - 1 ? '\n' : '');
+    });
 
-    function highlight(code) {
-      return code
-        .replace(/(&)/g, '&amp;')
-        .replace(/(<)/g, '&lt;')
-        .replace(/(>)/g, '&gt;')
-        .replace(/(\/\/.*$)/gm, '<span class="cmt">$1</span>')
-        .replace(/\b(const|let|var|function|return|if|else|console)\b/g, '<span class="kw">$1</span>')
-        .replace(/\b(log)\b/g, '<span class="fn">$1</span>')
-        .replace(/(".*?"|`.*?`)/g, '<span class="str">$1</span>')
-        .replace(/([=+\-*/%<>!&|]+)/g, '<span class="op">$1</span>');
-    }
+    // Typing state
+    let charIndex = 0;
+    let isPlaying = true;
+    let typingInterval = null;
+    const speed = 18; // ms per character
 
-    let state = 'idle';
-    let juniorIndex = 0;
-    let seniorIndex = 0;
-    let typingTimer = null;
-    let isPaused = false;
-    const SPEED = 35;
-
-    const juniorCodeEl = document.getElementById('juniorCode');
-    const seniorCodeEl = document.getElementById('seniorCode');
-    const juniorConsole = document.getElementById('juniorConsole');
-    const seniorConsole = document.getElementById('seniorConsole');
-    const juniorStatus = document.getElementById('juniorStatus');
-    const seniorStatus = document.getElementById('seniorStatus');
-    const juniorCard = document.getElementById('juniorCard');
-    const seniorCard = document.getElementById('seniorCard');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    const progressPercent = document.getElementById('progressPercent');
-    const playBtn = document.getElementById('playBtn');
+    const codeBody = document.getElementById('codeBody');
+    const progress = document.getElementById('progress');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playPauseText = document.getElementById('playPauseText');
     const playIcon = document.getElementById('playIcon');
-    const playLabel = document.getElementById('playLabel');
+    const pauseIcon = document.getElementById('pauseIcon');
     const replayBtn = document.getElementById('replayBtn');
 
-    function updateProgress() {
-      const total = juniorRaw.length + seniorRaw.length;
-      const current = juniorIndex + seniorIndex;
-      const pct = Math.min(100, Math.round((current / total) * 100));
-      progressFill.style.width = pct + '%';
-      progressPercent.textContent = pct + '%';
+    // Form elements to reveal progressively
+    const reveals = [
+      { at: 0.08, el: 'formWrapper' },
+      { at: 0.18, el: 'formLogo' },
+      { at: 0.28, el: 'formTitle' },
+      { at: 0.35, el: 'formSubtitle' },
+      { at: 0.48, el: 'fieldName' },
+      { at: 0.60, el: 'fieldEmail' },
+      { at: 0.72, el: 'fieldPass' },
+      { at: 0.85, el: 'submitBtn' },
+      { at: 0.95, el: 'footerText' },
+    ];
 
-      if (state === 'junior') progressText.textContent = 'Junior is coding...';
-      else if (state === 'senior') progressText.textContent = 'Senior is coding...';
-      else if (state === 'done') progressText.textContent = 'Done! Same result';
-      else if (state === 'paused') progressText.textContent = 'Paused';
-      else progressText.textContent = 'Ready';
+    const revealed = new Set();
+
+    function renderCode(upTo) {
+      // Simple syntax highlighting while typing
+      let html = '';
+      const text = fullCode.substring(0, upTo);
+      const lines = text.split('\n');
+      
+      lines.forEach((line, idx) => {
+        let colored = line
+          .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
+          .replace(/(const|return|className)/g, '<span class="keyword">$1</span>')
+          .replace(/(['"`].*?['"`])/g, '<span class="string">$1</span>')
+          .replace(/(<\/?[a-zA-Z][^>]*>)/g, '<span class="tag">$1</span>')
+          .replace(/(type|placeholder|className)=/g, '<span class="attr">$1</span>=');
+        
+        html += colored + (idx < lines.length - 1 ? '\n' : '');
+      });
+
+      codeBody.innerHTML = html + '<span class="cursor"></span>';
+      codeBody.scrollTop = codeBody.scrollHeight;
     }
 
-    function setStatus(who, text, cls = '') {
-      const el = who === 'junior' ? juniorStatus : seniorStatus;
-      el.textContent = text;
-      el.className = 'status-badge ' + cls;
-    }
-
-    function typeJunior() {
-      if (isPaused || state !== 'junior') return;
-
-      if (juniorIndex < juniorRaw.length) {
-        juniorIndex++;
-        const visible = juniorRaw.slice(0, juniorIndex);
-        juniorCodeEl.innerHTML = highlight(visible) + '<span class="cursor"></span>';
-        juniorCodeEl.scrollTop = juniorCodeEl.scrollHeight;
-        updateProgress();
-        typingTimer = setTimeout(typeJunior, SPEED);
-      } else {
-        juniorCodeEl.innerHTML = highlight(juniorRaw);
-        setStatus('junior', 'Done', 'done');
-        juniorCard.classList.remove('active');
-        juniorConsole.innerHTML = `<span class="prompt">› </span><span class="output">Hello, World!</span>`;
-
-        state = 'senior';
-        seniorCard.classList.add('active');
-        setStatus('senior', 'Typing...', 'typing');
-        typeSenior();
-      }
-    }
-
-    function typeSenior() {
-      if (isPaused || state !== 'senior') return;
-
-      if (seniorIndex < seniorRaw.length) {
-        seniorIndex++;
-        const visible = seniorRaw.slice(0, seniorIndex);
-        seniorCodeEl.innerHTML = highlight(visible) + '<span class="cursor"></span>';
-        seniorCodeEl.scrollTop = seniorCodeEl.scrollHeight;
-        updateProgress();
-        typingTimer = setTimeout(typeSenior, SPEED);
-      } else {
-        seniorCodeEl.innerHTML = highlight(seniorRaw);
-        setStatus('senior', 'Done', 'done');
-        seniorCard.classList.remove('active');
-        seniorConsole.innerHTML = `<span class="prompt">› </span><span class="output">Hello, World!</span>`;
-
-        state = 'done';
-        updateProgress();
-        playIcon.textContent = '▶';
-        playLabel.textContent = 'Finished';
-        playBtn.disabled = true;
-        replayBtn.disabled = false;
-      }
-    }
-
-    function startDemo() {
-      if (state === 'idle' || state === 'done') {
-        resetAll();
-        state = 'junior';
-        isPaused = false;
-        juniorCard.classList.add('active');
-        setStatus('junior', 'Typing...', 'typing');
-        playIcon.textContent = '⏸';
-        playLabel.textContent = 'Pause';
-        replayBtn.disabled = false;
-        typeJunior();
-      } else if (state === 'paused') {
-        isPaused = false;
-        state = juniorIndex < juniorRaw.length ? 'junior' : 'senior';
-        playIcon.textContent = '⏸';
-        playLabel.textContent = 'Pause';
-
-        if (state === 'junior') {
-          juniorCard.classList.add('active');
-          setStatus('junior', 'Typing...', 'typing');
-          typeJunior();
-        } else {
-          seniorCard.classList.add('active');
-          setStatus('senior', 'Typing...', 'typing');
-          typeSenior();
+    function updateReveals(progress) {
+      reveals.forEach(r => {
+        if (progress >= r.at && !revealed.has(r.el)) {
+          const el = document.getElementById(r.el);
+          if (el) {
+            el.classList.add('visible');
+            revealed.add(r.el);
+          }
         }
+      });
+    }
+
+    function type() {
+      if (!isPlaying) return;
+
+      if (charIndex <= fullCode.length) {
+        renderCode(charIndex);
+        const pct = charIndex / fullCode.length;
+        progress.style.width = (pct * 100) + '%';
+        updateReveals(pct);
+        charIndex++;
+        typingInterval = setTimeout(type, speed);
       } else {
-        isPaused = true;
-        state = 'paused';
-        clearTimeout(typingTimer);
-        playIcon.textContent = '▶';
-        playLabel.textContent = 'Resume';
-        juniorCard.classList.remove('active');
-        seniorCard.classList.remove('active');
-        updateProgress();
+        // Finished
+        document.querySelector('.cursor')?.remove();
+        isPlaying = false;
+        updatePlayPauseUI();
       }
+    }
+
+    function updatePlayPauseUI() {
+      if (isPlaying) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+        playPauseText.textContent = 'Pause';
+      } else {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+        playPauseText.textContent = 'Play';
+      }
+    }
+
+    function startTyping() {
+      clearTimeout(typingInterval);
+      isPlaying = true;
+      updatePlayPauseUI();
+      type();
+    }
+
+    function pauseTyping() {
+      isPlaying = false;
+      clearTimeout(typingInterval);
+      updatePlayPauseUI();
     }
 
     function resetAll() {
-      clearTimeout(typingTimer);
-      juniorIndex = 0;
-      seniorIndex = 0;
-      isPaused = false;
-      state = 'idle';
+      clearTimeout(typingInterval);
+      charIndex = 0;
+      revealed.clear();
+      progress.style.width = '0%';
+      codeBody.innerHTML = '';
 
-      juniorCodeEl.innerHTML = '<span class="cursor"></span>';
-      seniorCodeEl.innerHTML = '<span class="cursor"></span>';
-      juniorConsole.innerHTML = '<span class="prompt">› </span>Waiting for code...';
-      seniorConsole.innerHTML = '<span class="prompt">› </span>Waiting for code...';
+     
+      ['formWrapper','formLogo','formTitle','formSubtitle',
+       'fieldName','fieldEmail','fieldPass','submitBtn','footerText']
+        .forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('visible');
+        });
 
-      setStatus('junior', 'Idle');
-      setStatus('senior', 'Idle');
-      juniorCard.classList.remove('active');
-      seniorCard.classList.remove('active');
-
-      playIcon.textContent = '▶';
-      playLabel.textContent = 'Start Demo';
-      playBtn.disabled = false;
-      replayBtn.disabled = true;
-      updateProgress();
+      
+      document.getElementById('signupForm').style.display = 'block';
+      document.getElementById('successMsg').classList.remove('show');
+      document.getElementById('signupForm').reset();
     }
 
-    function replay() {
+    playPauseBtn.addEventListener('click', () => {
+      if (charIndex >= fullCode.length) {
+        
+        resetAll();
+        startTyping();
+      } else if (isPlaying) {
+        pauseTyping();
+      } else {
+        startTyping();
+      }
+    });
+
+    replayBtn.addEventListener('click', () => {
       resetAll();
-      startDemo();
-    }
+      startTyping();
+    });
 
-    playBtn.addEventListener('click', startDemo);
-    replayBtn.addEventListener('click', replay);
-    updateProgress();
+  
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('successMsg').classList.add('show');
+    });
+
+    // Kick off
+    startTyping();
   </script>
 </body>
 </html>

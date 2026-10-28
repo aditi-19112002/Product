@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOVA X — Calling Experience</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ min-height:100vh;display:grid;place-items:center;
+ background:radial-gradient(ellipse at 50% 35%,#292052,#090b16 70%);
+ color:#fff;font-family:Arial,sans-serif;overflow:hidden;
+}
+.scene{position:relative;perspective:1200px}
+.glow{
+ position:fixed;width:280px;height:280px;left:50%;top:45%;
+ transform:translate(-50%,-50%);background:#8358ff;
+ filter:blur(110px);opacity:.28;pointer-events:none;
+}
+.brand{position:fixed;top:25px;left:0;width:100%;text-align:center;
+ font-size:12px;letter-spacing:6px;color:#c9bbff}
+.phone{
+ width:300px;height:610px;padding:8px;border-radius:43px;
+ background:linear-gradient(130deg,#e8e2ff,#5c5870,#181722,#aaa1c7,#302b42);
+ box-shadow:0 30px 80px #000a,0 0 40px #9270ff25;
+ transform:rotateX(4deg);transition:transform .7s;
+ position:relative;
+}
+.phone:hover{transform:rotateX(0) rotateY(-2deg)}
+.screen{
+ height:100%;border-radius:35px;overflow:hidden;position:relative;
+ background:radial-gradient(ellipse at 80% 15%,#7c4db4,transparent 45%),
+ linear-gradient(160deg,#181c40,#101324 65%,#21143c);
+ border:2px solid #15151f;
+}
+.island{position:absolute;top:9px;left:50%;transform:translateX(-50%);
+ width:80px;height:20px;border-radius:20px;background:#020207;z-index:10}
+.status{position:absolute;top:13px;left:18px;right:18px;display:flex;
+ justify-content:space-between;font-size:9px;z-index:11}
+.view{position:absolute;inset:0;padding:55px 20px 20px;display:none}
+.view.active{display:block;animation:appear .3s ease}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:23px;font-weight:600}
+.sub{color:#b9b5d7;font-size:11px;margin-top:7px}
+.clock{text-align:center;font-size:53px;font-weight:300;margin-top:75px}
+.date{text-align:center;font-size:11px;color:#d5c9ff;margin-top:5px}
+.unlock{display:block;margin:65px auto 0;width:58px;height:58px;
+ border-radius:50%;border:1px solid #b6a0ff;background:#ffffff10;
+ color:#fff;font-size:26px;cursor:pointer;box-shadow:0 0 30px #9470ff45}
+.center{text-align:center}
+.primary,.secondary{
+ border:1px solid #ffffff30;border-radius:25px;padding:12px 18px;
+ color:#fff;background:#ffffff12;cursor:pointer;font-size:11px;
+}
+.primary{background:linear-gradient(135deg,#8c6bff,#5140bb);border:0}
+.home-title{font-size:25px;margin-top:7px}
+.widget{margin-top:22px;padding:16px;border-radius:18px;
+ background:#ffffff13;border:1px solid #ffffff25}
+.widget small{font-size:9px;color:#cfc2ff}
+.widget h3{margin-top:8px;font-size:17px}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 8px;margin-top:25px}
+.app{border:0;background:none;color:white;cursor:pointer;display:flex;
+ flex-direction:column;align-items:center;gap:7px;font-size:10px}
+.app span{width:47px;height:47px;display:grid;place-items:center;
+ border-radius:15px;background:linear-gradient(145deg,#ffffff35,#ffffff0c);
+ border:1px solid #ffffff25;font-size:23px}
+.dial-display{margin-top:25px;height:43px;text-align:center;font-size:25px;
+ letter-spacing:2px;overflow:hidden;white-space:nowrap}
+.dial-display:empty:before{content:"Enter number";font-size:13px;color:#777895;letter-spacing:0}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+ max-width:220px;margin:20px auto 15px}
+.key{
+ height:49px;width:49px;margin:auto;border-radius:50%;border:1px solid #ffffff18;
+ background:#ffffff0d;color:white;font-size:20px;cursor:pointer;
+ transition:.15s;
+}
+.key:active{transform:scale(.9);background:#9275ff55}
+.key small{display:block;font-size:7px;color:#aaa8c7;margin-top:2px}
+.call-actions{display:flex;justify-content:center;align-items:center;gap:24px;margin-top:16px}
+.call-btn{width:56px;height:56px;border:0;border-radius:50%;color:white;
+ font-size:23px;cursor:pointer;box-shadow:0 5px 20px #0003}
+.green{background:linear-gradient(145deg,#40e68d,#0baf61)}
+.red{background:linear-gradient(145deg,#ff6b79,#db173d)}
+.small-action{background:none;border:0;color:#cfc9ec;font-size:10px;cursor:pointer}
+.contact-circle{margin:18px auto 12px;width:76px;height:76px;border-radius:50%;
+ display:grid;place-items:center;font-size:31px;
+ background:linear-gradient(145deg,#a18aff,#4d3b9e);border:1px solid #ffffff55}
+.call-name{text-align:center;font-size:22px;margin-top:10px}
+.call-number{text-align:center;color:#bcb8d8;font-size:12px;margin-top:8px}
+.call-state{text-align:center;color:#b5a4ff;font-size:12px;margin-top:23px}
+.timer{text-align:center;font-size:20px;letter-spacing:2px;margin-top:9px}
+.call-screen{padding-top:70px}
+.call-end{display:flex;justify-content:center;margin-top:70px}
+.call-end .call-btn{width:65px;height:65px}
+.incoming-actions{display:flex;justify-content:center;gap:40px;margin-top:65px}
+.incoming-actions button{display:flex;flex-direction:column;align-items:center;gap:10px;
+ background:none;border:0;color:white;cursor:pointer;font-size:11px}
+.incoming-actions .call-btn{width:62px;height:62px}
+.note{position:fixed;bottom:16px;left:0;width:100%;text-align:center;
+ font-size:10px;color:#9291b4;padding:0 12px}
+@media(max-height:700px){.phone{transform:scale(.83)}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="brand">N O V A &nbsp; X</div>
+
+<div class="scene">
+<div class="phone">
+<div class="screen">
+<div class="island"></div>
+<div class="status"><span id="statusTime">9:41</span><span>● ▰ ▰</span></div>
+
+<!-- LOCK SCREEN -->
+<section class="view active" id="lock">
+ <div class="clock" id="clock">09:41</div>
+ <div class="date" id="date">YOUR DIGITAL WORLD</div>
+ <button class="unlock" onclick="showView('home')">◎</button>
+ <p class="sub center" style="margin-top:13px">TAP TO UNLOCK</p>
+</section>
+
+<!-- HOME SCREEN -->
+<section class="view" id="home">
+ <div class="sub">Welcome back ✦</div>
+ <div class="home-title">Hello, Aditi.</div>
+ <div class="widget">
+  <small>NOVA X PHONE</small>
+  <h3>Your world, one tap away.</h3>
+  <p class="sub">Explore your digital experience.</p>
+ </div>
+ <div class="apps">
+  <button class="app" onclick="showView('dial')"><span>📞</span>Phone</button>
+  <button class="app" onclick="showToast('Messages app opened')"><span>✉️</span>Messages</button>
+  <button class="app" onclick="showToast('Camera app opened')"><span>📷</span>Camera</button>
+  <button class="app" onclick="showToast('Music app opened')"><span>♫</span>Music</button>
+  <button class="app" onclick="showToast('Photos app opened')"><span>🌈</span>Photos</button>
+  <button class="app" onclick="showView('dial')"><span>☎️</span>Call</button>
+ </div>
+</section>
+
+<!-- DIAL PAD -->
+<section class="view" id="dial">
+ <button class="small-action" onclick="showView('home')">‹ Home</button>
+ <h1 style="margin-top:15px">Phone</h1>
+ <p class="sub">Enter a number to call</p>
+ <div class="dial-display" id="number"></div>
+ <div class="keypad">
+  <button class="key" onclick="addDigit('1')">1<small>&nbsp;</small></button>
+  <button class="key" onclick="addDigit('2')">2<small>ABC</small></button>
+  <button class="key" onclick="addDigit('3')">3<small>DEF</small></button>
+  <button class="key" onclick="addDigit('4')">4<small>GHI</small></button>
+  <button class="key" onclick="addDigit('5')">5<small>JKL</small></button>
+  <button class="key" onclick="addDigit('6')">6<small>MNO</small></button>
+  <button class="key" onclick="addDigit('7')">7<small>PQRS</small></button>
+  <button class="key" onclick="addDigit('8')">8<small>TUV</small></button>
+  <button class="key" onclick="addDigit('9')">9<small>WXYZ</small></button>
+  <button class="key" onclick="addDigit('*')">*</button>
+  <button class="key" onclick="addDigit('0')">0<small>+</small></button>
+  <button class="key" onclick="addDigit('#')">#</button>
+ </div>
+ <div class="call-actions">
+  <button class="small-action" onclick="deleteDigit()">⌫ Delete</button>
+  <button class="call-btn green" onclick="startCall()">☎</button>
+  <button class="small-action" onclick="clearNumber()">Clear</button>
+ </div>
+</section>
+
+<!-- CALLING SCREEN -->
+<section class="view call-screen" id="calling">
+ <div class="center sub">NOVA CALL</div>
+ <div class="contact-circle">👤</div>
+ <div class="call-name" id="callingName">Unknown</div>
+ <div class="call-number" id="callingNumber"></div>
+ <div class="call-state" id="callState">Calling…</div>
+ <div class="timer" id="timer">00:00</div>
+ <div class="call-end">
+  <button class="call-btn red" onclick="endCall()">☎</button>
+ </div>
+ <p class="sub center" style="margin-top:18px">TAP RED BUTTON TO END</p>
+</section>
+
+<!-- INCOMING CALL DEMO -->
+<section class="view call-screen" id="incoming">
+ <div class="center sub">INCOMING CALL</div>
+ <div class="contact-circle">👤</div>
+ <div class="call-name">Alex Morgan</div>
+ <div class="call-number">+1 202 555 0147</div>
+ <div class="call-state" style="margin-top:35px">Incoming call…</div>
+ <div class="incoming-actions">
+  <button onclick="rejectIncoming()">
+   <span class="call-btn red">✕</span>Decline
+  </button>
+  <button onclick="acceptIncoming()">
+   <span class="call-btn green">☎</span>Accept
+  </button>
+ </div>
+</section>
+
+<!-- ENDED -->
+<section class="view" id="ended">
+ <div class="center" style="padding-top:90px">
+  <div style="font-size:43px">☎</div>
+  <h1 style="margin-top:20px">Call ended</h1>
+  <p class="sub" id="endedNumber" style="margin-top:12px"></p>
+  <button class="primary" onclick="showView('dial')" style="margin-top:30px">Back to dial pad</button>
+  <br>
+  <button class="secondary" onclick="showView('home')" style="margin-top:12px">Home</button>
+ </div>
+</section>
+
+<div id="toast" style="position:absolute;bottom:18px;left:10%;width:80%;
+ text-align:center;background:#ffffff20;border:1px solid #ffffff30;
+ border-radius:20px;padding:10px;font-size:10px;opacity:0;pointer-events:none;
+ transition:.3s;z-index:50"></div>
+</div>
+</div>
+</div>
+
+<div class="note">Interactive phone simulation · HTML + CSS + JavaScript</div>
+
+<script>
+let phoneNumber = "";
+let seconds = 0;
+let timerInterval = null;
+let toastTimeout = null;
+
+function showView(id){
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+
+function addDigit(digit){
+ if(phoneNumber.length>=15)return;
+ phoneNumber+=digit;
+ document.getElementById("number").textContent=phoneNumber;
+}
+
+function deleteDigit(){
+ phoneNumber=phoneNumber.slice(0,-1);
+ document.getElementById("number").textContent=phoneNumber;
+}
+
+function clearNumber(){
+ phoneNumber="";
+ document.getElementById("number").textContent="";
+}
+
+function startCall(){
+ if(!phoneNumber){
+  showToast("Please enter a number first");
+  return;
+ }
+ document.getElementById("callingName").textContent="Calling contact";
+ document.getElementById("callingNumber").textContent=phoneNumber;
+ document.getElementById("callState").textContent="Calling…";
+ document.getElementById("timer").textContent="00:00";
+ seconds=0;
+ showView("calling");
+
+ clearInterval(timerInterval);
+ // Demo: show a connecting animation, then start a simulated timer.
+ setTimeout(()=>{
+  if(!document.getElementById("calling").classList.contains("active"))return;
+  document.getElementById("callState").textContent="Connected · Demo";
+  timerInterval=setInterval(()=>{
+   seconds++;
+   const mins=String(Math.floor(seconds/60)).padStart(2,"0");
+   const secs=String(seconds%60).padStart(2,"0");
+   document.getElementById("timer").textContent=mins+":"+secs;
+  },1000);
+ },1800);
+}
+
+function endCall(){
+ clearInterval(timerInterval);
+ document.getElementById("endedNumber").textContent=
+  "Call with "+(phoneNumber||"contact")+" · "+document.getElementById("timer").textContent;
+ showView("ended");
+}
+
+function showToast(message){
+ const el=document.getElementById("toast");
+ el.textContent=message;
+ el.style.opacity="1";
+ clearTimeout(toastTimeout);
+ toastTimeout=setTimeout(()=>el.style.opacity="0",1800);
+}
+
+function rejectIncoming(){
+ showView("home");
+ showToast("Incoming call declined");
+}
+
+function acceptIncoming(){
+ phoneNumber="+1 202 555 0147";
+ document.getElementById("callingName").textContent="Alex Morgan";
+ document.getElementById("callingNumber").textContent=phoneNumber;
+ document.getElementById("callState").textContent="Connected · Demo";
+ seconds=0;
+ document.getElementById("timer").textContent="00:00";
+ showView("calling");
+ clearInterval(timerInterval);
+ timerInterval=setInterval(()=>{
+  seconds++;
+  document.getElementById("timer").textContent=
+   String(Math.floor(seconds/60)).padStart(2,"0")+":"+
+   String(seconds%60).padStart(2,"0");
+ },1000);
+}
+
+function updateClock(){
+ const now=new Date();
+ const t=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false});
+ document.getElementById("clock").textContent=t;
+ document.getElementById("statusTime").textContent=t;
+ document.getElementById("date").textContent=now.toLocaleDateString("en-US",{
+  weekday:"long",month:"short",day:"numeric"
+ }).toUpperCase();
+}
+updateClock();
+setInterval(updateClock,30000);
+</script>
+</body>
+</html>
