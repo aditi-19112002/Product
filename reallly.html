@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Realistic Supermarket Checkout</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  background:#e9e7df;color:#252720;
+  min-height:100vh;padding:22px;
+}
+button{cursor:pointer;font:inherit}
+.app{max-width:1250px;margin:auto}
+.top{
+ display:flex;justify-content:space-between;align-items:center;
+ margin-bottom:22px;gap:12px;flex-wrap:wrap
+}
+.brand{font-size:25px;font-weight:900;letter-spacing:-1px}
+.brand span{color:#33845b}
+.pill{background:white;padding:10px 15px;border-radius:30px;font-size:12px}
+.layout{display:grid;grid-template-columns:1.25fr .85fr;gap:20px}
+.panel{background:#faf9f5;border-radius:22px;padding:22px;box-shadow:0 8px 25px #3331}
+.heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.heading h2{font-size:20px}
+.muted{font-size:12px;color:#85857c;margin-top:5px}
+.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.product{
+ background:white;border:1px solid #e9e7df;border-radius:16px;
+ padding:13px;text-align:left;transition:.2s;min-width:0
+}
+.product:hover{transform:translateY(-4px);border-color:#33845b;box-shadow:0 8px 20px #33845b18}
+.picture{
+ height:100px;display:grid;place-items:center;
+ background:#f1f0e9;border-radius:12px;font-size:54px;margin-bottom:12px
+}
+.product h3{font-size:13px;margin-bottom:5px}
+.sku{font-size:10px;color:#999;margin-bottom:10px}
+.price{font-size:17px;font-weight:800;color:#33845b}
+.add{float:right;color:#33845b;font-size:20px;font-weight:bold}
+.counter{background:#252720;color:white;padding:5px 9px;border-radius:20px;font-size:11px}
+.counter:empty{display:none}
+.checkout{display:flex;flex-direction:column;min-height:550px}
+.cart-items{flex:1;max-height:310px;overflow:auto}
+.empty{text-align:center;padding:38px 10px;color:#9a9a90}
+.empty .basket{font-size:45px;margin-bottom:12px}
+.cart-item{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #e9e7df}
+.mini{width:48px;height:48px;background:#f0efe8;border-radius:12px;display:grid;place-items:center;font-size:27px;flex-shrink:0}
+.item-info{flex:1;min-width:0}
+.item-info strong{font-size:13px;display:block}
+.item-info small{color:#888;font-size:11px}
+.qty{display:flex;align-items:center;gap:9px;margin-top:7px}
+.qty button{width:23px;height:23px;border:0;background:#eeeee7;border-radius:6px}
+.line-price{font-weight:bold;font-size:13px;white-space:nowrap}
+.summary{border-top:1px dashed #d8d6ce;padding-top:15px;margin-top:12px}
+.total-row{display:flex;justify-content:space-between;margin:9px 0;font-size:13px;color:#73736a}
+.grand{font-size:23px;font-weight:900;color:#252720;margin-top:14px}
+.grand span:last-child{color:#33845b}
+.action{width:100%;border:0;padding:15px;border-radius:12px;font-weight:800;margin-top:13px}
+.primary{background:#33845b;color:white}
+.primary:hover{background:#246944}
+.secondary{background:#eae9e1;color:#34352f}
+.status{font-size:12px;text-align:center;color:#85857c;margin-top:12px;min-height:16px}
+.overlay{position:fixed;inset:0;background:#151712a8;display:none;align-items:center;justify-content:center;padding:16px;z-index:5}
+.overlay.show{display:flex}
+.modal{background:#faf9f5;border-radius:22px;padding:26px;width:100%;max-width:390px;animation:pop .25s ease}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+.modal h2{margin-bottom:8px}
+.modal p{font-size:13px;color:#777;margin-bottom:20px}
+.pay-option{width:100%;text-align:left;padding:16px;border:1px solid #dddcd3;background:white;border-radius:12px;margin:6px 0}
+.pay-option:hover{border-color:#33845b;background:#f0f8f2}
+.modal .secondary{margin-top:8px}
+.scanline{height:3px;background:#33845b;box-shadow:0 0 12px #33845b;position:relative;animation:scan .8s linear infinite;display:none;margin:12px 0}
+@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.receipt{font-family:monospace;background:white;padding:20px;margin:15px 0;border:1px dashed #bbb;white-space:pre-wrap;font-size:12px;line-height:1.8;max-height:300px;overflow:auto}
+.success{font-size:46px;text-align:center;margin-bottom:10px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.checkout{min-height:400px}.products{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:380px){body{padding:10px}.panel{padding:14px}.product{padding:9px}.picture{height:80px;font-size:43px}}
+@media print{body *{visibility:hidden}.receipt,.receipt *{visibility:visible}.receipt{position:absolute;top:0;left:0;width:100%;max-height:none;border:0}}
+</style>
+</head>
+<body>
+<div class="app">
+ <header class="top">
+  <div class="brand">fresh<span>mart.</span></div>
+  <div class="pill">● STORE OPEN &nbsp; | &nbsp; REGISTER #04</div>
+  <div class="pill" id="clock">00:00:00</div>
+ </header>
+
+ <div class="layout">
+  <section class="panel">
+   <div class="heading">
+    <div><h2>Store products</h2><div class="muted">Select an item to scan it at the counter</div></div>
+    <span class="counter">LIVE INVENTORY</span>
+   </div>
+   <div class="products" id="products"></div>
+  </section>
+
+  <section class="panel checkout">
+   <div class="heading">
+    <div><h2>Checkout counter</h2><div class="muted">Customer transaction · #<span id="orderNo">1042</span></div></div>
+    <span class="counter" id="itemCount">0 ITEMS</span>
+   </div>
+
+   <div id="cart" class="cart-items">
+    <div class="empty"><div class="basket">🛒</div><strong>Your basket is empty</strong><div class="muted">Scan a product to get started</div></div>
+   </div>
+
+   <div class="scanline" id="scanline"></div>
+   <div class="status" id="status">READY TO SCAN</div>
+
+   <div class="summary">
+    <div class="total-row"><span>Subtotal</span><strong id="subtotal">₹0.00</strong></div>
+    <div class="total-row"><span>GST included</span><strong id="tax">₹0.00</strong></div>
+    <div class="total-row grand"><span>TOTAL</span><span id="total">₹0.00</span></div>
+    <button class="action primary" id="payBtn" onclick="openPayment()">PROCEED TO PAYMENT →</button>
+    <button class="action secondary" onclick="clearCart()">CANCEL TRANSACTION</button>
+   </div>
+  </section>
+ </div>
+ <p class="muted" style="text-align:center;margin:20px">FRESHMART POS · DEMO SIMULATION · NO REAL PAYMENT</p>
+</div>
+
+<div class="overlay" id="paymentModal">
+ <div class="modal">
+  <h2>Choose payment</h2>
+  <p>Confirm the total and select a demo payment method.</p>
+  <div style="font-size:26px;font-weight:900;margin-bottom:16px" id="payTotal">₹0.00</div>
+  <button class="pay-option" onclick="pay('UPI')">📱 &nbsp; UPI / QR <small style="display:block;color:#888;margin-top:5px">Simulated digital payment</small></button>
+  <button class="pay-option" onclick="pay('Card')">💳 &nbsp; Credit / Debit card <small style="display:block;color:#888;margin-top:5px">Simulated card transaction</small></button>
+  <button class="pay-option" onclick="pay('Cash')">💵 &nbsp; Cash <small style="display:block;color:#888;margin-top:5px">Simulated cash payment</small></button>
+  <button class="action secondary" onclick="closePayment()">GO BACK</button>
+ </div>
+</div>
+
+<div class="overlay" id="receiptModal">
+ <div class="modal">
+  <div class="success">✅</div>
+  <h2 style="text-align:center">Payment successful!</h2>
+  <p style="text-align:center">Thank you for shopping with FreshMart.</p>
+  <div class="receipt" id="receipt"></div>
+  <button class="action primary" onclick="window.print()">🖨 PRINT RECEIPT</button>
+  <button class="action secondary" onclick="newSale()">NEW CUSTOMER →</button>
+ </div>
+</div>
+
+<script>
+const inventory = [
+ {id:1,name:"Fresh Milk",emoji:"🥛",price:32,sku:"FM-1001"},
+ {id:2,name:"Brown Bread",emoji:"🍞",price:45,sku:"BR-1002"},
+ {id:3,name:"Red Apples",emoji:"🍎",price:120,sku:"AP-1003"},
+ {id:4,name:"Potato Chips",emoji:"🥔",price:20,sku:"CH-1004"},
+ {id:5,name:"Orange Juice",emoji:"🧃",price:65,sku:"OJ-1005"},
+ {id:6,name:"Chocolate",emoji:"🍫",price:40,sku:"CC-1006"},
+ {id:7,name:"Eggs (6 pcs)",emoji:"🥚",price:54,sku:"EG-1007"},
+ {id:8,name:"Coffee",emoji:"☕",price:160,sku:"CF-1008"},
+ {id:9,name:"Bananas",emoji:"🍌",price:50,sku:"BN-1009"}
+];
+let cart = {};
+let order = 1042;
+let busy = false;
+
+const money = n => "₹" + n.toFixed(2);
+
+function renderProducts(){
+ document.getElementById("products").innerHTML = inventory.map(p => `
+  <button class="product" onclick="addItem(${p.id})">
+   <div class="picture">${p.emoji}</div>
+   <h3>${p.name}</h3>
+   <div class="sku">SKU: ${p.sku}</div>
+   <div class="price">${money(p.price)} <span class="add">+</span></div>
+   <div class="muted" style="margin-top:8px">TAP TO SCAN</div>
+  </button>`).join("");
+}
+
+function totals(){
+ const subtotal = Object.entries(cart).reduce((s,[id,q])=>
+  s + inventory.find(p=>p.id===+id).price*q,0);
+ // Prices are GST-inclusive in this demonstration.
+ const tax = subtotal - subtotal/1.05;
+ return {subtotal,tax,total:subtotal};
+}
+
+function renderCart(){
+ const entries = Object.entries(cart).filter(([id,q])=>q>0);
+ const cartEl = document.getElementById("cart");
+ const count = entries.reduce((s,[id,q])=>s+q,0);
+ document.getElementById("itemCount").textContent = count+" ITEMS";
+ document.getElementById("payBtn").disabled = count===0;
+ document.getElementById("payBtn").style.opacity = count===0?".5":"1";
+
+ if(!entries.length){
+  cartEl.innerHTML='<div class="empty"><div class="basket">🛒</div><strong>Your basket is empty</strong><div class="muted">Scan a product to get started</div></div>';
+ }else{
+  cartEl.innerHTML=entries.map(([id,q])=>{
+   const p=inventory.find(x=>x.id===+id);
+   return `<div class="cart-item">
+    <div class="mini">${p.emoji}</div>
+    <div class="item-info"><strong>${p.name}</strong><small>${p.sku}</small>
+     <div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${q}</span><button onclick="changeQty(${p.id},1)">+</button></div>
+    </div>
+    <div class="line-price">${money(p.price*q)}</div>
+   </div>`;
+  }).join("");
+ }
+ const t=totals();
+ document.getElementById("subtotal").textContent=money(t.subtotal);
+ document.getElementById("tax").textContent=money(t.tax);
+ document.getElementById("total").textContent=money(t.total);
+}
+
+function scanEffect(message){
+ const line=document.getElementById("scanline");
+ line.style.display="block";
+ document.getElementById("status").textContent=message;
+ setTimeout(()=>{line.style.display="none";document.getElementById("status").textContent="READY TO SCAN"},650);
+}
+
+function addItem(id){
+ if(busy)return;
+ cart[id]=(cart[id]||0)+1;
+ renderCart();
+ const p=inventory.find(x=>x.id===id);
+ scanEffect("▥ SCANNING "+p.sku+" · "+p.name.toUpperCase());
+}
+
+function changeQty(id,delta){
+ if(busy)return;
+ cart[id]=(cart[id]||0)+delta;
+ if(cart[id]<=0)delete cart[id];
+ renderCart();
+}
+
+function clearCart(){
+ if(busy)return;
+ cart={};
+ renderCart();
+ document.getElementById("status").textContent="TRANSACTION CANCELLED";
+}
+
+function openPayment(){
+ if(!Object.keys(cart).length||busy)return;
+ document.getElementById("payTotal").textContent=money(totals().total);
+ document.getElementById("paymentModal").classList.add("show");
+}
+function closePayment(){
+ document.getElementById("paymentModal").classList.remove("show");
+}
+
+function pay(method){
+ if(busy)return;
+ busy=true;
+ closePayment();
+ document.getElementById("status").textContent="PROCESSING "+method.toUpperCase()+" PAYMENT...";
+ document.getElementById("scanline").style.display="block";
+
+ setTimeout(()=>{
+  document.getElementById("scanline").style.display="none";
+  const t=totals();
+  const date=new Date().toLocaleString("en-IN");
+  let lines="          FRESHMART\n";
+  lines+="      Your neighbourhood store\n";
+  lines+="--------------------------------\n";
+  lines+="Receipt: FM-"+order+"\nDate: "+date+"\n";
+  lines+="Payment: "+method+"\n";
+  lines+="--------------------------------\n";
+  for(const [id,q] of Object.entries(cart)){
+   const p=inventory.find(x=>x.id===+id);
+   lines+=p.name+"\n";
+   lines+=q+" x "+money(p.price)+"       "+money(q*p.price)+"\n";
+  }
+  lines+="--------------------------------\n";
+  lines+="Subtotal:          "+money(t.subtotal)+"\n";
+  lines+="Included GST*:     "+money(t.tax)+"\n";
+  lines+="TOTAL PAID:        "+money(t.total)+"\n";
+  lines+="--------------------------------\n";
+  lines+="*Illustrative 5% GST calculation\n";
+  lines+="   THANK YOU FOR SHOPPING!\n";
+  lines+="       Visit us again.\n";
+  document.getElementById("receipt").textContent=lines;
+  document.getElementById("receiptModal").classList.add("show");
+  document.getElementById("status").textContent="PAYMENT COMPLETE";
+  busy=false;
+ },1400);
+}
+
+function newSale(){
+ document.getElementById("receiptModal").classList.remove("show");
+ cart={};order++;
+ document.getElementById("orderNo").textContent=order;
+ renderCart();
+ document.getElementById("status").textContent="READY FOR NEXT CUSTOMER";
+}
+
+function updateClock(){
+ document.getElementById("clock").textContent=
+ new Date().toLocaleTimeString("en-IN");
+}
+renderProducts();
+renderCart();
+updateClock();
+setInterval(updateClock,1000);
+</script>
+</body>
+</html>

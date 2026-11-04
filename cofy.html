@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ludo Game</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+  }
+
+  .info {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    background: rgba(255,255,255,0.1);
+    padding: 6px 16px;
+    border-radius: 20px;
+  }
+
+  .board-container {
+    position: relative;
+    width: 360px;
+    height: 360px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+
+  /* Board Grid */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    width: 100%;
+    height: 100%;
+  }
+
+  .cell {
+    border: 0.5px solid #ddd;
+    position: relative;
+  }
+
+  /* Home areas */
+  .home-red { background: #ff6b6b; }
+  .home-green { background: #51cf66; }
+  .home-yellow { background: #ffd43b; }
+  .home-blue { background: #339af0; }
+
+  /* Path cells */
+  .path { background: #f8f9fa; }
+  .safe { background: #e9ecef; }
+  .center { background: #212529; }
+
+  /* Colored paths */
+  .path-red { background: #ffc9c9; }
+  .path-green { background: #b2f2bb; }
+  .path-yellow { background: #ffe066; }
+  .path-blue { background: #a5d8ff; }
+
+  /* Tokens */
+  .token {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s;
+  }
+
+  .token.red { background: #e03131; }
+  .token.green { background: #2f9e44; }
+  .token.yellow { background: #f08c00; }
+  .token.blue { background: #1971c2; }
+
+  .token.selected {
+    transform: translate(-50%, -50%) scale(1.3);
+    box-shadow: 0 0 0 3px #fff, 0 0 10px #000;
+  }
+
+  .token.movable {
+    animation: pulse 0.8s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.25); }
+  }
+
+  /* Dice */
+  .controls {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dice-box {
+    width: 70px;
+    height: 70px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #212529;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .dice-box:active { transform: scale(0.95); }
+  .dice-box.rolling {
+    animation: roll 0.5s ease;
+  }
+
+  @keyframes roll {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .turn-info {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 6px 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .turn-red { color: #ff6b6b; }
+  .turn-green { color: #51cf66; }
+  .turn-yellow { color: #ffd43b; }
+  .turn-blue { color: #339af0; }
+
+  .btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 25px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff6b6b, #f06595);
+    color: white;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  }
+
+  .btn:active { transform: translateY(3px); }
+
+  .winner {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .winner.show { display: flex; }
+  .winner h2 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    color: #ffd700;
+  }
+
+  @media (max-width: 400px) {
+    .board-container { width: 320px; height: 320px; }
+    .token { width: 16px; height: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🎲 Ludo</h1>
+<div class="info" id="status">Red's Turn - Roll the Dice</div>
+
+<div class="board-container">
+  <div class="board" id="board"></div>
+</div>
+
+<div class="controls">
+  <div class="turn-info" id="turnText">🔴 Red's Turn</div>
+  <div class="dice-box" id="dice" onclick="rollDice()">?</div>
+  <!-- <button class="btn" onclick="location.reload()">New Game</button> -->
+</div>
+
+<div class="winner" id="winner">
+  <h2 id="winnerText">Red Wins!</h2>
+  <button class="btn" onclick="location.reload()">Play Again</button>
+</div>
+
+<script>
+
+  const colors = ['red', 'green', 'yellow', 'blue'];
+  const colorEmoji = { red: '🔴', green: '🟢', yellow: '🟡', blue: '🔵' };
+
+  const yards = {
+    red: [[1,1],[1,2],[2,1],[2,2]],
+    green: [[1,12],[1,13],[2,12],[2,13]],
+    yellow: [[12,12],[12,13],[13,12],[13,13]],
+    blue: [[12,1],[12,2],[13,1],[13,2]]
+  };
+
+ 
+  const paths = {
+    red: [
+      [6,1],[6,2],[6,3],[6,4],[6,5],
+      [5,6],[4,6],[3,6],[2,6],[1,6],[0,6],
+      [0,7],[0,8],
+      [1,8],[2,8],[3,8],[4,8],[5,8],
+      [6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+      [7,14],[8,14],
+      [8,13],[8,12],[8,11],[8,10],[8,9],
+      [9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+      [14,7],[14,6],
+      [13,6],[12,6],[11,6],[10,6],[9,6],
+      [8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+      [7,0],[6,0],
+      // Home stretch
+      [7,1],[7,2],[7,3],[7,4],[7,5],[7,6]
+    ],
+    green: [
+      [1,8],[2,8],[3,8],[4,8],[5,8],
+      [6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+      [7,14],[8,14],
+      [8,13],[8,12],[8,11],[8,10],[8,9],
+      [9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+      [14,7],[14,6],
+      [13,6],[12,6],[11,6],[10,6],[9,6],
+      [8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+      [7,0],[6,0],
+      [6,1],[6,2],[6,3],[6,4],[6,5],
+      [5,6],[4,6],[3,6],[2,6],[1,6],[0,6],
+      [0,7],[0,8],
+      // Home stretch
+      [1,7],[2,7],[3,7],[4,7],[5,7],[6,7]
+    ],
+    yellow: [
+      [8,13],[8,12],[8,11],[8,10],[8,9],
+      [9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+      [14,7],[14,6],
+      [13,6],[12,6],[11,6],[10,6],[9,6],
+      [8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+      [7,0],[6,0],
+      [6,1],[6,2],[6,3],[6,4],[6,5],
+      [5,6],[4,6],[3,6],[2,6],[1,6],[0,6],
+      [0,7],[0,8],
+      [1,8],[2,8],[3,8],[4,8],[5,8],
+      [6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+      [7,14],[8,14],
+      // Home stretch
+      [7,13],[7,12],[7,11],[7,10],[7,9],[7,8]
+    ],
+    blue: [
+      [13,6],[12,6],[11,6],[10,6],[9,6],
+      [8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+      [7,0],[6,0],
+      [6,1],[6,2],[6,3],[6,4],[6,5],
+      [5,6],[4,6],[3,6],[2,6],[1,6],[0,6],
+      [0,7],[0,8],
+      [1,8],[2,8],[3,8],[4,8],[5,8],
+      [6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+      [7,14],[8,14],
+      [8,13],[8,12],[8,11],[8,10],[8,9],
+      [9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+      [14,7],[14,6],
+      // Home stretch
+      [13,7],[12,7],[11,7],[10,7],[9,7],[8,7]
+    ]
+  };
+
+  // Safe positions (star cells)
+  const safePos = [
+    [6,1],[1,8],[8,13],[13,6], // starting points
+    [6,2],[2,8],[8,12],[12,6]  // extra safe
+  ];
+
+  // Game state
+  let currentPlayer = 0; // 0=red, 1=green, 2=yellow, 3=blue
+  let diceValue = 0;
+  let canRoll = true;
+  let selectedToken = null;
+  let tokens = {
+    red: [0,0,0,0],    // position index in path (-1 = yard, 0+ = on path)
+    green: [0,0,0,0],
+    yellow: [0,0,0,0],
+    blue: [0,0,0,0]
+  };
+  // Actually better: -1 means in yard
+  tokens = {
+    red: [-1,-1,-1,-1],
+    green: [-1,-1,-1,-1],
+    yellow: [-1,-1,-1,-1],
+    blue: [-1,-1,-1,-1]
+  };
+
+  // Create board
+  function createBoard() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+
+    for (let r = 0; r < 15; r++) {
+      for (let c = 0; c < 15; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.r = r;
+        cell.dataset.c = c;
+
+        // Home areas
+        if (r < 6 && c < 6) cell.classList.add('home-red');
+        else if (r < 6 && c > 8) cell.classList.add('home-green');
+        else if (r > 8 && c > 8) cell.classList.add('home-yellow');
+        else if (r > 8 && c < 6) cell.classList.add('home-blue');
+        else if (r >= 6 && r <= 8 && c >= 6 && c <= 8) cell.classList.add('center');
+        else cell.classList.add('path');
+
+        // Colored home stretch
+        if (c === 7 && r >= 1 && r <= 5) cell.classList.add('path-green');
+        if (r === 7 && c >= 9 && c <= 13) cell.classList.add('path-yellow');
+        if (c === 7 && r >= 9 && r <= 13) cell.classList.add('path-blue');
+        if (r === 7 && c >= 1 && c <= 5) cell.classList.add('path-red');
+
+        board.appendChild(cell);
+      }
+    }
+  }
+
+  // Draw all tokens
+  function drawTokens() {
+    // Remove old tokens
+    document.querySelectorAll('.token').forEach(t => t.remove());
+
+    colors.forEach(color => {
+      tokens[color].forEach((pos, idx) => {
+        const token = document.createElement('div');
+        token.className = `token ${color}`;
+        token.dataset.color = color;
+        token.dataset.idx = idx;
+
+        let r, c;
+        if (pos === -1) {
+          // In yard
+          const yard = yards[color][idx];
+          r = yard[0];
+          c = yard[1];
+        } else {
+          const p = paths[color][pos];
+          r = p[0];
+          c = p[1];
+        }
+
+        // Place in the correct cell
+        const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+        if (cell) {
+          // Offset if multiple tokens on same cell
+          const offset = idx * 3;
+          token.style.top = `calc(50% + ${offset - 4}px)`;
+          token.style.left = `calc(50% + ${offset - 4}px)`;
+          cell.appendChild(token);
+        }
+
+        token.onclick = () => selectToken(color, idx);
+      });
+    });
+  }
+
+  function selectToken(color, idx) {
+    if (color !== colors[currentPlayer]) return;
+    if (!diceValue) return;
+
+    selectedToken = { color, idx };
+    document.querySelectorAll('.token').forEach(t => t.classList.remove('selected', 'movable'));
+    
+    const tokenEl = document.querySelector(`.token[data-color="${color}"][data-idx="${idx}"]`);
+    if (tokenEl) tokenEl.classList.add('selected');
+
+    // Check if can move
+    if (canMove(color, idx, diceValue)) {
+      moveToken(color, idx, diceValue);
+    }
+  }
+
+  function canMove(color, idx, steps) {
+    const pos = tokens[color][idx];
+    
+    // From yard: need 6
+    if (pos === -1) {
+      return steps === 6;
+    }
+
+    // On path
+    const newPos = pos + steps;
+    if (newPos >= paths[color].length) return false; // can't overshoot home
+    return true;
+  }
+
+  function moveToken(color, idx, steps) {
+    let pos = tokens[color][idx];
+
+    if (pos === -1) {
+      // Come out
+      tokens[color][idx] = 0;
+    } else {
+      tokens[color][idx] = pos + steps;
+    }
+
+    // Check win
+    if (tokens[color][idx] === paths[color].length - 1) {
+      // Reached home
+      checkWin(color);
+    }
+
+    // Capture
+    capture(color, tokens[color][idx]);
+
+    drawTokens();
+    diceValue = 0;
+    document.getElementById('dice').textContent = '?';
+    canRoll = true;
+
+    // Next turn (unless rolled 6)
+    if (steps !== 6) {
+      nextTurn();
+    } else {
+      document.getElementById('status').textContent = `${colorEmoji[color]} rolled 6! Roll again`;
+    }
+  }
+
+  function capture(color, pos) {
+    if (pos < 0) return;
+    const [r, c] = paths[color][pos];
+
+    // Check if safe
+    const isSafe = safePos.some(p => p[0] === r && p[1] === c);
+    if (isSafe) return;
+
+    colors.forEach(other => {
+      if (other === color) return;
+      tokens[other].forEach((p, i) => {
+        if (p >= 0) {
+          const [or, oc] = paths[other][p];
+          if (or === r && oc === c) {
+            // Capture!
+            tokens[other][i] = -1;
+          }
+        }
+      });
+    });
+  }
+
+  function checkWin(color) {
+    if (tokens[color].every(p => p === paths[color].length - 1)) {
+      document.getElementById('winnerText').textContent = `${colorEmoji[color]} ${color.toUpperCase()} Wins!`;
+      document.getElementById('winner').classList.add('show');
+    }
+  }
+
+  function nextTurn() {
+    currentPlayer = (currentPlayer + 1) % 4;
+    const color = colors[currentPlayer];
+    document.getElementById('turnText').textContent = `${colorEmoji[color]} ${color}'s Turn`;
+    document.getElementById('turnText').className = `turn-info turn-${color}`;
+    document.getElementById('status').textContent = `${color}'s Turn - Roll the Dice`;
+    canRoll = true;
+    selectedToken = null;
+  }
+
+  function rollDice() {
+    if (!canRoll) return;
+
+    const dice = document.getElementById('dice');
+    dice.classList.add('rolling');
+    
+    setTimeout(() => {
+      dice.classList.remove('rolling');
+      diceValue = Math.floor(Math.random() * 6) + 1;
+      dice.textContent = diceValue;
+      canRoll = false;
+
+      const color = colors[currentPlayer];
+      document.getElementById('status').textContent = `${colorEmoji[color]} rolled ${diceValue}`;
+
+      let hasMove = false;
+      tokens[color].forEach((pos, idx) => {
+        if (canMove(color, idx, diceValue)) hasMove = true;
+      });
+
+      if (!hasMove) {
+        setTimeout(() => {
+          diceValue = 0;
+          dice.textContent = '?';
+          nextTurn();
+        }, 1000);
+      } else {
+      
+        tokens[color].forEach((pos, idx) => {
+          if (canMove(color, idx, diceValue)) {
+            const el = document.querySelector(`.token[data-color="${color}"][data-idx="${idx}"]`);
+            if (el) el.classList.add('movable');
+          }
+        });
+      }
+    }, 400);
+  }
+
+  // Init
+  createBoard();
+  drawTokens();
+</script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATHVERSE | Interactive Maths Lab</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+ font-family:Outfit,sans-serif;
+ background:#f5f3ff;
+ color:#242044;
+ min-height:100vh;
+ overflow-x:hidden;
+}
+header{
+ padding:22px 7%;
+ display:flex;justify-content:space-between;
+ align-items:center;
+ background:#fff;
+ border-bottom:1px solid #eae5ff;
+}
+.logo{font-size:25px;font-weight:900;color:#7653e8}
+.logo span{color:#f49c50}
+header small{color:#8b85a5;font-weight:600}
+.hero{text-align:center;padding:55px 15px 35px}
+.tag{
+ background:#eae3ff;color:#7554dc;
+ padding:8px 17px;border-radius:30px;
+ font-size:12px;font-weight:800;
+}
+.hero h1{font-size:clamp(35px,6vw,60px);margin:20px 0 10px;line-height:1.1}
+.hero h1 span{color:#7958e9}
+.hero p{color:#88829e}
+.container{max-width:1100px;margin:auto;padding:20px}
+.tabs{
+ display:flex;justify-content:center;gap:10px;
+ flex-wrap:wrap;margin-bottom:25px
+}
+.tab{
+ border:0;padding:12px 22px;border-radius:12px;
+ background:#fff;color:#696180;
+ font-weight:700;cursor:pointer;
+ box-shadow:0 4px 15px #3020600d;
+}
+.tab.active{background:#7958e9;color:white}
+.panel{
+ background:white;border:1px solid #ebe6fa;
+ border-radius:25px;padding:30px;
+ box-shadow:0 15px 50px #5b45a00b;
+ display:none;animation:appear .4s ease;
+}
+.panel.active{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.panel h2{font-size:25px;margin-bottom:8px}
+.subtitle{color:#9992ac;margin-bottom:25px;font-size:14px}
+.calc{
+ max-width:420px;margin:auto;
+ background:#211d3c;padding:20px;border-radius:22px;
+}
+.display{
+ background:#30294e;color:white;border-radius:14px;
+ padding:22px;text-align:right;margin-bottom:15px;
+ min-height:100px;display:flex;flex-direction:column;
+ justify-content:center;overflow:hidden;
+}
+#expression{font-size:15px;color:#aaa2c5;min-height:23px}
+#result{font-size:35px;font-weight:800;overflow-wrap:anywhere}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.keys button{
+ border:0;border-radius:12px;padding:18px 5px;
+ font-size:20px;font-weight:700;cursor:pointer;
+ background:#393253;color:white;transition:.2s;
+}
+.keys button:hover{transform:translateY(-3px);background:#514574}
+.keys .op{background:#7254d8}
+.keys .equal{background:#f29b52;color:#211d3c}
+.keys .clear{background:#ec6e83}
+.quiz{
+ max-width:600px;margin:auto;text-align:center;
+ background:#faf9ff;padding:30px;border-radius:20px;
+}
+.question{font-size:42px;font-weight:900;margin:30px 0}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.answers button{
+ padding:18px;border:2px solid #e8e1ff;
+ background:white;border-radius:14px;
+ font-size:22px;font-weight:800;color:#51427c;cursor:pointer;
+}
+.answers button:hover{border-color:#7958e9;background:#f5f1ff}
+#feedback{margin-top:20px;font-weight:700;min-height:25px}
+.score{color:#7958e9;font-weight:800}
+.quiz-actions{margin-top:20px}
+.primary{
+ border:0;background:#7958e9;color:white;
+ padding:14px 28px;border-radius:12px;
+ font-weight:800;cursor:pointer;font-size:15px
+}
+.shapes{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.shape-card{
+ background:#faf9ff;padding:25px 10px;
+ border-radius:18px;text-align:center;cursor:pointer;
+ border:2px solid transparent;transition:.3s
+}
+.shape-card:hover{border-color:#7958e9;transform:translateY(-5px)}
+.shape-icon{font-size:55px;margin-bottom:12px}
+.shape-card h3{font-size:17px}
+#shapeInfo{
+ margin-top:20px;background:#f0ebff;
+ padding:20px;border-radius:15px;display:none;
+ line-height:1.8
+}
+.formula{
+ display:flex;gap:10px;flex-wrap:wrap;margin-top:20px
+}
+.formula span{
+ background:#f0ebff;padding:12px;border-radius:10px;
+ font-weight:700;color:#7653e8
+}
+footer{text-align:center;padding:35px;color:#aaa0be;font-size:13px}
+@media(max-width:600px){
+ .panel{padding:18px}
+ .keys button{padding:16px 3px}
+ .shapes{grid-template-columns:1fr 1fr}
+ .question{font-size:32px}
+ .hero{padding-top:40px}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">MATH<span>VERSE.</span></div>
+ <small>THE WORLD OF NUMBERS ✦</small>
+</header>
+
+<section class="hero">
+ <span class="tag">✦ LEARN • PLAY • EXPLORE</span>
+ <h1>Welcome to <span>Mathverse</span></h1>
+ <p>Math isn't difficult. It's an adventure waiting to happen!</p>
+</section>
+
+<main class="container">
+
+<div class="tabs">
+ <button class="tab active" onclick="showPanel('calculator',this)">🧮 Calculator</button>
+ <button class="tab" onclick="showPanel('quiz',this)">🧠 Math Quiz</button>
+ <button class="tab" onclick="showPanel('geometry',this)">📐 Geometry</button>
+</div>
+
+<!-- CALCULATOR -->
+<section class="panel active" id="calculator">
+ <h2>Smart Calculator</h2>
+ <p class="subtitle">Your personal calculation machine.</p>
+ <div class="calc">
+  <div class="display">
+   <div id="expression">Ready to calculate</div>
+   <div id="result">0</div>
+  </div>
+  <div class="keys">
+   <button class="clear" onclick="clearCalc()">AC</button>
+   <button onclick="delCalc()">⌫</button>
+   <button class="op" onclick="press('%')">%</button>
+   <button class="op" onclick="press('/')">÷</button>
+
+   <button onclick="press('7')">7</button>
+   <button onclick="press('8')">8</button>
+   <button onclick="press('9')">9</button>
+   <button class="op" onclick="press('*')">×</button>
+
+   <button onclick="press('4')">4</button>
+   <button onclick="press('5')">5</button>
+   <button onclick="press('6')">6</button>
+   <button class="op" onclick="press('-')">−</button>
+
+   <button onclick="press('1')">1</button>
+   <button onclick="press('2')">2</button>
+   <button onclick="press('3')">3</button>
+   <button class="op" onclick="press('+')">+</button>
+
+   <button onclick="press('0')">0</button>
+   <button onclick="press('.')">.</button>
+   <button class="equal" style="grid-column:span 2" onclick="calculate()">=</button>
+  </div>
+ </div>
+</section>
+
+<!-- QUIZ -->
+<section class="panel" id="quiz">
+ <h2>Math Challenge</h2>
+ <p class="subtitle">Test your brain. Beat your own score!</p>
+ <div class="quiz">
+  <div style="display:flex;justify-content:space-between">
+   <span class="score">⭐ Score: <b id="score">0</b></span>
+   <span>Question <b id="qnum">1</b>/10</span>
+  </div>
+  <div class="question" id="question">8 × 7 = ?</div>
+  <div class="answers" id="answers"></div>
+  <div id="feedback">Choose your answer!</div>
+  <div class="quiz-actions">
+   <button class="primary" onclick="nextQuestion()" id="nextBtn" style="display:none">Next Question →</button>
+   <button class="primary" onclick="startQuiz()" id="restartBtn" style="display:none">Play Again ↻</button>
+  </div>
+ </div>
+</section>
+
+<!-- GEOMETRY -->
+<section class="panel" id="geometry">
+ <h2>Geometry Playground</h2>
+ <p class="subtitle">Discover shapes and their mathematical secrets.</p>
+ <div class="shapes">
+  <div class="shape-card" onclick="showShape('circle')">
+   <div class="shape-icon" style="color:#ef8a9d">●</div>
+   <h3>Circle</h3>
+  </div>
+  <div class="shape-card" onclick="showShape('square')">
+   <div class="shape-icon" style="color:#7958e9">■</div>
+   <h3>Square</h3>
+  </div>
+  <div class="shape-card" onclick="showShape('triangle')">
+   <div class="shape-icon" style="color:#f1a04c">▲</div>
+   <h3>Triangle</h3>
+  </div>
+  <div class="shape-card" onclick="showShape('rectangle')">
+   <div class="shape-icon" style="color:#45bca2">▰</div>
+   <h3>Rectangle</h3>
+  </div>
+  <div class="shape-card" onclick="showShape('cube')">
+   <div class="shape-icon" style="color:#d78bdc">⬡</div>
+   <h3>Cube</h3>
+  </div>
+  <div class="shape-card" onclick="showShape('sphere')">
+   <div class="shape-icon" style="color:#64a7dc">◉</div>
+   <h3>Sphere</h3>
+  </div>
+ </div>
+ <div id="shapeInfo"></div>
+</section>
+
+</main>
+
+<footer>Made with ♥ for curious minds | MATHVERSE 2026</footer>
+
+<script>
+// PANEL SWITCH
+function showPanel(id,btn){
+ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ btn.classList.add('active');
+}
+
+// CALCULATOR
+let expression='';
+function press(value){
+ if(expression.length>=35)return;
+ expression+=value;
+ document.getElementById('expression').textContent=expression;
+ document.getElementById('result').textContent=expression;
+}
+function clearCalc(){
+ expression='';
+ document.getElementById('expression').textContent='Ready to calculate';
+ document.getElementById('result').textContent='0';
+}
+function delCalc(){
+ expression=expression.slice(0,-1);
+ document.getElementById('expression').textContent=expression||'Ready to calculate';
+ document.getElementById('result').textContent=expression||'0';
+}
+function calculate(){
+ if(!expression)return;
+ try{
+  if(!/^[0-9+\-*/%.() ]+$/.test(expression))throw Error();
+  let answer=Function('"use strict";return ('+expression+')')();
+  if(!Number.isFinite(answer))throw Error();
+  document.getElementById('expression').textContent=expression+' =';
+  document.getElementById('result').textContent=Number(answer.toPrecision(10));
+  expression=String(Number(answer.toPrecision(10)));
+ }catch(e){
+  document.getElementById('result').textContent='Error';
+  expression='';
+ }
+}
+
+// MATH QUIZ
+let score=0,questionCount=0,correctAnswer=0,answered=false;
+function startQuiz(){
+ score=0;questionCount=0;
+ document.getElementById('score').textContent=score;
+ document.getElementById('restartBtn').style.display='none';
+ makeQuestion();
+}
+function makeQuestion(){
+ answered=false;
+ document.getElementById('feedback').textContent='Choose your answer!';
+ document.getElementById('nextBtn').style.display='none';
+ document.getElementById('qnum').textContent=questionCount+1;
+ let a=Math.floor(Math.random()*12)+1;
+ let b=Math.floor(Math.random()*12)+1;
+ let ops=['+','-','×'];
+ let op=ops[Math.floor(Math.random()*3)];
+ if(op==='-' && b>a)[a,b]=[b,a];
+ correctAnswer=op==='+'?a+b:op==='-'?a-b:a*b;
+ document.getElementById('question').textContent=`${a} ${op} ${b} = ?`;
+ let options=new Set([correctAnswer]);
+ while(options.size<4){
+  options.add(Math.max(0,correctAnswer+Math.floor(Math.random()*15)-7));
+ }
+ let shuffled=[...options].sort(()=>Math.random()-.5);
+ document.getElementById('answers').innerHTML='';
+ shuffled.forEach(num=>{
+  let btn=document.createElement('button');
+  btn.textContent=num;
+  btn.onclick=()=>checkAnswer(num,btn);
+  document.getElementById('answers').appendChild(btn);
+ });
+}
+function checkAnswer(value,btn){
+ if(answered)return;
+ answered=true;
+ if(value===correctAnswer){
+  score+=10;
+  document.getElementById('feedback').textContent='🎉 Excellent! Correct Answer!';
+  document.getElementById('score').textContent=score;
+  btn.style.background='#d8f8e8';
+  btn.style.borderColor='#39bd85';
+  confetti();
+ }else{
+  document.getElementById('feedback').textContent='💡 Not quite! Correct answer: '+correctAnswer;
+  btn.style.background='#ffe1e7';
+  btn.style.borderColor='#ed8297';
+ }
+ document.getElementById('nextBtn').style.display='inline-block';
+ document.querySelectorAll('#answers button').forEach(b=>b.disabled=true);
+}
+function nextQuestion(){
+ questionCount++;
+ if(questionCount>=10){
+  document.getElementById('question').textContent='🏆 Challenge Completed!';
+  document.getElementById('answers').innerHTML='';
+  document.getElementById('feedback').textContent='Your final score: '+score+' / 100';
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('restartBtn').style.display='inline-block';
+ }else makeQuestion();
+}
+
+// GEOMETRY
+const shapes={
+ circle:['Circle','A perfectly round 2D shape.','Area = π × r²','Circumference = 2 × π × r'],
+ square:['Square','Four equal sides and four right angles.','Area = side × side','Perimeter = 4 × side'],
+ triangle:['Triangle','A polygon with three sides.','Area = ½ × base × height','Perimeter = a + b + c'],
+ rectangle:['Rectangle','Opposite sides are equal.','Area = length × width','Perimeter = 2 × (length + width)'],
+ cube:['Cube','A 3D shape with six square faces.','Volume = side³','Surface Area = 6 × side²'],
+ sphere:['Sphere','A perfectly round 3D object.','Volume = ⁴⁄₃ × π × r³','Surface Area = 4 × π × r²']
+};
+function showShape(name){
+ let s=shapes[name];
+ let box=document.getElementById('shapeInfo');
+ box.style.display='block';
+ box.innerHTML=`<h3>✨ ${s[0]}</h3><p>${s[1]}</p><div class="formula"><span>${s[2]}</span><span>${s[3]}</span></div>`;
+}
+
+// CONFETTI
+function confetti(){
+ for(let i=0;i<25;i++){
+  let el=document.createElement('div');
+  el.textContent=['✦','★','●','✧'][Math.floor(Math.random()*4)];
+  el.style.cssText=`
+   position:fixed;z-index:9999;left:${Math.random()*100}%;
+   top:40%;font-size:${12+Math.random()*20}px;
+   color:${['#7958e9','#f29b52','#ed8297','#39bd85'][i%4]};
+   pointer-events:none;transition:1.2s ease-out;`;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{
+   el.style.transform=`translate(${Math.random()*180-90}px,${Math.random()*500-200}px) rotate(360deg)`;
+   el.style.opacity='0';
+  });
+  setTimeout(()=>el.remove(),1300);
+ }
+}
+startQuiz();
+</script>
+</body>
+</html>
